@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FileTreeMapper">
+
+
+	<select id="dataList" parameterType="string" resultType="HashMap">
+		SELECT A.*
+		     , B.PRO_NAME
+		  FROM FILE_TREE A
+		  LEFT JOIN PROJECT B
+		    ON A.PRO_NO = B.PRO_NO
+		 WHERE A.PRO_NO = #{proNo}
+	</select>
+	
+	<update id="categoryUpdate" parameterType="topWorkCategoryVO">
+		UPDATE FILE_TREE
+		   SET FILE_NAME = #{twCategoryName}
+		 WHERE PRO_NO = #{proNo}
+	</update>
+	
+	<update id="topWorkUpdate" parameterType="topWorkVO">
+		UPDATE FILE_TREE
+		   SET FILE_ID = #{topWorkTitle}
+		 WHERE PRO_NO = #{proNo}
+	</update>
+	
+</mapper>

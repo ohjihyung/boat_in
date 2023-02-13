@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FileTreeMapper">
+
+
+	<select id="dataList" parameterType="string" resultType="hashMap">
+		SELECT *
+  	 	  FROM FILE_TREE
+ 	 	 WHERE PRO_NO = #{proNo}
+	</select>
+	
+	<delete id="delData" parameterType="string">
+		DELETE
+		  FROM FILE_TREE
+		 WHERE PRO_NO = #{proNo}
+	</delete>
+
+	<select id="finalDataList" parameterType="string" resultType="hashMap">
+		SELECT A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+	      FROM FILE_TREE A, FILE_TREE B 
+		 WHERE A.PRO_NO = #{proNo}
+		   AND A.PRO_NO = B.PRO_NO 
+		   AND A.FILE_NAME = B.FILE_NAME
+		   AND A.DEPTH = B.DEPTH
+		   AND A.FILE_ID = B.FILE_ID
+		   AND A.PARENT_ID = B.PARENT_ID
+	  GROUP BY A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+	</select>
+	
+	<select id="getMemberName" parameterType="string" resultType="string">
+		SELECT MEMBER_NAME
+		  FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="getProNo" parameterType="string" resultType="projectVO">
+		SELECT PRO_NO
+		  FROM PROJECT_JOIN_STATE
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="getMyFilePath" parameterType="projectVO" resultType="fileVO">
+		SELECT FILE_PATH
+		  FROM BFILE
+		 WHERE SUBSTR(FILE_PATH,0,3) 
+		    IN (SELECT PRO_NO
+			      FROM PROJECT_JOIN_STATE
+			     WHERE MEMBER_ID = #{memberId}
+		        )
+		   AND FILE_PATH LIKE #{proNo}||'%'
+		   AND FILE_ISDELETED = 'F'
+	</select>
+	
+	<select id="myFinalDataList" parameterType="string" resultType="hashMap">
+		SELECT A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+		  FROM FILE_TREE A, FILE_TREE B, PROJECT_JOIN_STATE C
+		 WHERE A.PRO_NO = C.PRO_NO
+		   AND C.MEMBER_ID = #{memberId}
+		   AND A.PRO_NO = B.PRO_NO 
+		   AND A.FILE_NAME = B.FILE_NAME
+		   AND A.DEPTH = B.DEPTH
+		   AND A.FILE_ID = B.FILE_ID
+		   AND A.PARENT_ID = B.PARENT_ID
+		GROUP BY A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+	</select>
+	
+</mapper>

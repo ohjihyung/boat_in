@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.NoticeMapper">
+
+	<select id="getNoticeList" resultType="noticeVO">
+		SELECT *
+  		  FROM SYSTEM_NOTICE
+  		 WHERE SYS_N_DELETE = 0
+	  ORDER BY SYS_N_NO ASC
+	</select>
+
+	<select id="getDetail" parameterType="noticeVO" resultType="noticeVO">
+		SELECT *
+  		  FROM SYSTEM_NOTICE
+ 		 WHERE SYS_N_NO = #{sysNNo}
+	</select>
+	
+	<insert id="noticeInsert" parameterType="noticeVO">
+	    <selectKey resultType="String" keyProperty="sysNNo" order="BEFORE">
+            SELECT SEQ_NOTICE.NEXTVAL FROM DUAL
+        </selectKey>
+        
+        INSERT INTO SYSTEM_NOTICE (
+        	SYS_N_NO
+          	,ADMIN_ID
+			,SYS_N_TITLE
+			,SYS_N_CONTENT
+			,SYS_N_HIT
+			,SYS_N_DATE
+			,SYS_N_CATEGORY
+        ) VALUES (
+        	#{sysNNo}
+          , #{adminId}
+          , #{sysNTitle}
+          , #{sysNContent}
+          , 0
+          , sysdate
+          , #{sysNCategory}
+        )
+        
+	</insert>
+
+	<select id="selectNotice" parameterType="String" resultType="noticeVO">
+		SELECT *
+		  FROM SYSTEM_NOTICE
+		 WHERE SYS_N_NO = #{sysNNo}
+	</select>
+	
+	<update id="updateNotice" parameterType="noticeVO">
+		UPDATE SYSTEM_NOTICE
+		   SET SYS_N_TITLE = #{sysNTitle}
+			 , SYS_N_CONTENT = #{sysNContent}
+			 , SYS_N_CATEGORY = #{sysNCategory}
+	     WHERE SYS_N_NO = #{sysNNo}
+	</update>
+	
+	<update id="hitUp" parameterType="noticeVO">
+		UPDATE SYSTEM_NOTICE
+		  SET SYS_N_HIT = TO_NUMBER(SYS_N_HIT) + 1
+		WHERE SYS_N_NO = #{sysNNo} 
+	</update>
+
+	<update id="noticeDelete" parameterType="noticeVO">
+		UPDATE SYSTEM_NOTICE
+		  SET SYS_N_DELETE = 1
+		WHERE SYS_N_NO = #{sysNNo} 
+	</update>
+	
+	<select id="selectCategoryList" parameterType="String" resultType="noticeVO">
+		SELECT *
+		  FROM SYSTEM_NOTICE
+		 WHERE SYS_N_CATEGORY = #{category}
+		   AND SYS_N_DELETE = 0
+	</select>
+	
+
+
+</mapper>

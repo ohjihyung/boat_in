@@ -1,0 +1,246 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<div class="card-body">
+	<div class="row">
+		<div class="col-lg-2" style="background-color: white; border-radius: 0.5em;">
+			<div id="accordion" class="mb-3" >
+              <div class="card mb-1" style="box-shadow: none;" >
+                <div class="card-header" id="headingOne" style="background-color: white;">
+                    <h5 class="m-0">
+                        <a class="text-dark" data-bs-toggle="collapse" href="#collapseOne" aria-expanded="true" >
+                            <i class="mdi mdi-help-circle me-1 text-primary"></i> 
+                            도움말
+                        </a>
+                    </h5>
+                </div>
+    
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+                    <div class="card-body">
+                        알아서 쓰세요 ㅎ
+                    </div>
+                </div>
+              </div>
+            </div>
+			<div class="nav flex-column nav-pills nav-pills-tab" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+				<a class="nav-link active show mb-1" id="v-pills-home-tab" data-bs-toggle="pill" href="javascript:;" role="tab" aria-controls="v-pills-home"
+				    aria-selected="true">
+				    Project All Event</a>
+				<a class="nav-link mb-1" id="v-pills-profile-tab" data-bs-toggle="pill" href="javascript:;" role="tab" aria-controls="v-pills-profile"
+				    aria-selected="false">
+				    My Event</a>
+			</div>
+		</div>
+		<div class="col-lg-9">
+			<div id="calendar" style="background-color: white; border-radius: 0.5em;"></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script>
+calendarRender_C_K();
+
+var btnProjectCalendar = document.querySelector("#v-pills-home-tab"); //var로 써야 에러가 안남. var안쓰면 already..
+btnProjectCalendar.addEventListener("click", () => {
+	calendarRender_C_K('project');
+});
+var btnPersonalCalendar = document.querySelector("#v-pills-profile-tab");
+btnPersonalCalendar.addEventListener("click", () => {
+	calendarRender_C_K('personal');
+});
+
+function calendarRender_C_K(mode) {
+       var calendarEl = document.querySelector("#calendar");
+       // full-calendar 생성하기
+       var calendar = new FullCalendar.Calendar(calendarEl, {
+         //plugins: ['interaction', 'dayGridPlugin'], //이거하면 왜 오륜가
+         firstDay                  : 1,
+         height                    : "700px", // calendar 높이 설정
+         expandRows                : true, // 화면에 맞게 높이 재설정
+         slotMinTime               : "08:00", // Day 캘린더에서 시작 시간
+         slotMaxTime               : "20:00", // Day 캘린더에서 종료 시간
+         weekends                  : true,
+         nowIndicator              : true,
+         interaction: true,
+         // 해더에 표시할 툴바
+         headerToolbar: {
+           left: "prev,next today",
+           center: "title",
+           right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek", //여기서 정렬기준 조정
+         },
+         initialView: "dayGridMonth", // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+         //initialDate: "2021-07-15", // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+         editable                 : true, // 수정 가능?
+         navLinks                 : true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+         selectable               : true, // 달력 일자 드래그 설정가능
+         nowIndicator             : true, // 현재 시간 마크
+         dayMaxEvents             : true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+         locale                   : "ko", // 한국어 설정
+         eventMouseEnter: function(info) {
+             //console.log("인포", info);
+             //console.log("인포2", info.event._def.extendedProps);
+               const topWorkContent = info.event._def.extendedProps.topWorkContent;
+               const progress = info.event._def.extendedProps.topWorkProgress;
+               tippy(info.el, {
+                      allowHTML: true,
+                      //작업자를 관계테이블에서 따로 빼와야함
+                  content:  "작업내용 : " + topWorkContent + "<br> 진행도 " + progress + "%",
+                  theme: 'gradient',
+                  delay: [0,100],
+                  position:'top',
+                  animation:'scale',
+                  interactive:'true',
+                  //followCursor: true,
+               });
+         },
+         /////////////////////////
+         eventResize: function(obj) {
+               //console.log("리사이즈되냐?");//된다
+         },
+         eventClick: function(obj) {
+               console.log("클릭했어");
+               //console.dir(obj);
+               console.log(obj.event.extendedProps);
+               console.log("pk : " + obj.event.extendedProps.topWorkNo);
+               const topWorkNo = obj.event.extendedProps.topWorkNo;
+               
+               const obj_C_K = {
+                 topWorkNo,
+               };
+               
+               let topWorkVO_C_K;
+               
+               axios
+                 .post("/calendar/select", obj_C_K)
+                 .then((res) => {
+                	 console.log(res);
+                	 topWorkVO_C_K = res.data;
+                	 //console.log("디테일 넘겨줄 놈: ", topWorkVO_C_K);
+	                 detailModalOpen(topWorkVO_C_K); //vo를 넘겨야함
+                 });
+               
+         },
+         /////////////////////////
+         
+         eventAdd: function (obj) {
+           // 이벤트가 추가되면 발생하는 이벤트
+           /* console.log("이벤트추가!");
+           console.dir(obj.event._context.viewTitle);
+           console.dir(obj.event._context.dateProfile); */
+         },
+         eventChange: function (obj) {
+           // 이벤트가 수정되면 발생하는 이벤트
+           //console.log("이동했다", obj);
+           //console.log(obj.event._def);
+           //console.log("topWorkNo : " + obj.event._def.extendedProps.topWorkNo);
+           //console.log(obj.event.startStr.substr(0, 16)); // 시작일 (분단위 까지만 데이터 가져오기)
+           //console.log(obj.event.endStr.substr(0, 16));  //변경된 종료일(분단위 까지만 데이터 가져오기) 
+           
+           const map = {};
+           map.topWorkNo = obj.event._def.extendedProps.topWorkNo;
+           map.topWorkStart = obj.event.startStr.substr(0, 16);
+           map.topWorkEnd = obj.event.endStr.substr(0, 16);
+           console.log("이동하는 타겟 : ", obj.event);
+           console.log("이동하는 맵 : ", map);
+           
+           const obj2 = {};
+           obj2.method = "post";
+           obj2.url = "/calendar/updateMove";
+           obj2.header = "json";
+           obj2.sendData = JSON.stringify(map);
+           
+           myAsync(obj2, (result) => {
+                   //$('#updateModal').modal('show');
+                   //myRender();
+           });
+         },
+         eventRemove: function (obj) {
+           // 이벤트가 삭제되면 발생하는 이벤트
+           console.log(obj);
+         },
+         select: function (arg) {
+           // 캘린더에서 클릭 혹은 드래그로 이벤트를 생성할 수 있다.
+           // 2. 여기서 시작일, 종료일, 제목, 타이틀 받아 일감 추가하기
+           calendar.unselect(); //셀렉트된 셀은 하늘색, 언셀렉하면 사라짐
+           
+           insertModalOpen("캘린더", arg);
+         },
+         // 이벤트 //1. 여기서 이벤트를 json으로 만들어서 뿌리면 될 듯.
+         //리스트 데이터 넣기
+         events: function(info, successCallback, failureCallback) {
+        	 let url = "/calendar/list?proNo=" + proNo;
+        	 
+        	 if (mode == "personal") {
+        		 url = `/calendar/list?proNo=\${proNo}&memberId=김진호`;
+        	 }
+        		 
+        	 console.log("url : ", url);
+        	 
+             axios
+             .post(url) //쿼리에 레프트 조인으로 컬러값 가져오게 변경, VO 수정
+             .then((res) => {
+                 let json = res.data;
+                 console.log("json", json);
+                 const eventList = [];
+                 
+                 for (item of json) { //개인달력 혹은 팀달력으로 필터 걸 때 여기서 색상 조정해야함(color값)
+                     const temp = {
+                       topWorkNo: item.topWorkNo,
+                       proNo: item.proNo,
+                       twCategoryNo: item.twCategoryNo,
+                       topWorkContent: item.topWorkContent,
+                       topWorkLike: item.topWorkLike,
+                       topWorkState: item.topWorkState,
+                       topWorkFile: item.topWorkFile,
+                       
+                       title: item.topWorkTitle,
+                       start: item.topWorkStart.substr(0, 10),
+                       end: item.topWorkEnd.substr(0, 10),
+                       color: item.twCategoryColor
+                     };
+                     eventList.push(temp);
+                 /* 에러가 난다...
+                     axios
+                       .post("/calendar/selectCategoryColor", temp)
+                       .then((res) => {
+                    	 console.log(res);
+	                     eventList.push(temp);
+                       });
+                  */
+                 }
+                 console.log("이벤트들", eventList);
+                 successCallback(eventList);
+             });
+         },//2. function() 으로 바꿔서 여기서 데이터 로딩해보기
+         
+         eventMouseLeave: function(event) {
+           
+         },
+         
+       });
+       // 캘린더 랜더링
+       calendar.render();
+	}
+
+	function myAsync(obj, pCb) {
+	    let header =
+	      obj.header == "json"
+	        ? "application/json"
+	        : "application/x-www-form-urlencoded";
+	    
+	    const xhr = new XMLHttpRequest();
+	    xhr.open(obj.method, obj.url, true);
+	    xhr.setRequestHeader("Content-type", header);
+	  
+	    xhr.onreadystatechange = function () {
+	      if (xhr.readyState === 4 && xhr.status === 200) {
+	        pCb(xhr.responseText);
+	      }
+	    };
+	  
+	    xhr.send(obj.sendData);
+	}
+	
+</script>

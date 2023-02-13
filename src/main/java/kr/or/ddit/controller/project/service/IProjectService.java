@@ -1,0 +1,34 @@
+package kr.or.ddit.controller.project.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProjectJoinStateVO;
+import kr.or.ddit.vo.ProjectVO;
+
+public interface IProjectService {
+
+    public String insert(ProjectVO projectVO) throws Exception;
+
+    public List<ProjectVO> list(MemberVO memberVO) throws Exception;
+    
+    public ProjectVO selectOne(String proNo)throws Exception;
+
+    //프로젝트 홈에서 팀멤버 조회
+	public List<ProjectJoinStateVO> selectTeamMember(String proNo) throws Exception;
+
+    public List<MemberVO> memberList(ProjectVO projectVO) throws Exception;
+
+    public ProjectVO getProjectPeriod(ProjectVO vo) throws Exception;
+
+    public Map<String, Object> getProjectResult(ProjectVO projectVO) throws Exception;
+
+    public void finishProject(Map<String, Object> map) throws Exception;
+
+    public ProjectVO selectProject(ProjectVO vo) throws Exception;
+
+    public List<ProjectVO> finishList(MemberVO vo) throws Exception;
+
+
+}

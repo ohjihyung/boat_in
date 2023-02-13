@@ -1,0 +1,61 @@
+package kr.or.ddit.controller.project.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.ProjectNoticeMapper;
+import kr.or.ddit.vo.ProjectNoticeVO;
+
+@Service
+public class ProjectNoticeServiceImpl implements IProjectNoticeService {
+
+	@Inject
+	private ProjectNoticeMapper mapper;
+	@Inject
+	private CommonDao dao;
+	
+	
+	@Override
+	public int insert(ProjectNoticeVO projectNoticeVO) throws Exception {
+		return mapper.insert(projectNoticeVO);
+	}
+
+	@Override
+	public List<ProjectNoticeVO> selectList(String proNo) throws Exception {
+		return mapper.selectList(proNo);
+	}
+
+	@Override
+	public ProjectNoticeVO select(String proNoticeNo) throws Exception {
+		return mapper.select(proNoticeNo);
+	}
+
+	@Override
+	public int update(ProjectNoticeVO projectNoticeVO) throws Exception {
+		return mapper.update(projectNoticeVO);
+	}
+
+	@Override
+	public void delete(ProjectNoticeVO vo) throws Exception {
+		dao.delete("deleteProjectNotice", vo);
+	}
+
+	@Override
+	public List<ProjectNoticeVO> selectJoinMemberList(String proNo) throws Exception {
+		return mapper.selectJoinMemberList(proNo);
+	}
+
+	@Override
+	public void updateRealPath(ProjectNoticeVO noticeVO) {
+		mapper.updateRealPath(noticeVO);
+		
+	}
+
+
+
+
+}

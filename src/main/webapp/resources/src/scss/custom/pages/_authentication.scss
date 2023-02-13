@@ -1,0 +1,33 @@
+// 
+// authentication.scss
+//
+
+.authentication-bg.enlarged {
+    min-height: 100px;
+}
+
+
+// authentication pages background
+body.authentication-bg {
+    background-color: $auth-bg;
+    background-size: cover;
+    background-position: center;
+}
+
+.authentication-bg-img {
+    background-image: url("../images/bg-countdown.jpg");
+  }
+
+// Logout page
+.logout-icon {
+    width: 140px;
+}
+
+.auth-logo {
+    .logo-light {
+        display: $logo-auth-light-display !important;
+    }
+    .logo-dark {
+        display: $logo-auth-dark-display !important;
+    }
+}

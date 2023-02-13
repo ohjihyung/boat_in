@@ -1,0 +1,112 @@
+package kr.or.ddit.handler;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import kr.or.ddit.mapper.AlarmMapper;
+import kr.or.ddit.vo.AlarmVO;
+
+
+public class AlarmHandler extends TextWebSocketHandler {
+
+	@Inject
+	AlarmMapper mapper;
+
+	// 로그인한 사람들 담아둘 리스트   <아이디 :  소켓 >
+ 	private static Map<String, WebSocketSession> alarmList = new HashMap<String, WebSocketSession>();
+
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		System.out.println("ws-alarm 잘들어옴!");
+
+	}
+
+	@Override
+	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		JSONObject returnMessage = new JSONObject();
+		//parser 가져오기
+		JSONParser parser = new JSONParser();
+		JSONObject obj = (JSONObject)parser.parse(message.getPayload());
+
+		String myAlarmId = obj.get("myAlarmId").toString();
+		String alarmContent = obj.get("alarmContent").toString();
+		String alarmType = obj.get("alarmType").toString();
+		String receiver = obj.get("receiver").toString();
+		String myWebSession = session.getId();
+		String data = obj.get("inData").toString();
+
+
+		System.out.println("myAlarmId : " + myAlarmId);
+		System.out.println("myWebSession : " + myWebSession);
+		System.out.println("alarmContent : " + alarmContent);
+		System.out.println("alarmType : " + alarmType);
+		System.out.println("receiver : " + receiver);
+		System.out.println("data : " + data);
+		System.out.println("---------------------------------------------------");
+		int cnt = 1;
+
+		if(alarmType.equals("refresh")) {
+			alarmList.put(myAlarmId, session);
+			Iterator<String> keys = alarmList.keySet().iterator();
+			while(keys.hasNext()) {
+				String key = keys.next();
+				System.out.println( cnt++ +"번 아이디 : "+ key.toString()+"현재 들어있는 세션 " + alarmList.get(key).getId().toString());
+				System.out.println("--------------------------------------------------------------------------------------");
+			}
+		}
+		//채팅에 초대되었을때의 알람
+		if(alarmType.equals("inviteChat")) {
+			//alr_t_no == 1  채팅 초대
+			//alr_t_no == 2  댓글 알림
+			//alr_t_no == 3  좋아요 알림
+			//alr_t_no == 4  프로젝트 관련 알림
+			//alr_t_no == 5  프로젝트 초대
+			//alr_t_no == 6  쪽지 알람
+			AlarmVO alarmVO = new AlarmVO();
+			alarmVO.setAlrTNo("1");
+			alarmVO.setAlarmContent(alarmContent);
+			alarmVO.setAlarmSender(myAlarmId);
+			alarmVO.setMemberId(receiver);
+			mapper.insertAlarm(alarmVO); // 알림 DB 삽입
+			String sender = mapper.getMemNameById(myAlarmId); // 보내는 사람 이름 빼올라고
+			System.out.println(sender);
+
+			//초대되는 방번호 pk 가져오는 메서드
+
+
+			// ~님이 채팅방에 초대하셧습니다.
+			returnMessage.put("sender", sender);
+			returnMessage.put("receiver", receiver);
+			returnMessage.put("alarmContent", alarmContent);
+			returnMessage.put("roomNM", data);
+			returnMessage.put("alarmType", "1");
+
+
+			Iterator<String> keys = alarmList.keySet().iterator();
+			while(keys.hasNext() ){
+				String key = keys.next();
+				if(key.equals(receiver)) {
+					alarmList.get(key).sendMessage(new TextMessage(returnMessage.toJSONString()));
+				}
+			}
+		} //end of inviteChat
+	}
+
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+
+	}
+
+
+
+}

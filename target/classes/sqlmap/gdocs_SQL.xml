@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.GdocsMapper">
+	
+	
+	<insert id="insertDocs" parameterType="String">
+		INSERT INTO GDOCS(GDOC_NO,PRO_NO) VALUES ('GDOCS'||GDOCS_SEQ.NEXTVAL , #{proNo})
+	</insert>
+	
+	<update id="certifyDocs" parameterType="gdocsVO">
+		UPDATE GDOCS 
+		SET 
+			 SHEET_ID = #{sheetId}
+			,WORD_ID = #{wordId}
+			,GDOC_AUTH = #{gdocAuth}
+		WHERE PRO_NO = #{proNo}
+	</update>
+	
+	<select id="selectOne" parameterType="String" resultType="gdocsVO">
+		SELECT * FROM GDOCS WHERE PRO_NO = #{proNo}
+	</select>
+
+</mapper>

@@ -1,0 +1,1896 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<!-- 피커 -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://npmcdn.com/flatpickr/dist/themes/dark.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+
+<!-- 풀캘린더 -->
+<link
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css"
+    rel="stylesheet" />
+
+<!-- 티피 -->
+<link rel="stylesheet"
+    href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+
+<style>
+  .parent {
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    white-space: nowrap;
+  }
+  .container {
+    min-width: 200px;
+    min-height: 400px;
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    background-color: #b5c1dc57;
+    border-radius: 8px;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .grid-item1 {
+    grid-row-start: 1;
+    grid-row-end: 4;
+  }
+  .grid-item2 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  /* 인풋 테두리 지우기 */
+  .input-K {
+    border: 0px solid black;
+  }
+  .input-update-K {
+    border: 1px solid gray;
+  }
+  .input-K:focus {
+    outline: 0px solid gray;
+  }
+  .input-no-K {
+    border: 0px solid black;
+  }
+  .input-no-K:focus {
+    outline: 0px solid gray;
+  }
+</style>
+<!-- content-page div가 있어야 내용이 출력된다. -->
+<div class="content-page">
+  <div class="content">
+    <!-- Start Content-->
+    <div class="container-fluid">
+      <!-- start page title -->
+      <div class="row">
+        <div class="col-12">
+          <div>
+          
+            <ul class="nav nav-tabs nav-bordered nav-justified">
+            
+                <li class="nav-item">
+                    <a href="#home-b2" onclick="pageTap('home')" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                        홈
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#profile-b2" onclick="pageTap('workList')" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                        목록
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('kanban')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        칸반보드
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('calendar')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        캘린더
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('dataRoom')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        자료실
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('gdocs')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        공유문서 작성
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('notice')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        통계자료
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('notice')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        공지사항
+                    </a>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- end page title -->
+      <div id="kanban-menu">
+      <!-- 칸반일 경우 추가 메뉴 들어감.-->
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="insertModalOpen()"
+      >
+        일감 생성하기
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="categoryModalOpen()"
+      >
+        <i class="fas fa-plus"></i> 카테고리 생성하기
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="modeChange('project')"
+      >
+        칸반보드 - 프로젝트
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="modeChange('personal')"
+      >
+        칸반보드 - 개인
+      </button>
+      </div>
+      <!-- 테스트용 디테일 모달 -->
+      <div>
+        <button type="button" class="btn btn-secondary" onclick="detailModalShow_K()">새로운 상세보기</button>
+     </div>
+      <!-- 테스트용 디테일 모달 end-->
+      <!-- 작업추가 end -->
+      <div class="row justify-content-center spa">
+        <!-- end col-->
+      </div>
+      <!-- end row -->
+      <div>
+      
+      </div>
+    </div>
+    <!-- container -->
+  </div>
+  <!-- content -->
+</div>
+
+<!-- 모달들 -->
+<!-- Add New Event MODAL -->
+<div class="modal fade" id="event-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header py-3 px-4 border-bottom-0 d-block">
+        <button
+          type="button"
+          class="btn-close float-end"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="insertModalClose()"
+        ></button>
+        <h5 class="modal-title" id="modal-title">작업 추가</h5>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-0">
+        <form
+          class="needs-validation"
+          name="event-form"
+          id="form-event"
+          novalidate
+        >
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Work Title</label>
+                <input
+                  class="form-control"
+                  placeholder="작업명을 입력해주세요."
+                  type="text"
+                  name="title"
+                  id="event-title"
+                  required
+                />
+                <div class="invalid-feedback">작업 입력은 필수입니다.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Content</label>
+                <input
+                  class="form-control"
+                  placeholder="내용을 입력해주세요."
+                  type="text"
+                  name="worker"
+                  id="event-content"
+                  required
+                />
+                <div class="invalid-feedback">내용을 입력해주세요.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-select-category"
+                  required
+                >
+                  <option value="active" selected>미설정</option>
+                  <option value="warning">DB</option>
+                  <option value="info">FRONT</option>
+                  <option value="success">BACK</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event category
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Worker</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-worker"
+                  required
+                >
+                  <option value="미배정" selected>미배정</option>
+                  <option value="김진호">김진호</option>
+                  <option value="허나훔">허나훔</option>
+                  <option value="채진영">채진영</option>
+                  <option value="송서영">송서영</option>
+                  <option value="오지형">오지형</option>
+                  <option value="배지영">배지영</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event Worker
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+
+                <div style="display: flex; justify-content: space-around">
+                  <div class="col-6">
+                    <label class="form-label" for="birth">시작일</label>
+                    <input
+                      class="form-control"
+                      id="birth"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{birth2}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="birth2">종료일</label>
+                    <input
+                      class="form-control"
+                      id="birth2"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{birth2}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div class="invalid-feedback">
+                  Please select a valid event day
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">File</label>
+                <input
+                  class="form-control"
+                  id="event-file"
+                  name="uploadFileAjax"
+                  type="file"
+                  multiple
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6 col-4">
+              <button type="button" class="btn btn-danger" id="btn-reset-event">
+                Reset
+              </button>
+            </div>
+            <div class="col-md-6 col-8 text-end">
+              <button
+                type="button"
+                class="btn btn-light me-1"
+                id="btnModalClose"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-success" id="btn-save-event">
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- end modal-content-->
+  </div>
+  <!-- end modal dialog-->
+</div>
+<!-- end modal-->
+
+<!-- Category 추가 모달 -->
+<div
+  id="info-alert-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <i class="dripicons-information h1 text-info"></i>
+          <h4 class="mt-2">Add Category</h4>
+          <p class="mt-3">
+            <input
+              class="form-control"
+              id="category-name"
+              type="text"
+              placeholder="Enter Category Name."
+              required
+            />
+          </p>
+          <!-- 색상 선택 드롭박스 -->
+          <div class="dropdown" style="margin: 10px">
+            <input type="hidden" id="dropBox-colorCode" value="#ECF2F5" />
+            <button
+              class="btn btn-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <font id="dropBox-name">색상</font
+              ><i class="mdi mdi-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="javascript: selectColor('light')"
+                ><font class="text-dark color-light">색상</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('primary')"
+                ><font class="text-primary color-primary">파랑</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('success')"
+                ><font class="text-success color-success">연두</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('info')"
+                ><font class="text-info color-info">하늘</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('warning')"
+                ><font class="text-warning color-warning">주황</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('danger')"
+                ><font class="text-danger color-danger">빨강</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('dark')"
+                ><font class="text-dark color-dark">검정</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('purple')"
+                ><font class="text-purple color-purple">보라</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('pink')"
+                ><font class="text-pink color-pink">분홍</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColor('secondary')"
+                ><font class="text-secondary color-secondary">회색</font></a
+              >
+            </div>
+          </div>
+          <!-- 드롭박스 끝 -->
+          <button
+            id="category-add"
+            onclick="categoryModalInsert()"
+            type="button"
+            class="btn btn-primary waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            추가
+          </button>
+          <button
+            id="category-cancel"
+            onclick="categoryModalClose()"
+            type="button"
+            class="btn btn-danger waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- 카테고리 수정 모달 -->
+<div
+  id="category-update-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <i class="dripicons-information h1 text-info"></i>
+          <h4 class="mt-2">Update Category</h4>
+          <p class="mt-3">
+            <input
+              class="form-control"
+              id="category-name-update"
+              type="text"
+              placeholder="Enter Category Name."
+              required
+            />
+          </p>
+          <!-- 색상 선택 드롭박스 -->
+          <div class="dropdown" style="margin: 10px">
+            <input
+              type="hidden"
+              id="dropBox-colorCode-update"
+              value="#ECF2F5"
+            />
+            <!-- 수정버튼 누르면 여기에 피케이값 저장됨 -->
+            <input type="hidden" id="dropBox-twCategoryNo-update" value="" />
+            <button
+              class="btn btn-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton-update"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <font id="dropBox-name-update">색상</font
+              ><i class="mdi mdi-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('light')"
+                ><font class="text-dark updateColor-light">색상</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('primary')"
+                ><font class="text-primary updateColor-primary">파랑</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('success')"
+                ><font class="text-success updateColor-success">연두</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('info')"
+                ><font class="text-info updateColor-info">하늘</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('warning')"
+                ><font class="text-warning updateColor-warning">주황</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('danger')"
+                ><font class="text-danger updateColor-danger">빨강</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('dark')"
+                ><font class="text-dark updateColor-dark">검정</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('purple')"
+                ><font class="text-purple updateColor-purple">보라</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('pink')"
+                ><font class="text-pink updateColor-pink">분홍</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('secondary')"
+                ><font class="text-secondary updateColor-secondary"
+                  >회색</font
+                ></a
+              >
+            </div>
+          </div>
+          <!-- 드롭박스 끝 -->
+          <button
+            id="category-update"
+            type="button"
+            onclick="categoryUpdate()"
+            class="btn btn-primary waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            수정
+          </button>
+          <button
+            id="category-update-cancel"
+            onclick="categoryUpdateModalClose()"
+            type="button"
+            class="btn btn-danger waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Detail MODAL -->
+<div class="modal fade" id="detail-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header py-3 px-4 border-bottom-0 d-block">
+        <button
+          type="button"
+          class="btn-close float-end"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="detailModalClose()"
+        ></button>
+        <h5 class="modal-title" id="modal-title">작업 수정</h5>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-0">
+        <form
+          class="needs-validation"
+          name="event-form"
+          id="form-event"
+          novalidate
+        >
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Work Title</label>
+                <input type="hidden" id="topWorkNo-detail" value=""/>
+                <input
+                  class="form-control"
+                  placeholder="작업명을 입력해주세요."
+                  type="text"
+                  name="title"
+                  id="detail-title"
+                  required
+                />
+                <div class="invalid-feedback">작업 입력은 필수입니다.</div>
+              </div>
+                <label class="form-label">Content</label>
+                <input
+                  class="form-control"
+                  placeholder="내용을 입력해주세요."
+                  type="text"
+                  name="worker"
+                  id="detail-content"
+                  required
+                />
+                <div class="invalid-feedback">내용을 입력해주세요.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="detail-select-category"
+                  required
+                >
+                  <option value="active" selected>미설정</option>
+                  <option value="warning">DB</option>
+                  <option value="info">FRONT</option>
+                  <option value="success">BACK</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event category
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Worker</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-worker"
+                  required
+                >
+                  <option value="미배정" selected>미배정</option>
+                  <option value="id-1">아이디1</option>
+                  <option value="id-2">아이디2</option>
+                  <option value="id-3">아이디3</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event Worker
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+
+                <div style="display: flex; justify-content: space-around">
+                  <div class="col-6">
+                    <label class="form-label" for="birth">시작일</label>
+                    <input
+                      class="form-control"
+                      id="topWorkStart-detail"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{topWorkStart-detail}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="birth2">종료일</label>
+                    <input
+                      class="form-control"
+                      id="topWorkEnd-detail"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{topWorkEnd-detail}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div class="invalid-feedback">
+                  Please select a valid event day
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">File</label>
+                <input
+                  class="form-control"
+                  id="event-file"
+                  type="file"
+                  multiple
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6 col-4">
+              <button type="button" class="btn btn-danger" id="btn-delete-detail" onclick="topWorkDelete()">
+                Delete
+              </button>
+            </div>
+            <div class="col-md-6 col-8 text-end">
+              <button
+                type="button"
+                class="btn btn-light me-1"
+                id="btnModalClose"
+                data-bs-dismiss="modal"
+                onclick="detailModalClose()"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-success" id="btn-save-detail" onclick="topWorkUpdate()">
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- end modal-content-->
+  </div>
+  <!-- end modal dialog-->
+</div>
+<!-- end modal-->
+
+<!-- detail Right modal content -->
+
+<div id="topWork-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-right" style="width: 800px;"><!-- 백그라운드 컬러 주면 뭔가 이상.. -->
+        <div class="modal-content">
+            <form action="" id="myFrm">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" onclick="detailModalHide_K()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="detail-modal-body">
+                  <input type="hidden" value="" id="hidden-topWorkNo" name="topWorkNo"/>
+                  <div class="mb-3 grid-item" id="" >
+                    <h1 id=""><input type="text" class="input-K" id="detail-topWorkTitle" name="topWorkTitle" value="" readonly/></h1> 
+                    <div id ="detail-subWorkList">관련 하위작업</div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="updateTopWork()">수정하기</button>
+                  </div>
+                  <div class="grid-container">
+                      <div class="grid-item1" >
+                          <div class="mb-3" id="detail-topWorkWorker">
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                          
+                          <div class="mb-3" id="detail-topWorkDate">
+                              <div>
+                                시작일 : <input type="text" class="input-K" id="detail-topWorkStart" name="topWorkStart" value ="" readonly/>
+                                <br/>
+                                종료일 : <input type="text" class="input-K" id="detail-topWorkEnd" name="topWorkEnd" value ="" readonly/>
+                              </div>
+                          </div>
+        
+                          <div class="mb-3" id="">
+                              <div>프로젝트 : <input type="text" class="input-no-K" id="detail-topWorkProject" class="" value="" readonly/></div>
+                          </div>
+        
+                          <div class="mb-3" id="detail-topWorkPosition">
+                              <div>종속 관계 : <input type="text" class="input-no-K" id="" class="" value="" readonly/></div>
+                          </div>
+        
+                          <div class="mb-3" id="">
+                              <div>중요도 : <input type="text" class="input-K" id="detail-topWorkImportance" name="topWorkImportance" class="" value="" readonly/></div>
+                          </div>
+        
+                          <div class="mb-3" id="">
+                              <div>상태 : <input type="text" class="input-K" id="detail-topWorkState" name="topWorkState" class="" value="" readonly/></div>
+                          </div>
+                          
+                          <div class="mb-3" id="">
+                              <div>내용 : <textarea rows="" cols="" class="input-K" id="detail-topWorkContent" name="topWorkContent"></textarea></div>
+                          </div>
+                          
+                        </form>
+                        
+                      </div>
+                      <!-- <a href="#" onclick="window.open('https://192.168.144.32', 'pop01', 'top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizable=no')">화상</a> -->
+                      <div class="grid-item" style="background-color: skyblue;">
+                          <div class="mb-3" id="detail-topWorkLog">
+                              <!-- 작업로그 -->
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                      </div>
+                      <div class="grid-item" style="background-color: skyblue;">
+                          <div class="mb-3" id="detail-topWorkFile">
+                              <!-- 첨부파일 -->
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                      </div>
+                      <div class="grid-item" style="background-color: skyblue;">
+                          <div class="mb-3" id="">
+                              <!-- 아직뭐넣을지모름 -->
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                      </div>
+                      <div class="grid-item2" style="background-color: skyblue;">
+                          <div class="mb-3" id="">
+                              <!-- 댓글 -->
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="mb-3" id="subWork-insert">
+                      <!-- 하위일감 생성-->
+                      <button type=button class="btn btn-secondary btn-sm" onclick="subWorkInputShow()">하위작업 추가하기</button>
+                      <div id="subWork-insert-target"></div>
+                  </div>
+                  
+                  <div id="subWorkInput" style="display: none;">
+                    <div> 작업자 선택 :
+                        <select class="form-select"
+                                id="sub-worker"
+                                required>
+                        </select>
+                    </div>
+                    <div> 하위 작업 내용 : 
+                        <input id="subwork-insert-content" class="form-control" type="text"/>
+                    </div>
+                    <div> 시작일 : 
+                        <input class="form-control" id="subStart" pattern="\d{4}-\d{2}-\d{2}"
+                          placeholder="" required th:field="*{subStart}" type="text" style="width: 40%" value=""/>
+                    </div>
+                    <div> 종료일 : 
+                        <input class="form-control" id="subEnd" pattern="\d{4}-\d{2}-\d{2}"
+                          placeholder="" required th:field="*{subEnd}" type="text" style="width: 40%" value=""/>
+                    </div>
+                    <div>
+                      첨부파일
+                      <input type="file" class="form-control">
+                    </div>
+                    <button type=button class="btn btn-secondary btn-sm" onclick="insertSubWork()">하위작업 등록</button>
+                  </div>
+                  <!-- 하위 일감 끝 -->
+
+                <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal" onclick="">수정하기</button>
+                <button type="button" class="btn btn-danger btn-sm"
+                    onclick="detailModalHide_K()" data-bs-dismiss="modal">모달 닫기</button> <!-- data-bs-dismiss="modal" 가 모달 닫는 속성-->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 구글 -->
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+<!-- 드래그 -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+<!-- axios -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> topbar로 이동함.-->
+
+<!-- calendar.jsp 관련 -->
+<!-- 풀캘린더 -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js"></script>
+<!-- fullcalendar 언어 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js"></script>
+<!-- 풀캘린더 데이트 포맷 -->
+<script class="cssdesk" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js" type="text/javascript"></script> 
+
+
+<script>
+function pop() {
+	window.onload("index.html", "화상채팅");
+}
+const URLSearch = new URLSearchParams(location.search);
+var proNo = "";
+var currentTap_PH_K = "";
+
+changeTitle(); //여기서 프로젝트 번호 들어감
+pageTap('home');
+
+
+var mode = "";
+
+function pageTap(arg) {
+    //칸반 관련 메뉴는 칸반 들어가야만 보이도록 설정
+    const kanbanMenu_K = document.querySelector("#kanban-menu");
+    kanbanMenu_K.style.display = "none";
+    //console.log(arg);
+    if (arg == "kanban") {
+        currentTap_PH_K = "kanban";
+        kanbanMenu_K.style.display = "block";
+        $(".spa").load("/project/kanban_spa");
+    }
+    
+    if (arg == "home") {
+        currentTap_PH_K = "home";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/home_spa");
+    }
+    
+    if (arg == "calendar") {
+        currentTap_PH_K = "calendar";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/calendar_spa"); //spa 클래스에 jsp를 로드해준다!
+    }
+    
+    if (arg == "dataRoom") {
+        currentTap_PH_K = "dataRoom";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/dataRoom_spa"); //spa 클래스에 jsp를 로드해준다!
+    }
+    
+    if (arg == "gdocs") {
+        currentTap_PH_K = "gdocs";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/gdocs_spa"); 
+    }
+    
+    if (arg == "workList") {
+        //안쓰니까 일단 비우게
+        document.querySelector(".spa").innerHTML = "";
+    }
+}
+//김진호
+//모달-업데이트
+//수정버튼 클릭시 인풋 리드온리 해제
+//다시 클릭시 저장
+function updateTopWork() {
+    let arrs = document.querySelectorAll(".input-K");
+    //console.log("arrs", arrs);
+    
+    if (arrs.length < 1) {
+    	arrs = document.querySelectorAll(".input-update-K");
+    	arrs.forEach(arr => {
+            arr.readOnly = true;
+            arr.className = "input-K";
+        });
+    	//newlName_O = document.querySelector("#detail-topWorkProject").value;
+    	//console.log("수정된 이름", newlName_O);
+    	//여기가 저장하는 곳
+    	
+    	//console.log("formData", formData);
+    	
+    	/* 
+    	const topWorkVO = {};
+    	topWorkVO.topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+    	topWorkVO.topWorkTitle = document.querySelector("#detail-topWorkTitle").value;
+    	topWorkVO.topWorkStart = document.querySelector("#detail-topWorkStart").value;
+    	topWorkVO.topWorkEnd = document.querySelector("#detail-topWorkEnd").value;
+    	topWorkVO.topWorkImportance = document.querySelector("#detail-topWorkImportance").value;
+    	topWorkVO.topWorkContent = document.querySelector("#detail-topWorkContent").value;
+    	 */
+    	 //*********************************************************
+    	const formData = new FormData(document.querySelector("#myFrm"));
+    	const topWorkVO = {};
+    	formData.forEach((value, key) => topWorkVO[key] = value);
+    	topWorkVO.topWorkStart = topWorkVO.topWorkStart.replace(" ", "T");
+    	topWorkVO.topWorkEnd = topWorkVO.topWorkEnd.replace(" ", "T");
+    	 //*********************************************************
+    	console.log("폼데이터를 객체화 : ", topWorkVO);
+    	 
+    	axios
+    	  .post("/kanban/topWorkUpdate_K", topWorkVO)
+    	  .then((res) => {
+    		  
+    	  });
+    	return;
+    }
+    //입력을 위해 리드온리 풀어주는 곳
+    arrs.forEach(arr => {
+    	arr.readOnly = false;
+    	arr.className = "input-update-K";
+    });
+   	//originalName_O = document.querySelector("#detail-topWorkProject").value;
+   	//console.log("원래 이름 : ", originalName_O);
+}
+
+
+//김진호
+//모달-디테일
+//디테일에서 수정하기 누르면 -> 모달 닫히면 안되고 내용만 다시 그려져야함
+//개인 칸반부터 바꾸자
+function detailModalShow_K() {
+    const modal = document.querySelector("#topWork-detail-modal");
+    modal.classList.add("show");
+    modal.style.display = "block";
+}
+
+function detailModalHide_K() {
+    const modal = document.querySelector("#topWork-detail-modal");
+    modal.classList.remove("show");
+    modal.style.display = "none";
+    document.querySelector("#subWork-insert-target").innerHTML = "";
+}
+
+function subWorkInputShow() {
+    //버튼 클릭시 담당자만 클릭할 수 있다는 예외처리 필요.
+    const view = document.querySelector("#subWorkInput").style.display;
+    
+    if (view == "block") { //두번클릭시 닫힘
+      document.querySelector("#subWorkInput").style.display = "none";
+      return;
+    }
+    
+    document.querySelector("#subWorkInput").style.display = "block";
+    document.querySelector("#subwork-insert-content").focus();
+}
+
+function insertSubWork() {
+    const topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+    const topWorkRNo = document.querySelector("#sub-worker").value;
+    const subWorkContent = document.querySelector("#subwork-insert-content").value;
+    const subWorkStart = document.querySelector("#subStart").value.replace(" ", "T");
+    const subWorkEnd = document.querySelector("#subEnd").value.replace(" ", "T");
+    //const subWorkFile = ""; 지형이 쓸 것
+    const subWorkVO = {
+      topWorkNo,
+      topWorkRNo,
+      subWorkContent,
+      subWorkStart,
+      subWorkEnd
+    };
+    //console.log(subWorkVO);
+    if (subWorkContent == "" || subWorkContent == null) {
+        alert("내용을 입력하세요");
+        return;
+    }
+    
+    axios
+      .post("/subWork/subWorkInsert", subWorkVO)
+      .then((res) => {
+         console.log(res); 
+      });
+    
+}
+
+function subWorkSave(topWorkNo) {
+    //console.log("save : ", topWorkNo);
+}
+
+//멤버 프로필용
+function memberStateOverlay_K(state){
+    if (state == "1" || state == "0") {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;" class="mdi mdi-circle h3 text-success" title="접속"></i>`;
+    } else if (state == "2" ) {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;color:#ffd400" class="mdi mdi-circle h3 text" title="부재중"></i>`;
+    }else if (state == "3" ) {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;" class="mdi mdi-circle h3 text-secondary" title="비접속"></i>`;
+    } 
+}
+
+//김진호
+//모달-디테일
+function detailTopWork_K(topWorkNo) {
+    //console.log("새로운 디테일 눌렸다. topWorkNo : ", topWorkNo);
+    const titleInput = document.querySelector("#detail-topWorkTitle");
+    const workerDiv = document.querySelector("#detail-topWorkWorker");
+    const projectInput = document.querySelector("#detail-topWorkProject");
+    const dateStart = document.querySelector("#detail-topWorkStart");
+    const dateEnd = document.querySelector("#detail-topWorkEnd");
+    const stateInput = document.querySelector("#detail-topWorkState");
+    const importanceInput = document.querySelector("#detail-topWorkImportance");
+    const contentTextArea = document.querySelector("#detail-topWorkContent");
+    const logDiv = document.querySelector("#detail-topWorkLog");
+    const fileDiv = document.querySelector("#detail-topWorkFile");
+    const subWorkDiv = document.querySelector("#subWork-insert");
+    //종속관계 추가해야함
+    //중요도 추가해야함
+    const topWorkVO = {
+      topWorkNo,
+    };
+    //모달 열기 전 채워주기
+    //1. pk로 데이터 가져오기
+    axios
+      .post("/kanban/topWorkDetail", topWorkVO)
+      .then((res) => {
+          console.log("디테일의데이터: ", res.data); //기존 vo + 프로젝트명까지 나옴. + 관계번호까지 추가 (멤버아이디는 여러명이면 에러. 삭제.)
+          const item = res.data;//디테일할 topWorkVO
+          document.querySelector("#hidden-topWorkNo").value = item.topWorkNo;
+          titleInput.value = item.topWorkTitle;
+          //workerDiv.innerHTML = `<div>담당자 - \${item.memberId}</div>`;
+          projectInput.value = item.proName;
+          //dateDiv.innerHTML = `<div>시작일 - \${item.topWorkStart.replace("T", " ")} 종료일 - \${item.topWorkEnd.replace("T", " ")}`;
+          dateStart.value = item.topWorkStart.replace("T", " ");
+          dateEnd.value = item.topWorkEnd.replace("T", " ");
+          stateInput.value = item.topWorkState;
+          importanceInput.value = item.topWorkImportance;//중요도는 추후 손 봐야함
+          contentTextArea.innerText = item.topWorkContent;
+          detailModalShow_K();
+          
+          //스피너를 보여주고 싶으니깐 의도적으로 모달쇼 밑에서 다시 처리해주자
+          //순서 : 0. 담당자 1. 로그 2. 첨부파일 3. 댓글
+          //0. 담당자 -> 프로필 이미지로 표시해줌.
+          axios
+            .post("/kanban/selectMemberList", item)
+            .then((res) => {
+                console.log("멤버 : ", res);
+                const memberList = res.data;
+                let txt = `작업자 : <div class="list-group list-group-horizontal" id="teamMemberPrint">`;
+                let selectText = ``;
+                //여기서 하위 작업자 셀렉트박스도 채우기
+                for (member of memberList) {
+                  //참가한 멤버리스트로 멤버 조회하기(프로필 사진을 위해..)
+                  axios
+                    .post("/member/selectMember", member)
+                    .then((rs) => {
+                      const memberVO = rs.data;
+                      //console.log("프로필멤버 : ", memberVO);
+                      txt += `<a href='#' class='list-group-item list-group-item-action'><div class='d-flex align-items-center pb-1' id='tooltips-container' style="position:relative!important">`;
+                      if (memberVO.memberPic == null) {
+                          txt += `<img src="${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+                      } else {
+                          txt += `<img src="${pageContext.request.contextPath }\${memberVO.memberPic}" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+                      }
+                      
+                      txt += memberStateOverlay_K(memberVO.memberState);
+                      txt += `<div class="w-100 ms-2">`;
+                      txt += `    <h5 class="mb-1">\${memberVO.memberName}</h5>`;
+                      txt += `</div>`;
+                      txt += `</div>`;
+                      txt += `</a>`;
+                      workerDiv.innerHTML = txt;
+                    });
+                  
+                  selectText += `<option value="\${member.topWorkRNo}">\${member.memberId}</option>`; //value는 관계번호
+                }
+                
+                document.querySelector("#sub-worker").innerHTML = selectText;
+            });
+          //로그
+          axios
+            .post("/kanban/logList", topWorkVO)
+            .then((res) => {
+                //console.log(res.data); log 객체 리스트
+                const logList = res.data;
+                let text = ``;
+                
+                for (logItem of logList) {
+                    text += `<div>\${logItem.proLogContent}</div>`;
+                }
+                
+                logDiv.innerHTML = text;
+            });
+          //첨부파일
+          axios
+            .post("/selectFile", item)
+            .then((res) => {
+                //여기서 목록 조회
+                console.log(res);
+                const data = res.data;
+                let text = ``;
+                
+                for (file of data) {
+                  text += `<div>`;
+                  text += `  <a href="javascript:fileDown_O('\${file.fileRealName}', '\${file.filePath}')">\${file.fileRealName}</a>`;
+                  text += `</div>`; 
+                }
+                
+                fileDiv.innerHTML = text;
+            });
+          //관련 하위작업
+          axios
+            .post("/subWork/subWorkList", item)//item은 디테일 할 topWorkVo
+            .then((res) => {
+                //console.log("하위작업", res);
+                const detailSubWorkList = document.querySelector("#detail-subWorkList");
+                const subWorkList = res.data;
+                let subText = `관련 하위 작업 - `;
+                
+                if (subWorkList < 1) {
+                    //하위작업이 없을 경우
+                    subText += `하위 작업 없음.`;
+                } else {
+                    //하위작업이 있을 경우
+                    for (subWork of subWorkList) {
+                        subText += `<a href=#>\${subWork.subWorkContent} </a>`;
+                    }
+                }
+                
+                detailSubWorkList.innerHTML = subText;
+            });
+            
+      });
+
+}
+//지형이가 파일 다운로드 할 때 쓸 함수
+function fileDown_O(realName, path) {
+    console.log("realName", realName);
+    console.log("path", path);
+}
+
+
+//김진호
+//Worker를 멤버리스트로 진짜로 받기
+//1. 전체 멤버리스트로 받기 -> 2. 초대 완성되면 해당 프로젝트 참가인원만 받기
+//일단 아이디로 표시해주기
+renderWorkerList_K();
+
+function renderWorkerList_K() {
+    const workerList = document.querySelector("#event-worker");
+    //console.log("워커리스트 : ", workerList);
+    axios
+      .post("/project/memberList")
+      .then((res) => {
+         const memberList = res.data;
+         console.log("멤버리스트 : ", memberList);
+         let text = "";
+         
+         text += `<option value="미배정" selected>미배정</option>`;
+         for (item of memberList) {
+             text += `<option value="\${item.memberId}">\${item.memberId}</option>`;
+         }
+         
+         workerList.innerHTML = text;
+      });
+}
+var beforeCategory = "";
+
+
+//칸반에서 프로젝트 or 개인 선택시 실행되는 함수
+function modeChange(arg) {
+    mode = arg;
+    kanbanRender(arg);
+}
+
+var COLORS = {};
+COLORS.LIGHT = "#ECF2F5";
+COLORS.PRIMARY = "#338CD4";
+COLORS.SUCCESS = "#78C350";
+COLORS.INFO = "#45BBE0";
+COLORS.WARNING = "#FF9800";
+COLORS.DANGER = "#F7531E";
+COLORS.DARK = "#333A46";
+COLORS.PURPLE = "#8892D6";
+COLORS.PINK = "#F06292";
+COLORS.SECONDARY = "#6C757D";
+
+updateSelectBar();
+function updateSelectBar() {
+    const selectBar = document.querySelector("#event-select-category");
+    const selectBarDetail = document.querySelector("#detail-select-category");
+    //proNo를 받아와야하는데..일단 전체 불러오기로 하자
+    axios
+      .post("/kanban/categoryList?proNo=" + proNo)
+      .then((res) => {
+            const selectOptions = res.data;
+            //console.log(selectOptions);
+            let text = "";
+            let count = 1;
+            for (item of selectOptions) {
+                
+                if (count == 1) {
+                    text += `<option value="\${item.twCategoryNo}" selected>\${item.twCategoryName}</option>`;
+                } else {
+                    text += `<option value="\${item.twCategoryNo}">\${item.twCategoryName}</option>`;
+                }
+                
+                count ++;
+            }
+            
+            selectBar.innerHTML = text;
+            selectBarDetail.innerHTML = text;
+      });
+}
+
+
+function detailOpen(topWorkNo) {
+    //console.log("탑워크 피케이 : ", topWorkNo);
+    const obj = {
+      topWorkNo,
+    }
+    
+    axios
+      .post("/kanban/topWorkDetail", obj)
+      .then((res) => {
+            //console.log(res.data);
+            detailModalOpen(res.data);
+      });
+}
+function topWorkUpdate() {
+    const obj = {};
+    obj.proNo = proNo;
+    obj.topWorkNo = document.querySelector("#topWorkNo-detail").value;
+    obj.topWorkTitle = document.querySelector("#detail-title").value;
+    obj.topWorkContent = document.querySelector("#detail-content").value;
+    obj.topWorkStart = document.querySelector("#topWorkStart-detail").value.replace(" ", "T");
+    obj.topWorkEnd = document.querySelector("#topWorkEnd-detail").value.replace(" ", "T");
+    obj.twCategoryNo = document.querySelector("#detail-select-category").value;
+    
+    // ojh 오지형  상위작업 변경시 해당 파일 추가나, 상위작업 이름변경  0106
+    //console.log("업데이트 오지형 데이터 :",obj);
+ 
+    axios
+      .post("/kanban/topWorkUpdate", obj)
+      .then((res) => {
+          //console.log(res);
+          //디테일에서 업데이트 성공 -> 모달 닫고 렌더링
+          detailModalClose();
+          kanbanRender();
+          topworkUpdate_O(obj); //ojh 수정할시 진짜 폴더랑 이름 수정 
+      });
+}
+
+//OJH  상위작업 변경시 해당 파일 추가나, 상위작업 이름변경  0106
+function topworkUpdate_O(obj){
+	console.log("topworkUpdate_O", obj);
+	console.log("topWorkNo : ", obj.topWorkNo);
+	console.log("topWorkTitle", obj.topWorkTitle);
+	console.log("twCategoryNo", obj.twCategoryNo);
+	
+	$.ajax({
+		url : '/topworkUpdate_O',
+		method : 'POST',
+    	dataType : 'text',
+    	contentType: "application/json; charset=UTF-8",
+    	data : JSON.stringify(obj),
+    	success : function(res){
+    		console.log(res);
+    	}
+	});
+}                              
+
+
+function topWorkDelete() {
+    const obj = {};
+    obj.topWorkNo = document.querySelector("#topWorkNo-detail").value;
+    
+    if (!confirm("정말 삭제하시겠습니까?")) {
+        return;
+    }
+    
+        console.log(obj);
+        //OJH 상위작업 삭제시 해당하는 파일 삭제여부 설정하기 
+        $.ajax({
+            url : '/topWorkDelFile',
+            method : 'POST',
+            data : {topWorkNo : obj.topWorkNo},
+            dataType : 'text',
+            success : function(result){
+                console.log(result);
+            }
+        });
+    
+    axios
+      .post("/kanban/topWorkDelete", obj)
+      .then((res) => {
+          //console.log(res);
+          //디테일에서 삭제 성공 -> 모달 닫고 렌더링
+          detailModalClose();
+          //kanbanRender();
+          pageTap(currentTap_PH_K);
+      });
+    
+}
+
+function detailModalOpen(topWorkVO) {
+  //console.log(topWorkVO);
+  //파라미터로 받은 객체로 값 채우기
+  document.querySelector("#topWorkNo-detail").value = topWorkVO.topWorkNo;
+  document.querySelector("#detail-title").value = topWorkVO.topWorkTitle;
+  document.querySelector("#detail-content").value = topWorkVO.topWorkContent;
+  document.querySelector("#topWorkStart-detail").value = topWorkVO.topWorkStart.replace("T", " ");
+  document.querySelector("#topWorkEnd-detail").value = topWorkVO.topWorkEnd.replace("T", " ");
+  document.querySelector("#detail-select-category").value = topWorkVO.twCategoryNo;
+  
+  
+  document.querySelector("#detail-modal").classList.add("show");
+  document.querySelector("#detail-modal").style.display = "block";
+}
+
+function detailModalClose() {
+  //디테일모달같은 경우엔 굳이 값을 비워줄 필요가 없다.
+  document.querySelector("#detail-modal").classList.remove("show");
+  document.querySelector("#detail-modal").style.display = "none";
+}
+function selectColor(color) {
+  //console.log(color);
+  document.querySelector(
+    "#dropdownMenuButton"
+  ).className = `btn btn-\${color} dropdown-toggle`;
+  const selected = `.color-\${color}`;
+  const fontColor = document.querySelector(selected).innerText;
+  document.querySelector("#dropBox-name").innerText = fontColor;
+
+  //카테고리 추가시 색상코드 같이 보내기주기위한 색상값 저장
+  //console.log(color.toUpperCase());
+  let saveColor = "";
+  if (color.toUpperCase() == "LIGHT") saveColor = COLORS.LIGHT;
+  if (color.toUpperCase() == "PRIMARY") saveColor = COLORS.PRIMARY;
+  if (color.toUpperCase() == "SUCCESS") saveColor = COLORS.SUCCESS;
+  if (color.toUpperCase() == "INFO") saveColor = COLORS.INFO;
+  if (color.toUpperCase() == "WARNING") saveColor = COLORS.WARNING;
+  if (color.toUpperCase() == "DANGER") saveColor = COLORS.DANGER;
+  if (color.toUpperCase() == "DARK") saveColor = COLORS.DARK;
+  if (color.toUpperCase() == "PURPLE") saveColor = COLORS.PURPLE;
+  if (color.toUpperCase() == "PINK") saveColor = COLORS.PINK;
+  if (color.toUpperCase() == "SECONDARY") saveColor = COLORS.SECONDARY;
+
+  document.querySelector("#dropBox-colorCode").value = saveColor;
+  //console.log(document.querySelector("#dropBox-colorCode"));
+}
+
+function selectColorUpdate(color) {
+  //console.log(color);
+  document.querySelector(
+    "#dropdownMenuButton-update"
+  ).className = `btn btn-\${color} dropdown-toggle`;
+  const selected = `.updateColor-\${color}`;
+  const fontColor = document.querySelector(selected).innerText;
+  document.querySelector("#dropBox-name-update").innerText = fontColor;
+
+  //카테고리 추가시 색상코드 같이 보내기주기위한 색상값 저장
+  //console.log(color.toUpperCase());
+  let saveColor = "";
+  if (color.toUpperCase() == "LIGHT") saveColor = COLORS.LIGHT;
+  if (color.toUpperCase() == "PRIMARY") saveColor = COLORS.PRIMARY;
+  if (color.toUpperCase() == "SUCCESS") saveColor = COLORS.SUCCESS;
+  if (color.toUpperCase() == "INFO") saveColor = COLORS.INFO;
+  if (color.toUpperCase() == "WARNING") saveColor = COLORS.WARNING;
+  if (color.toUpperCase() == "DANGER") saveColor = COLORS.DANGER;
+  if (color.toUpperCase() == "DARK") saveColor = COLORS.DARK;
+  if (color.toUpperCase() == "PURPLE") saveColor = COLORS.PURPLE;
+  if (color.toUpperCase() == "PINK") saveColor = COLORS.PINK;
+  if (color.toUpperCase() == "SECONDARY") saveColor = COLORS.SECONDARY;
+
+  document.querySelector("#dropBox-colorCode-update").value = saveColor;
+  //console.log(document.querySelector("#dropBox-colorCode"));
+}
+
+function categoryUpdatePK(twCategoryNo) {
+  //수정버튼 클릭시 인풋히든에 pk 세팅
+  //console.log("피케이", twCategoryNo);
+  document.querySelector("#dropBox-twCategoryNo-update").value = twCategoryNo;
+  
+}
+
+function categoryUpdate() {
+    
+  //수정하기 버튼 클릭시 세팅 및 전송
+  const twCategoryName = document.querySelector(
+    "#category-name-update"
+  ).value;
+  console.log("twCategoryName",twCategoryName);
+  const twCategoryColor = document.querySelector(
+    "#dropBox-colorCode-update"
+  ).value;
+  const twCategoryNo = document.querySelector(
+    "#dropBox-twCategoryNo-update"
+  ).value;
+  //업데이트 객체 세팅
+  const obj = {
+    twCategoryName,
+    twCategoryColor,
+    twCategoryNo,
+    proNo,
+  };
+  
+  // 오지형  카테고리 이름 수정시 폴더 이름 변경 
+  console.log("카테고리 이전이름 :", beforeCategory);
+  console.log("카테고리 수정이름 :", twCategoryName);
+  console.log("프로젝트 번호 : ", proNo);
+  const fileobj_O = {
+          "beforeCategory" : beforeCategory,
+          "updateCategory" : twCategoryName,
+          "proNo" : proNo,
+          'twCategoryNo' : twCategoryNo
+  } 
+  
+ /*  $.ajax({
+      url : "/updateCategoryFileLocation",
+      type : "POST",
+      data : fileobj_O,
+      success : function(result){
+          //console.log(result);
+      }
+  }); // end of ajax */
+  
+  //console.log(obj);
+  //업데이트 전송
+  axios.post("/kanban/categoryUpdate", obj).then((res) => {
+    //console.log("카테고리 업데이트 성공");
+    kanbanRender();
+    categoryUpdateModalClose();
+  });
+}
+
+//우선 비동기로 목록을 불러와서 각각의 영역에 넣어줘야함
+//DB 연동해서 만든 후에 카테고리를 추가하는 기능을 만들어야함
+
+//피커
+var fp = flatpickr(document.getElementById("birth"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp2 = flatpickr(document.getElementById("birth2"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp3 = flatpickr(document.getElementById("topWorkStart-detail"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp4 = flatpickr(document.getElementById("topWorkEnd-detail"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+
+var subStart = flatpickr(document.getElementById("subStart"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var subEnd = flatpickr(document.getElementById("subEnd"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+//인서트용 모달
+var btnInsertModalClose = document.querySelector("#btnModalClose");
+var btnInsertModalReset = document.querySelector("#btn-reset-event");
+var btnInsertModalSave = document.querySelector("#btn-save-event");
+
+var insertModalOpen = (from, data) => {
+//console.log(from, data);
+if (from == "캘린더") {
+    const defaultTime = "T10:00";
+    
+    const topWorkStart = data.startStr + defaultTime;
+    const topWorkEnd = data.endStr + defaultTime;
+    //console.log(topWorkStart, topWorkEnd);
+    
+    document.querySelector("#birth").value = topWorkStart.replace("T", " ");
+    document.querySelector("#birth2").value = topWorkEnd.replace("T", " ");
+}
+//console.log("클래스리슽트?", document.querySelector("#event-modal"));
+document.querySelector("#event-modal").classList.add("show");
+document.querySelector("#event-modal").style.display = "block";
+};
+
+var insertModalClose = () => {
+//닫기 전 값 초기화해주기 필요
+document.querySelector("#event-modal").classList.remove("show");
+document.querySelector("#event-modal").style.display = "none";
+//닫을때 입력된 데이터 날려버리기
+insertModalReset();
+};
+
+var insertModalReset = () => {
+document.querySelector("#event-title").value = "";
+document.querySelector("#event-content").value = "";
+//document.querySelector("#event-select-category").value = "";
+document.querySelector("#birth").value = "";
+document.querySelector("#birth2").value = "";
+document.querySelector("#event-worker").value = "미배정";
+document.querySelector("#event-file").value = "";
+};
+
+btnInsertModalReset.addEventListener("click", () => {
+insertModalReset();
+});
+
+btnInsertModalClose.addEventListener("click", () => {
+insertModalClose();
+});
+
+btnInsertModalSave.addEventListener("click", (event) => {
+
+function insertFile(e){
+    // 일감생성하기 시 처리되는 파일  01/02 오지형
+    var formData_O = new FormData();
+    //const inputFile = document.querySelector("#event-file");
+    var inputFile = $("input[name='uploadFileAjax']");
+    //console.log("inputFile : ", inputFile); // <input type="file"> tag
+    var files = inputFile[0].files;
+
+    var tokworkNo_O = document.querySelector("#topWorkNo-detail").value;  // topworkNo 가 필요함 
+    console.log("tokworkNo_O",tokworkNo_O);
+    //console.log("files : ",files);
+    for(var i = 0; i < files.length; i++){
+        formData_O.append("uploadFile",files[i]);   
+     }
+    var twCategoryName = $("#event-select-category option:selected").text();
+    var topWorkTitle_O = document.querySelector("#event-title").value;
+    var twCategoryNo_O = document.querySelector("#event-select-category").value;
+    //console.log("twCategoryName",twCategoryName);
+    var userEmail_O = localStorage.getItem("id");
+    
+    let jsonData = JSON.stringify({ projectId: proNo, 
+                                    fileLocation :twCategoryName,
+                                    topWorkTitle : topWorkTitle_O,
+                                    twCategoryNo : twCategoryNo_O,
+                                    topWorkNo : e,
+                                    userEmail_O : userEmail_O
+                                });
+    console.log("jsonData :", jsonData);
+    formData_O.append("jsonData", jsonData);    
+
+    $.ajax({
+        url : '/uploadAjaxAction',
+        processData : false,
+        contentType : false,
+        data : formData_O,
+        type : 'POST',
+        dataType : 'json',
+        success : function(result){
+            //console.log("origin result",result);
+        }
+    }); // end of ajax 
+    console.log("원하는데이터 :", e);
+}
+
+
+const topWorkTitle = document.querySelector("#event-title").value;
+const topWorkContent = document.querySelector("#event-content").value;
+const twCategoryNo = document.querySelector("#event-select-category").value;
+const topWorkStart = document
+  .querySelector("#birth")
+  .value.replace(" ", "T");
+const topWorkEnd = document
+  .querySelector("#birth2")
+  .value.replace(" ", "T");
+const memberId = document.querySelector("#event-worker").value;
+//console.log("워커 : " + memId); 
+const obj = {
+  topWorkTitle,
+  topWorkContent,
+  twCategoryNo,
+  topWorkStart,
+  topWorkEnd,
+  proNo,
+  //topWorkState는 기본 0 -> 카테고리 이동시?
+  //topWorkLike도 기본값 0
+  //topWorkFile도 기본값 null인데 마이바티스에서 에러나니깐 서비스단에서 '0'으로 넣어줌.
+  //topWorkProgress도 기본값 0
+};
+//console.log("작업인서트될놈: ", obj);
+//axios는 제이슨 직렬화 하지않고 그냥 보내야함.
+//헤더 설정은 별도로 필요 없다.
+//const json = JSON.stringify(obj);
+//const config = {"Content-Type" : "application/json"};
+//console.log(obj);
+
+let topWorkNo = "";
+axios.post("/kanban/insert", obj)
+.then((response) => {
+  //console.log("new topWorkNo : ", response.data);
+  topWorkNo = response.data;
+  insertFile(topWorkNo);
+  //kanbanRender();
+  pageTap(currentTap_PH_K); //탭을 다시 불러오는 식으로 리렌더링..
+  insertModalClose();
+})
+.then((res) => { //인서트 됐으면 관계테이블에 인서트
+    if (memberId == "미배정") {
+        return;
+    }
+    
+    const topWorkRelationVO = {};
+    topWorkRelationVO.memberId = memberId;
+    topWorkRelationVO.topWorkNo = topWorkNo;
+    
+    axios
+      .post("/kanban/topWorkRelationInsert", topWorkRelationVO)
+      .then((res) => {
+        //성공!!! 근데 무조건 추가할게 아니라 조건문으로 담당자 배정 했을때만 인서트해야함
+          //console.log(res); 
+      });
+    
+});
+}); //endof modalOpen
+
+//카테고리 모달(인서트)
+var btnCategoryModalCansel = document.querySelector("#category-cancel");
+
+var categoryModalOpen = () => {
+document.querySelector("#info-alert-modal").classList.add("show");
+document.querySelector("#info-alert-modal").style.display = "block";
+};
+
+var categoryModalClose = () => {
+document.querySelector("#info-alert-modal").classList.remove("show");
+document.querySelector("#info-alert-modal").style.display = "none";
+};
+//카테고리 모달(업데이트)
+var categoryUpdateModalOpen = (evnet) => {
+//console.dir(event.target.previousSibling);
+document.querySelector("#category-name-update").value =
+  event.target.previousSibling.data;
+console.log("현제 카테고리 이름 : ",event.target.previousSibling.data); // 현제 값 찍기
+beforeCategory = event.target.previousSibling.data; // 수정전 카테고리 저장 
+document.querySelector("#category-update-modal").classList.add("show");
+document.querySelector("#category-update-modal").style.display = "block";
+};
+var categoryUpdateModalClose = () => {
+document.querySelector("#category-name-update").value = "";
+document.querySelector("#category-update-modal").classList.remove("show");
+document.querySelector("#category-update-modal").style.display = "none";
+};
+
+var categoryModalInsert = () => {
+      const twCategoryName = document.querySelector("#category-name").value;
+      const twCategoryColor = document.querySelector("#dropBox-colorCode").value;
+      //console.log(twCategoryName);
+      //console.log("인서트시 컬러", twCategoryColor);
+
+      const obj = {
+        twCategoryName,
+        twCategoryColor,
+        proNo,
+      };
+
+      axios.post("/kanban/categoryInsert", obj).then((response) => {
+        //console.log(response);
+        kanbanRender();
+        categoryModalClose();
+        updateSelectBar();
+      });
+    };
+
+
+function changeTitle() {
+    const SearchProNo = URLSearch.get("proNo");
+    
+    if ( SearchProNo == null) {
+        return;
+    } 
+    
+    proNo = SearchProNo;
+    document.title = "프로젝트 " + proNo;
+}
+
+
+
+function logInsert(map) {
+      axios.post("/kanban/logInsert", map).then((res) => {
+        //console.log(res);
+      });
+    }
+
+
+
+//==================== 구글관련시작 ================================
+var CLIENT_ID = '616281354554-lpmgnp2gmkaalfk8th0kbj77p0m720jg.apps.googleusercontent.com'; 
+var API_KEY = 'AIzaSyABuxJp6UPLwsSvSlF9lLHChKCB40EyRK0';
+var DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
+var DISCOVERY_SHHET = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+var SCOPES = 'https://www.googleapis.com/auth/documents';
+var SCOPES2 = 'https://www.googleapis.com/auth/spreadsheets';
+
+var tokenClient;
+var gapiInited = false;
+var gisInited = false;
+
+
+      /**
+       * Callback after api.js is loaded.
+       */
+      function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+      }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC,DISCOVERY_SHHET],
+        });
+        gapiInited = true;
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,SCOPES2,
+          callback: '', // defined later
+        });
+        gisInited = true;
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function googleAuthLogin_H() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw (resp);
+          }
+          
+          var title = $('#proName_H').val()
+          console.log("어스안 : "+ title)
+          creatSheet(title);
+          createDoc(title);
+          await alertTimer();
+          console.log("-------타이머끝 ")
+          setTimeout(() => {
+              updateDocs(); 
+              console.log("업데이트 ")
+              gdocsCheck();
+           }, 3000);
+          await removeAuthBtn_H();
+        };
+
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({prompt: 'consent'});
+        } else {
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({prompt: ''});
+        }
+      }
+
+        // gdocu 생성 함수
+       function createDoc(title) {
+            gapi.client.docs.documents.create({
+                resource: {title: title}
+              }).then(function (response) {
+                  var docId= response.result.documentId
+                  $('#docuId').val(docId)
+              })
+          }
+        // gsheet 생성
+      function creatSheet (title){
+      gapi.client.sheets.spreadsheets.create({
+          properties: {
+            title: title,
+          },
+        }).then(function(response){
+            var sheetId = response.result.spreadsheetId
+            $('#sheetId').val(sheetId)
+        })
+          
+      }
+    function removeAuthBtn_H(){
+        $('#authBtn').attr('type','hidden')
+    }
+
+    
+    //값 확인용 왓다갓다힘들어 
+    function checkValue_H(){
+         alertTimer()
+        
+    }
+    
+
+//==================== 구글 끝 ================================
+
+</script>

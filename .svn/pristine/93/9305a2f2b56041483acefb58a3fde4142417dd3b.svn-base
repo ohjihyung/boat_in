@@ -1,0 +1,68 @@
+package kr.or.ddit.controller.blike;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.controller.blike.service.IBlikeService;
+import kr.or.ddit.controller.devin.service.IDevinService;
+import kr.or.ddit.vo.BlikeVO;
+import kr.or.ddit.vo.DevinComentVO;
+import kr.or.ddit.vo.DevinVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/blike")
+public class BlikeController {
+	
+	@Inject
+	private IDevinService devinService;
+	
+	@Inject
+	private IBlikeService service;
+	
+	@PostMapping(value = "/insertLike", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String InsertLike (@RequestBody BlikeVO vo) throws Exception {
+		List<BlikeVO> likeList = new ArrayList<BlikeVO>();
+		likeList = service.selectList(vo);
+		
+		String data = "";
+		if(likeList.size() != 0) { // 같은게 있나 조회하고 없으면 넣어주기
+			for (BlikeVO listVo : likeList) {
+				if(listVo.getBlikeLmember().equals(vo.getBlikeLmember())) {
+					data = "false";
+					return data;
+				}
+			}
+		}
+		
+		log.debug("좋아요한 객체 : {} ", vo);
+		int cnt = service.insertLike(vo);
+		log.debug("인서트 cnt :", cnt);
+		
+		data = vo.getBlikeNo();
+		log.debug("좋아요한 글번호 가져오니? {}", data);
+		
+		return data;
+	}
+	
+	@PostMapping(value = "/devinComentLike", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String DevinComentLike (@RequestBody DevinComentVO vo) throws Exception {
+				
+		devinService.devinComentLike(vo);
+		
+		return "success";
+	}
+	
+	
+}

@@ -1,0 +1,17 @@
+package kr.or.ddit.vo;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class NoticeVO {
+	private String sys_n_no;
+	private String admin_id;
+	private String sys_n_title;
+	private String sys_n_content;
+	private String sys_n_hit;
+	private String sys_n_date;
+}

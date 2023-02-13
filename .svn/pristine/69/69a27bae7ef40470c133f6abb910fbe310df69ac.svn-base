@@ -1,0 +1,293 @@
+package kr.or.ddit.controller.topwork.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.FileTreeMapper;
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.TopWorkMapper;
+import kr.or.ddit.vo.ProjectLogVO;
+import kr.or.ddit.vo.TopWorkCategoryVO;
+import kr.or.ddit.vo.TopWorkComentVO;
+import kr.or.ddit.vo.TopWorkRelationVO;
+import kr.or.ddit.vo.TopWorkVO;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Service
+@Slf4j
+public class TopWorkServiceImpl implements ITopWorkService {
+    @Inject
+    private TopWorkMapper mapper;
+    @Inject
+    private FileTreeMapper fileTreeMapper;
+
+    @Inject
+    private CommonDao dao;
+    @Override
+    public List<TopWorkVO> list(String proNo) throws Exception {
+        //return mapper.list(proNo);
+        return dao.list("topWorklist", proNo);
+    }
+
+    @Override
+    public String insert(TopWorkVO topWorkVO) throws Exception {
+        if (topWorkVO.getTopWorkFile() == null) {
+            topWorkVO.setTopWorkFile("0");
+        }
+
+        mapper.insert(topWorkVO);//인서트 이후 topWorkNo가 추가되어있음.
+        log.debug("topWorkVO 상태: {}", topWorkVO);
+
+        return topWorkVO.getTopWorkNo();
+    }
+
+    @Override
+    public void updateMove(TopWorkVO topWorkVO) throws Exception {
+        mapper.updateMove(topWorkVO);
+    }
+
+    @Override
+    public void update(TopWorkVO topWorkVO) throws Exception {
+        mapper.update(topWorkVO);
+    }
+
+    @Override
+    public void delete(TopWorkVO topWorkVO) throws Exception {
+        mapper.delete(topWorkVO);
+    }
+
+    @Override
+    public List<TopWorkCategoryVO> categoryList(String proNo) throws Exception {
+        return mapper.categoryList(proNo);
+    }
+
+    @Override
+    public void categoryInsert(TopWorkCategoryVO topWorkCategoryVO) throws Exception {
+        mapper.categoryInsert(topWorkCategoryVO);
+    }
+
+    @Override
+    public void categoryDelete(TopWorkCategoryVO topWorkCategoryVO) throws Exception {
+        //카테고리 삭제 전에 해당 카테고리에 있는 작업들 위치 변경해줘야함.
+        List<TopWorkVO> topWorkList = mapper.selectTopWork(topWorkCategoryVO.getTwCategoryNo());
+
+        //삭제할 카테고리에 일감 리스트가 있으면 Wating으로 이동시켜준다.
+        if (topWorkList.size() > 0) {
+            for (TopWorkVO item : topWorkList) {
+                mapper.topWorkWaiting(item);
+
+                //이동 후 로그 기록
+                String proLogContent = "작업이 " + item.getTwCategoryNo() + "에서 "
+                                     + "1으로 이동됨";
+                ProjectLogVO projectLogVO = new ProjectLogVO();
+                projectLogVO.setProNo(item.getProNo());
+                projectLogVO.setProLogContent(proLogContent);
+                projectLogVO.setTopWorkNo(item.getTopWorkNo());
+                log.debug("projectLogVO : {}", projectLogVO);
+
+                mapper.logInsert(projectLogVO);
+            }
+        }
+
+        mapper.categoryDelete(topWorkCategoryVO);
+    }
+
+    @Override
+    public void topWorkMove(TopWorkVO topWorkVO) throws Exception {
+        mapper.topWorkMove(topWorkVO);
+    }
+
+    @Override
+    public void logInsert(Map<String, String> map) throws Exception {
+        String beforeTwCategoryNo = map.get("beforeTwCategoryNo");
+        String afterTwCategoryNo = map.get("twCategoryNo");
+        
+        if (beforeTwCategoryNo.equals(afterTwCategoryNo)) {
+            return;
+        }
+        
+        //카테고리 no로 이름 알아내기
+        //beforeTwCategoryName
+        String beforeTwCategoryName = dao.select("selectCategoryName", beforeTwCategoryNo);
+        String afterTwCategoryName = dao.select("selectCategoryName", afterTwCategoryNo);
+        
+        String topWorkNo = map.get("topWorkNo");
+        String proLogContent = "작업이 '" + beforeTwCategoryName + "'에서 '"
+                + afterTwCategoryName + "'으로 이동됨.";
+
+        //필요한건 프로젝트 번호(탑워크도 다 있음)
+        TopWorkVO topWorkVO = mapper.select(topWorkNo);
+
+        ProjectLogVO projectLogVO = new ProjectLogVO();
+        projectLogVO.setProNo(topWorkVO.getProNo());
+        projectLogVO.setProLogContent(proLogContent);
+        projectLogVO.setTopWorkNo(topWorkNo);
+        //프로그레스는 현재 그대로 둘 다 기록
+        projectLogVO.setProLogProgressOrigin(topWorkVO.getTopWorkProgress());
+        projectLogVO.setProLogProgressNew(topWorkVO.getTopWorkProgress());
+        
+        log.debug("인서트될 로그 : {}", projectLogVO);
+
+        mapper.logInsert(projectLogVO);
+    }
+
+    @Override
+    public void categoryUpdate(TopWorkCategoryVO topWorkCategoryVO) throws Exception {
+        mapper.categoryUpdate(topWorkCategoryVO);
+        
+        // 파일트리 - 카테고리 업데이트
+//        fileTreeMapper.categoryUpdate(topWorkCategoryVO);
+    }
+
+    @Override
+    public TopWorkVO select(TopWorkVO topWorkVO) throws Exception {
+        return mapper.select(topWorkVO.getTopWorkNo());
+    }
+
+    @Override
+    public void topWorkUpdate(TopWorkVO topWorkVO) throws Exception {
+        mapper.topWorkUpdate(topWorkVO);
+        
+        // 파일트리 - 상위작업 업데이트
+//        fileTreeMapper.topWorkUpdate(topWorkVO);
+    }
+
+    @Override
+    public void topWorkDelete(TopWorkVO topWorkVO) throws Exception {
+        //삭제 전 로그 날려야함 (최종 적용시엔 하위 삭제(첨부파일삭제-> 댓글삭제-> 로그삭제-> 일감삭제) 후 상위도 동일)
+        ProjectLogVO projectLogVO = new ProjectLogVO();
+        projectLogVO.setTopWorkNo(topWorkVO.getTopWorkNo());
+        mapper.logDelete(projectLogVO);
+        //처리가 다 끝나면 그때 작업 삭제
+        mapper.topWorkDelete(topWorkVO);
+    }
+
+    @Override
+    public void insertRelation(TopWorkRelationVO topWorkRelationVO) throws Exception {
+        mapper.insertRelation(topWorkRelationVO);
+    }
+
+    @Override
+    public String selectCategoryColor(String twCategoryNo) throws Exception {
+        return mapper.selectCategoryColor(twCategoryNo);
+    }
+
+    @Override
+    public List<TopWorkVO> myList(Map<String, String> map) throws Exception {
+        return mapper.myList(map);
+    }
+
+ // OJH 생성된 상위카테고리에다가 FILELOCATION 첨부위치번호 연결해주기
+	@Override
+	public void updateTopworkFile(Map<String, String> uploadData) throws Exception {
+			mapper.updateTopworkFile(uploadData);
+
+	}
+
+    @Override
+    public List<TopWorkVO> topWorkMyList(Map<String, String> map) throws Exception {
+        return mapper.myList(map);
+    }
+
+    @Override
+    public List<TopWorkCategoryVO> categoryPersonal() throws Exception {
+        return mapper.categoryPersonal();
+    }
+
+    @Override
+    public void moveState(TopWorkVO topWorkVO) throws Exception {
+        mapper.moveState(topWorkVO);
+    }
+
+
+
+    // ojh 카테고리 번호로 카테고리 이름가져오는 메서드
+	@Override
+	public String getCategoryName(String CategoryNo) {
+		// TODO Auto-generated method stub
+		return mapper.getCategoryName(CategoryNo);
+	}
+
+	@Override
+	public List<ProjectLogVO> logList(TopWorkVO topWorkVO) throws Exception {
+	    return mapper.logList(topWorkVO);
+	}
+
+	// OJH TopWorkNo 로  TopworkTitle 가져오는 함수
+	@Override
+	public String getTopWorkTitle(String topWorkNo) {
+
+		return mapper.getTopWorkTitle(topWorkNo);
+	}
+	
+	@Override
+    public List<TopWorkRelationVO> selectMemberList(TopWorkVO topWorkVO) throws Exception {
+        return mapper.selectMemberList(topWorkVO);
+    }
+
+    @Override
+    public void topWorkUpdate_K(TopWorkVO topWorkVO) throws Exception {
+        //로그 프로그레스 기록용 뽑기
+        Map<String, String> map = dao.select("selectOriginProgress", topWorkVO);
+        log.debug("에러나는 맵 : {}", map);
+        
+        ProjectLogVO proLogVO = new ProjectLogVO();
+        
+        String originProgress = map.get("TOPWORK_PROGRESS");
+        String newProgress = topWorkVO.getTopWorkProgress();
+        
+        if (!originProgress.equals(newProgress)) {
+            //프로젝트 번호 뽑기
+            String proNo = dao.select("getProNo", topWorkVO.getTopWorkNo());
+            
+            //진행률이 변경됐을때
+            String proLogContent = "작업 진행률이 " + newProgress + "%로 변경되었습니다.";
+            proLogVO.setTopWorkNo(topWorkVO.getTopWorkNo());
+            proLogVO.setProNo(proNo);
+            proLogVO.setProLogContent(proLogContent);
+            proLogVO.setProLogProgressOrigin(originProgress);
+            proLogVO.setProLogProgressNew(newProgress);
+            
+            log.debug("인서트할 로그 : {}", proLogVO);
+            dao.insert("topWorkProgressLogInsert", proLogVO);
+        }
+        
+        dao.update("topWorkUpdate_K", topWorkVO);
+    }
+
+    @Override
+    public List<TopWorkComentVO> topWorkComentList(TopWorkVO topWorkVO) throws Exception {
+        return dao.list("topWorkComentList", topWorkVO);
+    }
+
+    @Override
+    public String topWorkComentInsert(TopWorkComentVO topWorkComentVO) throws Exception {
+        dao.insert("topWorkComentInsert", topWorkComentVO); //이후 PK값 있음
+        
+        String twComentNo = topWorkComentVO.getTwComentNo();
+        
+        return twComentNo;
+    }
+
+    @Override
+    public void topWorkComentDelete(TopWorkComentVO topWorkComentVO) throws Exception {
+        dao.update("topWorkComentDelete", topWorkComentVO);
+    }
+
+    @Override
+    public void topWorkComentUpdate(TopWorkComentVO topWorkComentVO) throws Exception {
+        dao.update("topWorkComentUpdate", topWorkComentVO);
+    }
+
+    @Override
+    public TopWorkCategoryVO categorySelect(TopWorkVO topWorkVO) throws Exception {
+        return dao.select("categorySelect", topWorkVO);
+    }
+
+
+}

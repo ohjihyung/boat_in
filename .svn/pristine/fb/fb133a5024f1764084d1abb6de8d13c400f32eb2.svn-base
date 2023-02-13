@@ -1,0 +1,20 @@
+package kr.or.ddit.vo;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class LetterVO {
+	String letterNo;
+	String memberId;
+	String letterDate;
+	String letterSender;
+	String letterContent;
+	String letterCheck;
+	String letterFile;
+	String letterDelstate;
+	
+}

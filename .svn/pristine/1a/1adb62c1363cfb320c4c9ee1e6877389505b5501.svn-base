@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.SubWorkMapper">
+    <insert id="subWorkInsert" parameterType="subWorkVO">
+         <selectKey resultType="String" keyProperty="subWorkNo" order="BEFORE">
+            SELECT SEQ_SUBWORK.NEXTVAL FROM DUAL
+         </selectKey>
+    
+        INSERT INTO SUBWORK (
+            SUBWORK_NO
+          , TOPWORK_NO
+          , TOPWORK_R_NO
+          , SUBWORK_TITLE
+          , SUBWORK_CONTENT
+          , SUBWORK_START
+          , SUBWORK_END
+          , SUBWORK_STATE
+          , SUBWORK_PROGRESS
+          , SUBWORK_LIKE
+          , SUBWORK_FILE
+        ) VALUES (
+            #{subWorkNo}
+          , #{topWorkNo}
+          , #{topWorkRNo}
+          , #{subWorkTitle}
+          , #{subWorkContent}
+          , #{subWorkStart}
+          , #{subWorkEnd}
+          , 0
+          , 0
+          , 0
+          , 0
+        )
+    </insert>
+    
+    <select id="subWorkList" parameterType="topWorkVO" resultType="subWorkVO">
+        SELECT *
+          FROM SUBWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+           AND SUBWORK_DELETE = '0'
+    </select>
+    
+    <select id="subWorkDetail" parameterType="subWorkVO" resultType="subWorkVO">
+        SELECT *
+          FROM SUBWORK
+         WHERE SUBWORK_NO = #{subWorkNo}
+           AND SUBWORK_DELETE = '0'
+    </select>
+    
+    <select id="selectSubWorkMember" parameterType="subWorkVO" resultType="memberVO">
+        SELECT A.MEMBER_ID
+		     , A.MEMBER_NAME
+		     , A.MEMBER_PIC
+		     , A.MEMBER_STATE
+		  FROM MEMBER A
+		  LEFT JOIN TOPWORK_RELATION B
+		    ON A.MEMBER_ID = B.MEMBER_ID
+		 WHERE B.TOPWORK_R_NO = #{topWorkRNo}
+		 GROUP BY A.MEMBER_ID, A.MEMBER_NAME, A.MEMBER_PIC, A.MEMBER_STATE
+    </select>
+    
+    <select id="selectMemberListSubWork" parameterType="subWorkVO" resultType="memberVO">
+         SELECT A.*
+		   FROM MEMBER A
+		   LEFT JOIN TOPWORK_RELATION B
+		     ON A.MEMBER_ID = B.MEMBER_ID
+		   LEFT JOIN SUBWORK C
+		     ON B.TOPWORK_R_NO = C.TOPWORK_R_NO
+		  WHERE C.SUBWORK_NO = #{subWorkNo}
+    </select>
+    
+    <update id="subWorkUpdate_K" parameterType="subWorkVO">
+        UPDATE SUBWORK
+           SET SUBWORK_TITLE = #{subWorkTitle}
+             , SUBWORK_CONTENT = #{subWorkContent}
+             , SUBWORK_START = #{subWorkStart}
+             , SUBWORK_END = #{subWorkEnd}
+             , SUBWORK_STATE = #{subWorkState}
+             , SUBWORK_PROGRESS = #{subWorkProgress}
+         WHERE SUBWORK_NO = #{subWorkNo}
+    </update>
+    
+    <select id="selectOriginProgressSubWork" parameterType="String" resultType="Map">
+        SELECT A.SUBWORK_PROGRESS
+		     , B.PRO_NO
+		     , A.TOPWORK_NO
+		  FROM SUBWORK A
+		  LEFT JOIN TOPWORK B
+		    ON A.TOPWORK_NO = B.TOPWORK_NO
+		 WHERE SUBWORK_NO = #{subWorkNo}
+    </select>
+    
+    <insert id="subWorkProgressLogInsert" parameterType="projectLogVO">
+        INSERT INTO PROJECT_LOG (
+            PRO_LOG_NO
+          , PRO_NO
+          , PRO_LOG_CONTENT
+          , PRO_LOG_DATE
+          , TOPWORK_NO
+          , PRO_LOG_STATE
+          , PRO_LOG_PROGRESS_ORIGIN
+          , PRO_LOG_PROGRESS_NEW
+          , SUBWORK_NO
+        ) VALUES (
+            SEQ_PROJECT_LOG.NEXTVAL
+          , #{proNo}
+          , #{proLogContent}
+          , SYSDATE
+          , #{topWorkNo}
+          , 0
+          , #{proLogProgressOrigin}
+          , #{proLogProgressNew}
+          , #{subWorkNo}
+        )
+    </insert>
+    
+    <select id="subWorkLogList" parameterType="subWorkVO" resultType="projectLogVO">
+        SELECT *
+          FROM PROJECT_LOG
+         WHERE SUBWORK_NO = #{subWorkNo}
+           AND PRO_LOG_STATE = '0'
+         ORDER BY PRO_LOG_NO ASC
+    </select>
+    
+    <select id="subWorkComentList" parameterType="subWorkVO" resultType="subWorkComentVO">
+        SELECT *
+          FROM SUBWORK_COMENT
+         WHERE SUBWORK_NO = #{subWorkNo}
+           AND SW_COMENT_STATE = '0'
+    </select>
+    
+    <insert id="subWorkComentInsert" parameterType="subWorkComentVO">
+        <selectKey resultType="String" keyProperty="swComentNo" order="BEFORE">
+           SELECT SEQ_SW_COMENT.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO SUBWORK_COMENT (
+            SW_COMENT_NO
+          , SUBWORK_NO
+          , MEMBER_ID
+          , SW_COMENT_DATE
+          , SW_COMENT_CONTENT
+          , SW_COMENT_FILE
+          , SW_COMENT_STATE
+        ) VALUES (
+            #{swComentNo}
+          , #{subWorkNo}
+          , #{memberId}
+          , SYSDATE
+          , #{swComentContent}
+          , '0'
+          , '0'
+        )
+    </insert>
+    
+    <update id="subWorkComentDelete" parameterType="subWorkComentVO">
+        UPDATE SUBWORK_COMENT
+           SET SW_COMENT_STATE = '1'
+         WHERE SW_COMENT_NO = #{swComentNo}
+    </update>
+    
+    <update id="subWorkComentUpdate" parameterType="subWorkComentVO">
+        UPDATE SUBWORK_COMENT
+           SET SW_COMENT_CONTENT = #{swComentContent}
+         WHERE SW_COMENT_NO = #{swComentNo}
+    </update>
+    
+    <select id="selectAllSubWork" parameterType="projectVO" resultType="subWorkVO">
+        SELECT A.*
+		  FROM SUBWORK A
+		  LEFT JOIN TOPWORK B
+		    ON A.TOPWORK_NO = B.TOPWORK_NO
+		 WHERE B.PRO_NO = #{proNo}
+		   AND A.SUBWORK_DELETE = '0'
+    </select>
+    
+    <update id="subWorkDelete" parameterType="subWorkVO">
+        UPDATE SUBWORK
+           SET SUBWORK_DELETE = 1
+         WHERE SUBWORK_NO = #{subWorkNo}
+    </update>
+    
+    <select id="selectRelationSubWorkList" parameterType="String" resultType="subWorkVO">
+        SELECT *
+          FROM SUBWORK
+         WHERE TOPWORK_R_NO = #{topWorkRNo}
+           AND SUBWORK_DELETE = '0'
+    </select>
+    
+    <select id="getChangeSubWork" parameterType="String" resultType="subWorkVO">
+        SELECT *
+          FROM SUBWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+           AND SUBWORK_DELETE = '0'
+    </select>
+    
+    <update id="updateSubWorkRelation" parameterType="subWorkVO">
+        UPDATE SUBWORK
+           SET TOPWORK_R_NO = #{topWorkRNo}
+         WHERE SUBWORK_NO = #{subWorkNo}
+    </update>
+    
+    <select id="getAllSubWork" resultType="subWorkVO">
+        SELECT SUBWORK_NO
+             , TOPWORK_NO
+             , TOPWORK_R_NO
+             , SUBWORK_TITLE
+          FROM SUBWORK
+         WHERE SUBWORK_DELETE = 0
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+package kr.or.ddit.vo;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class ProjectNoticeVO {
+	private String pro_notice_no;
+	private String pro_no;
+	private String pro_notice_title;
+	private String pro_notice_content;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date pro_notice_date;
+	private String pro_notice_file;
+	private String pro_notice_pop;
+	
+	//프로젝트별 멤버 출력할 때 추가로 필요한 정보들
+    private String memberName;
+    private String memberPic;
+}

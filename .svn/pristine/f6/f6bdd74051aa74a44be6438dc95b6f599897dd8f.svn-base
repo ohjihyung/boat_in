@@ -1,0 +1,88 @@
+package kr.or.ddit.controller.topwork.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.ProjectLogVO;
+import kr.or.ddit.vo.TopWorkCategoryVO;
+import kr.or.ddit.vo.TopWorkComentVO;
+import kr.or.ddit.vo.TopWorkRelationVO;
+import kr.or.ddit.vo.TopWorkVO;
+
+
+public interface ITopWorkService {
+
+    public List<TopWorkVO> list(String proNo) throws Exception;
+
+    public String insert(TopWorkVO topWorkVO) throws Exception;
+
+    public void updateMove(TopWorkVO topWorkVO) throws Exception;
+
+    public void update(TopWorkVO topWorkVO) throws Exception;
+
+    public void delete(TopWorkVO topWorkVO) throws Exception;
+
+    public List<TopWorkCategoryVO> categoryList(String proNo) throws Exception;
+
+    public void categoryInsert(TopWorkCategoryVO topWorkCategoryVO) throws Exception;
+
+    public void categoryDelete(TopWorkCategoryVO topWorkCategoryVO) throws Exception;
+
+    public void topWorkMove(TopWorkVO topWorkVO) throws Exception;
+
+    public void logInsert(Map<String, String> map) throws Exception;
+
+    public void categoryUpdate(TopWorkCategoryVO topWorkCategoryVO) throws Exception;
+
+    public TopWorkVO select(TopWorkVO topWorkVO) throws Exception;
+
+    public void topWorkUpdate(TopWorkVO topWorkVO) throws Exception;
+
+    public void topWorkDelete(TopWorkVO topWorkVO) throws Exception;
+
+    public void insertRelation(TopWorkRelationVO topWorkRelationVO) throws Exception;
+
+    public String selectCategoryColor(String twCategoryNo) throws Exception;
+
+    public List<TopWorkVO> myList(Map<String, String> map) throws Exception;
+
+    // OJH  생성된 상위카테고리에다가 FILELOCATION 첨부위치번호 연결해주기
+	public void updateTopworkFile(Map<String, String> uploadData) throws Exception;
+
+    public List<TopWorkVO> topWorkMyList(Map<String, String> map) throws Exception;
+
+    public List<TopWorkCategoryVO> categoryPersonal() throws Exception;
+
+    public void moveState(TopWorkVO topWorkVO) throws Exception;
+
+    // ojh 카테고리 번호로 카테고리 이름가져오는 메서드
+	public String getCategoryName(String movedCategory);
+
+	public List<ProjectLogVO> logList(TopWorkVO topWorkVO) throws Exception;
+
+	// ojh  TopWorkNo 로  TopworkTitle 가져오는 메서드
+	public String getTopWorkTitle(String topWorkNo);
+	
+	public List<TopWorkRelationVO> selectMemberList(TopWorkVO topWorkVO) throws Exception;
+
+    public void topWorkUpdate_K(TopWorkVO topWorkVO) throws Exception;
+
+    public List<TopWorkComentVO> topWorkComentList(TopWorkVO topWorkVO) throws Exception;
+
+    public String topWorkComentInsert(TopWorkComentVO topWorkComentVO) throws Exception;
+
+    public void topWorkComentDelete(TopWorkComentVO topWorkComentVO) throws Exception;
+
+    public void topWorkComentUpdate(TopWorkComentVO topWorkComentVO) throws Exception;
+
+    public TopWorkCategoryVO categorySelect(TopWorkVO topWorkVO) throws Exception;
+
+    public List<TopWorkCategoryVO> categoryPersonalList(String proNo) throws Exception;
+
+    public void topWorkComplete(TopWorkVO topWorkVO) throws Exception;
+
+    public void topWorkReject(TopWorkVO topWorkVO) throws Exception;
+
+
+
+}

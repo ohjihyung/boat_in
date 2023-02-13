@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.WidgetMapper">
+    <select id="list" resultType="widgetVO">
+        SELECT * 
+          FROM WIDGET
+         WHERE WIDGET_STATE = '1'
+    </select>
+    
+    <insert id="insertWidgetBar" parameterType="widgetBarVO">
+        INSERT INTO WIDGETBAR (
+            WIDGETBAR_NO
+          , WIDGET_NO
+          , MEMBER_ID
+          , WIDGET_WB_LOCATION
+          , WIDGETBAR_TITLE
+        ) VALUES (
+            SEQ_WEGETBAR.NEXTVAL
+          , #{widgetNo}
+          , #{memberId}
+          , 0
+          , #{widgetBarTitle}
+        )
+    </insert>
+    
+    <select id="myWidgetList" parameterType="widgetBarVO" resultType="widgetBarVO">
+        SELECT A.*, B.WIDGET_NAME
+          FROM WIDGETBAR A
+          LEFT JOIN WIDGET B
+            ON A.WIDGET_NO = B.WIDGET_NO
+         WHERE MEMBER_ID = #{memberId}
+         ORDER BY WIDGET_WB_LOCATION ASC
+    </select>
+    
+    <delete id="deleteWidgetBar" parameterType="widgetBarVO">
+        DELETE WIDGETBAR
+         WHERE WIDGETBAR_NO = #{widgetBarNo}
+    </delete>
+    
+    <update id="moveWidget" parameterType="widgetBarVO">
+        UPDATE WIDGETBAR
+           SET WIDGET_WB_LOCATION = #{widgetWBLocation}
+         WHERE WIDGETBAR_NO = #{widgetBarNo}
+    </update>
+</mapper>

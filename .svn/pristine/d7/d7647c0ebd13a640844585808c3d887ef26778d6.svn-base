@@ -1,0 +1,146 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<style>
+/* .dataTable{ */
+/* 	table-layout:fixed; */
+/* } */
+</style>
+<div class="inbox-rightbar" style="margin-left: 190px;">
+
+	<!-- data table -->
+	<!-- start page title -->
+
+	<div id="dataTable">
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">받은쪽지함</h4>
+				</div>
+			</div>
+		</div>
+		<!-- end page title -->
+		<div id="mygrid" class="ag-theme-material"></div>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="header-title"></h4>
+						<table id="letterList" class="table dt-responsive nowrap ">
+							<thead>
+								<tr>
+									<th>선택</th>
+									<th>보낸사람</th>
+									<th >내용</th>
+									<th>날짜</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+
+							</tbody>
+							
+						</table>
+						
+						<div id="detailLetter"></div>
+					</div>
+					<!-- end card body-->
+				</div>
+				<!-- end card -->
+			</div>
+			<!-- end col-->
+		</div>
+		<!-- end row-->
+
+
+	</div>
+	<!-- container -->
+</div>
+<!-- end inbox-rightbar-->
+<!-- data table -->
+<script type="text/javascript">
+	$(function() {
+
+		var table = $('#letterList').removeAttr('width').DataTable({
+			responsive:true,
+			 retrieve: true,
+// 			 scrollX: true,
+			scrollCollapse:true,
+			 columnDefs: [
+				    { width: "20%" , targets:[2]},
+				  ]
+		})
+		var memberId = localStorage.getItem('id');
+		var letterVO = {
+			memberId : memberId
+		}
+
+		$.ajax({
+			url : "/letter/mylist",
+			type : "post",
+			data : JSON.stringify(letterVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				console.log(res)
+				for (var i = 0; i < res.length; i++) {
+					
+				table.row.add([
+					`<td> \${i} </td>`,
+					`<td> \${res[i].letterSender}</td>`,
+					`<td width='100'><a href='javascript: void(0);' onclick= "pageTap('detail')">\${res[i].letterContent} </a></td>`,
+					`<td>\${res[i].letterDate}</td>`,
+						]).draw(false);
+				//href='/letter/datail?letterNo=\${res[i].letterNo}'
+				}
+			},
+		});//ajax
+
+	})//$(function)
+	
+	
+</script>
+
+<!-- ag grid  -->
+<!-- <script type="text/javascript">
+// Function to demonstrate calling grid's API
+function deselect(){
+    gridOptions.api.deselectAll()
+}
+var columnDefs = [
+	  {headerName: "선택", field: "selector"},
+	  {headerName: "보낸사람", field: "sendor"},
+	  {headerName: "title", field: "title"},
+	  {headerName: "날짜", field: "date"},
+	];
+var rowData= [
+		{selector : "ㅁ" ,sendor : "나코코" ,title : "하이 제목" ,date: "2022-01-01"},
+		
+	];
+// Grid Options are properties passed to the grid
+var gridOptions = {
+	columnDefs : columnDefs,
+	rowData:rowData,
+	 // default col def properties get applied to all columns
+	defaultColDef: {
+		sortable: true, 
+		filter: 'agTextColumnFilter',
+		floatingFilter : true,
+		resizable:true,
+		},
+	
+	rowSelection: 'multiple', // allow rows to be selected
+	animateRows: true, // have rows animate to new positions when sorted
+
+ 	// example event handler
+	onCellClicked: params => {
+	   console.log('cell was clicked', params)
+	  }
+};
+
+// get div to host the grid
+var eGridDiv = document.getElementById("myGrid");
+// new grid instance, passing in the hosting DIV and Grid Options
+new agGrid.Grid(eGridDiv, gridOptions);
+
+
+</script>   -->

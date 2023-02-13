@@ -1,0 +1,92 @@
+package kr.or.ddit.controller.myhome;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javassist.expr.NewArray;
+import kr.or.ddit.vo.NewsVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/myhome")
+public class MyhomeController {
+
+	@GetMapping("/home")
+	public String myHome() {
+		return "content/myhome";
+	}
+	
+	@GetMapping(value = "/crawlingNews" ,produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public Map<String, List<NewsVO>> startCrawl() throws IOException {
+		
+		List<NewsVO> selectOneNews = new ArrayList<NewsVO>();
+		Map<String, List<NewsVO>> resultMap = new HashMap<String, List<NewsVO>>();
+		
+		// 기사제목, 링크, 시간, 이미지경로
+		// Map<String, List<VO>> resultMap = new HashMap<String, VO>();
+		
+		String url = "https://www.mk.co.kr/news/it/internet/";
+		Document doc = Jsoup.connect(url).get();
+		
+		Elements element = doc.select("ul#list_area");
+		
+		//이미지 src는 jsp에 가져가서 쪼개기
+		for(Element el : element.select("li.news_node")) {
+			
+			if(el.html().startsWith("<a")) {
+			
+				NewsVO newsVO = new NewsVO();
+				
+				Elements titleEle = el.select("h3.news_ttl");
+				String title = titleEle.text();
+//				log.debug(title);
+				newsVO.setNewsTitle(title);
+				
+				Elements newsLinkEle = el.select("a");
+				String link = newsLinkEle.attr("href");
+//				log.debug(link);
+				newsVO.setNewsLink(link);
+				
+				Elements timeEle = el.select("div.info_group > p");
+				String time = timeEle.text();
+//				log.debug(time);
+				newsVO.setNewsTime(time);
+				
+				Elements imgEle = el.select("div.thumb_area > img");
+				if(!imgEle.isEmpty()) {
+					String imgSrc = imgEle.attr("data-src");
+//					log.debug(imgSrc);
+					newsVO.setNewsImgSrc(imgSrc);
+				}else {
+					newsVO.setNewsImgSrc("/resources/profileImg/newsNoImage.jpg");
+//					log.debug("해당 글은 이미지 없음");
+				}
+				selectOneNews.add(newsVO);
+			}//if문 끝
+			
+		}//for문끝
+		
+//		for (int i = 0; i < selectOneNews.size(); i++) {
+//			log.debug("뉴스:" + selectOneNews.get(i));
+//		}
+		
+		resultMap.put("newsList", selectOneNews);
+		
+		return resultMap; 
+	}
+	
+}

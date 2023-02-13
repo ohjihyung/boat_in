@@ -1,0 +1,29 @@
+package kr.or.ddit.controller.myhome.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.MyHomeMapper;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.MyhomeVO;
+
+@Service
+public class MyhomeServiceImpl implements IMyhomeService{
+	
+	@Inject
+	MyHomeMapper mapper;
+
+	@Override
+	public MemberVO selectMemberInfo(MemberVO memberVO) {
+		return mapper.selectMemberInfo(memberVO);
+	}
+
+	@Override
+	public int updateMyHomeColor(MyhomeVO myhomeVO) {
+		return mapper.updateMyHomeColor(myhomeVO);
+	}
+
+}

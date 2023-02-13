@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MypageMapper">
+
+<select id="selectMember" parameterType="string"  resultType="memberVO">
+	SELECT * FROM MEMBER
+	WHERE MEMBER_ID = #{memberId}
+</select>
+
+<update id="updateMember" parameterType="memberVO">
+	UPDATE MEMBER
+	SET
+		MEMBER_NAME = #{memberName},
+		MEMBER_BIRTH = TO_CHAR(TO_DATE(#{memberBirth}, 'YYYY/MM/DD'),'YYYY/MM/DD'),
+		MEMBER_PHONE = SUBSTR(#{memberPhone},0,3) || '-' || SUBSTR(#{memberPhone},4, 4) || '-' || SUBSTR(#{memberPhone},8, 4),
+		MEMBER_PIC = #{memberPic}
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateMemberInfo" parameterType="memberVO">
+  	UPDATE MEMBER
+	SET
+		MEMBER_INFO = #{memberInfo}
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+</mapper>

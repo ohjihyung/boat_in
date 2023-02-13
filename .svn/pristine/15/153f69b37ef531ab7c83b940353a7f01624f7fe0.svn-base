@@ -1,0 +1,412 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+
+<div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row0">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">My DataRoom</h4>
+                                    <div>
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">BOAT-IN</a></li>
+                                            <li class="breadcrumb-item active">MyDataRoom</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+                        
+                        <div class="row1">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <!-- Left sidebar -->
+                                    <div class="inbox-leftbar text font-15 fw-bold">
+										<!-- 여기에 트리 생성 -->
+										<ul style="margin-top: 0px; padding: 0px">
+                                   			<li class="list-group-item list-group-item-primary" style="margin-bottom: 10px; text-align: center;">
+												<a href="javascript:void(0);" onclick="getRepoData()" style="display: block;">내 보관함👉</a>
+                                   			</li>
+                                    	</ul>
+                                    	<hr/>
+										<ul style="margin: 0px; padding: 0px">
+                                    		<li class="list-group-item list-group-item-primary" style="margin-bottom: 10px; text-align: center;">
+												<a href="javascript:void(0);" style="display: block;">내 프로젝트👉</a>
+                                    		</li>
+                                    	</ul>
+                                        <div class="text font-14" id="projectTree"></div>
+                                    </div>
+                                    <!-- End Left sidebar -->
+									
+                                    <!-- start inbox-rightbar-->
+                                    <div class="inbox-rightbar" id="rightBar">
+                                    
+                                    <!-- 내 보관함 -->
+									<div class="col-xl-12">
+										<ul class="nav nav-tabs nav-bordered">
+											<li class="nav-item" style="width: 250px; text-align: center;">
+												<a href="#download-b1" data-bs-toggle="tab" aria-expanded="true" class="nav-link active" style="font-size: 15px; font-weight: bold;">담은 파일</a>
+											</li>
+											<li class="nav-item" style="width: 250px; text-align: center;">
+												<a href="#upload-b1" data-bs-toggle="tab" aria-expanded="false" class="nav-link" style="font-size: 15px; font-weight: bold;">올린 파일</a>
+											</li>
+										</ul>
+										<div class="tab-content">
+											<div class="tab-pane" id="download-b1"></div>
+											<div class="tab-pane show active" id="upload-b1"></div>
+										</div>
+									</div>
+
+
+								<!-- 파일 출력 -->
+<!--                                        	    <div class="row2"> -->
+<!-- 												<div class="col-md-12"> -->
+<!-- 					                                <div class="card"> -->
+<!-- 					                                    <div class="card-header" style="background-color: #D6E8F6"> -->
+<!-- 					                                        <h4 class="card-title mb-0 fw-bold" style="color: #1F547F" id="cateName">카테고링</h4> -->
+<!-- 					                                        <p class="text-muted mb-0 fw-bold" id="twName">상위작업</p> -->
+<!-- 					                                    </div> -->
+<!-- 					                                    <div class="card-body" id="gallary"> -->
+<!-- 					                                        	갤러리 -->
+<!-- 					                                    </div> -->
+<!-- 					                                </div> -->
+												
+<!-- 			                                        <div class="card text-center"> -->
+<!-- 			                                            <div class="card-header" style="padding-top: 5px"> -->
+<!-- 			                                            	<h4 class="page-title fw-bold">카테고리명</h4> -->
+<!-- 			                                                <ul class="nav nav-tabs card-header-tabs" id="navBar"> -->
+<!-- 			                                                    <li class="nav-item"> -->
+<!-- 			                                                        <a class="nav-link" href="여따가상위작업폴더경로넣어라~">상위작업명</a> -->
+<!-- 			                                                    </li> -->
+<!-- 			                                                </ul> -->
+<!-- 			                                            </div> -->
+<!-- 			                                            <div class="card-body"> -->
+<!-- 			                                            	<div class="listArea"> -->
+	
+<!-- 																<div class="row2"> -->
+<!-- 																	<div class="m-2"></div> -->
+<!-- 																	<div id="gallary2" class="flex-container" style="display: flex; flex-wrap: wrap;"> -->
+<!-- 																	</div> -->
+<!-- 																</div> -->
+																
+<!-- 				                                        	</div> -->
+<!-- 			                                            </div> -->
+<!-- 			                                        </div> -->
+<!-- 			                                    </div> -->
+<!-- 			                                </div> -->
+			                                   
+                                    	</div> <!-- end inbox-rightbar-->
+                                	</div> <!-- end CardBody -->
+                            	</div> <!-- end Card -->
+                       		</div> <!-- end col -->
+                        </div> <!-- end row -->
+                    </div> <!-- end container -->
+                </div> <!-- content -->
+</div>
+
+
+<script>
+
+$(document).ready(function() {
+	getProData();
+// 	getRepoData();
+});
+
+
+/**
+ * SSY '내 프로젝트' 클릭 시 트리 생성 및 해당 파일 출력하기
+ */
+function getProData() {
+	
+	// 접속한 아이디 가져오기(MEMBER_ID)
+	let memberId = localStorage.getItem('id');
+	console.log("id : ", memberId);
+	
+	// =============================================================================================
+	
+	// 내 프로젝트 파일 트리
+	$.ajax({	
+        type : 'POST',
+        url : '/data/myProDataRoom',
+        data : { memberId : memberId },
+        dataType : 'json',
+        success : function(data) {
+        	
+        	console.log("myDataRoom-프로젝트.jsp - success-data : ", data);
+       		let arr = new Array();
+       		
+        	$.each(data, function(i, item){
+        		
+		        		arr[i] = {
+		        					   depth : item.DEPTH,
+		        					   id : item.FILE_ID,
+			        				   parent : item.PARENT_ID,
+		        					   text : item.FILE_NAME
+		        					 }
+        	
+        	});
+        	console.log("arr : ", arr)
+        	
+        	// 프로젝트(depth == 0)만 뽑아서 배열 만들기
+			let fileArr = arr.filter(function(project){
+			  return project.depth == 0;
+			})
+       		console.log("fileArr : ", fileArr);
+        	
+        	// projectTree 생성
+        	$.noConflict()
+        	$('#projectTree').jstree({
+        		"plugins" : ['wholerow', 'types', 'json_data'],
+        		"core" : {
+        			 "data" : fileArr    // 데이터 연결 
+        		},
+        	})
+        	.bind('loaded.jstree', function(e,data){	// 트리 로딩 완료 이벤트 
+//         		alert("로딩완료!");
+        		
+//         		$("#tree").jstree("open_all");	// 전체 오픈... 오우 되네...?
+		
+        	})
+        	.bind('select_node.jstree',function(e,data){	// 노드 선택 이벤트
+        		console.log("프로젝트 노드선택이벤트 - data : ", data);
+				
+				// 노드 초기화
+				$("#rightBar").empty();
+        	
+        		// 노드 클릭 시 프로젝트에 해당하는 파일들 가져오기
+        		let name = data.instance.get_node(data.selected).original.text;     	// 프로젝트 이름
+			    let depth = data.instance.get_node(data.selected).original.depth;   	// 계층
+			    let parentId = data.instance.get_node(data.selected).original.parent;   // 부모 아이디
+			  	let proNo = data.instance.get_node(data.selected).original.id;			// 프로젝트 번호
+        		console.log("name : ", name);
+        		console.log("depth : ", depth);
+        		console.log("parentId : ", parentId);
+        		console.log("proNo : ", proNo);
+				
+        		$.ajax({
+        			type : 'POST',
+					url : '/data/myProGallary',
+					data : {
+							name : name,
+							depth : depth,
+							parentId : parentId,
+							proNo : proNo
+					},
+					dataType : 'json',
+					success : function(data) {
+						console.log("data - 프로젝트 갤러리~ : ", data);
+						
+						$.each(data, function(i, item) {
+							
+// 							console.log("i : ", i);
+							
+							let cnt = i;
+// 							console.log("cnt : ", cnt);
+                       		let parent = document.querySelector("#rightBar");
+                       		
+							let cateName = item.uuid;
+							let twName = item.fileSize;
+							let filePath = item.filePath;
+// 							console.log("memberId : ", memberId);
+// 							console.log("filePath : ", filePath);
+							// ojh 경로에서 \를 \\로 바꾸기
+							filePath = filePath.replaceAll("\\", "\\\\");
+							
+							let container = null;
+							let gallary = "";
+							let childElement = null;
+							let txt = "";
+							
+							txt += `<div class="card m-2" style="flex: 1 1 20%">`;
+							txt += `<a style="text-align:center;font-size:13px;padding:0px;" href="` + item.filePath + `" download = "` + item.fileRealName + `">`;
+							txt += `<img style="width: 220px; height: 200px" class="card-img-top embed-responsive-item" src="` + item.fileUploader + `" alt="Card image cap"/>`;
+							txt += `<p style="text-align: center; margin-top:15px">` + item.fileName + `</p>`;
+							txt += `</a>`;
+							txt += `<input type="button" onclick="putMyRepo(memberId,'\${filePath}','\${item.fileRealName}')" value="보관함에 담기">`;
+							txt += `</div>`;
+							
+							let row = document.createElement("div");
+							row.className = "row2 " + i;
+							row.id = "row2" + i;
+							parent.append(row);
+							
+							let col = document.createElement("div");
+							col.className = "col-md-12 " + i;
+							row.append(col);
+							
+							let card = document.createElement("div");
+							card.className = "card " + i;
+							card.id = "card";
+							col.append(card);
+							
+							let cardHeader = document.createElement("div");
+							cardHeader.className = "card-header " + i;
+							cardHeader.style.cssText = "background-color: #D6E8F6";
+							card.append(cardHeader);
+							
+							let cardTitle = document.createElement("h4");
+							cardTitle.className = "card-title mb-0 fw-bold " + i;
+							cardTitle.style.cssText = "color: #1F547F";
+							cardTitle.id = "twName";
+							cardTitle.innerText = twName;
+							cardHeader.append(cardTitle);
+							
+							let p = document.createElement("p");
+							p.className = "text-muted mb-0 fw-bold " + i;
+							p.id = "cateName";
+							p.innerText = cateName;
+							cardHeader.append(p);
+							
+							let cardBody = document.createElement("div");
+							cardBody.className = "card-body " + i;
+							cardBody.id = twName;
+							cardBody.style = "display: flex; flex-wrap: wrap";
+							card.append(cardBody);
+// 							console.log("cardBody : ", cardBody.style);
+							
+							// 카테고리 중복 처리
+							if(i > 0) {
+								
+                       			let curCateName = data[i-1].uuid;
+                       			let curTwName = data[i-1].fileSize;
+//                        			console.log("curCateName : ", curCateName);
+//                        			console.log("curTwName : ", curTwName);
+
+								if(curTwName == twName) {
+									// 노드 선택
+									const parentRow = document.getElementById('row2' + i);
+									// 본인 노드 삭제
+									parentRow.remove();
+								}		
+							}
+							
+							// 사진 띄우기
+							gallary = document.getElementById(twName);
+// 							console.log("gal : ", gallary);
+							
+							childElement = document.createElement("div");
+							childElement.className = "childElement" + i;
+							childElement.id = item.fileSize;
+// 							console.log("childElement : ", childElement);
+// 							console.log("childElement" + i);
+							
+// 							console.log("childElement.id : ", childElement.id);
+							
+							// 상위작업별로 사진 분류하기
+							if(childElement.id.trim() == gallary.id.trim()) {
+								gallary.append(childElement);
+								document.querySelector(".childElement" + i).innerHTML = txt;
+							}
+// 							console.log("row : ", row);
+				
+						});	// end of each
+
+					},
+					error : function() {
+						alert("error - 프로젝트 노드선택이벤트");
+					}
+				});
+				
+				
+        	});	// end of projectTree
+        	
+        }, // end of success
+        error : function() {
+        	alert("error - 프로젝트 트리 생성");
+        } // end of error
+    });	// end of ajax
+
+} //end of getProData
+
+
+/**
+ * SSY 파일 보관하기
+ */
+function putMyRepo(a,b,c) {
+
+	let data = {
+					"myId" : a,
+					"downPath" : b,
+					"fileName" : c
+				}
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST","/data/putMyRepo",true);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4 && xhr.status == 200){
+			console.log(xhr.responseText);
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+	xhr.send(JSON.stringify(data));
+}
+
+
+/**
+ * SSY '내 보관함' 클릭 시 해당 파일 출력하기
+ */
+function getRepoData() {
+	
+	// 접속한 아이디 가져오기(MEMBER_ID)
+	let memberId = localStorage.getItem('id');
+	console.log("getRepoData - id : ", memberId);
+	
+	$.ajax({
+		type : 'POST',
+		url : '/data/myRepoGallary',
+		data : {
+			memberId : memberId
+		},
+		dataType : 'json',
+		success : function(data) {
+			console.log("getRepoData - data : ", data);
+			
+			// rightBar 초기화
+			$("#rightBar").empty();
+			
+			// 파일 원본 경로, 파일 원본명, 디폴트 이미지
+			$.each(data, function(i, item) {
+				let downloadTab = document.querySelector("#download-b1");	// 담은 파일 탭
+// 				let uploadTab = document.querySelector("#upload-b1");		// 올린 파일 탭
+			
+				let childElement = null;
+				let txt = ``;
+				
+				txt += `<div class="card m-2" style="flex: 1 1 20%">`;
+				txt += `<a style="text-align: center; font-size: 13px; padding: 0px;" href="` + item.filePath + `" download = "` + item.fileRealName + `">`;
+				txt += `<img style="width: 220px; height: 200px" class="card-img-top embed-responsive-item" src="` + item.filePath + `" alt="Card image cap"/>`;
+				txt += `<p style="text-align: center; margin-top: 15px">` + item.fileRealName + `</p>`;
+				txt += `</a>`;
+				txt += `</div>`;
+				
+				childElement = document.createElement("div");
+				childElement.className = "childElement" + i;
+				console.log("childElement" + i);
+				downloadTab.append(childElement);
+				
+				document.querySelector(".childElement" + i).innerHTML = txt;
+			});	// end of each
+		
+		},
+		error : function() {
+			console.log("getRepoData - error");
+		}	// end of error
+
+	});	// end of ajax
+	
+	
+}	// end of getRepoData
+			
+
+</script>
+
+

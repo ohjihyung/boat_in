@@ -1,0 +1,11 @@
+package kr.or.ddit.controller.chat.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ChatRoomVO;
+
+public interface IChatService {
+
+	List<ChatRoomVO> getRoomsById(String memberId) throws Exception;
+
+}

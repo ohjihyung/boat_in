@@ -1,0 +1,427 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+
+<div class="content-page">
+	<div class="content">
+
+		<!-- Start Content-->
+		<div class="container-fluid">
+
+			<!-- start page title -->
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box">
+						<h4 class="page-title">FAQ</h4>
+					</div>
+				</div>
+			</div>
+			<!-- end page title -->
+
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-12">
+									<div class="text-center">
+										<i class="h1 mdi mdi-comment-multiple-outline text-muted"></i>
+										<h4 class="mb-3">Frequently Asked Questions</h4>
+										<p class="text-muted">
+											자주 묻는 질문들입니다.
+										</p>
+										<button type="button" onclick="faqInsert()" class="btn btn-soft-primary waves-effect waves-light">입력하기</button>
+										<button type="button" onclick="faqUpdateList()" class="btn btn-soft-danger waves-effect waves-light">수정하기</button>
+									</div>
+								</div>	<!-- end col -->
+							</div>	<!-- end row -->
+
+							<div class="row pt-5 justify-content-center" id="listBox">
+							
+							</div>
+						</div>	<!-- end card-body -->
+					</div>	<!-- end card -->
+				</div>
+			</div>
+		</div>	<!-- container -->
+	</div>	<!-- content -->
+</div>
+
+
+
+<script>
+
+$(document).ready(function() {
+	faqList();
+})
+
+
+
+
+function faqList() {
+	
+	$.ajax({
+		type : 'POST',
+		url : '/faq/faqList',
+		dataType : 'json',
+		success : function(data) {
+// 			console.log("faqList - success");
+// 			console.log("faqList - data : ", data);			
+			
+			$.each(data, function(i, item) {
+				
+				let txt = "";
+				
+// 				console.log("i : ", i);
+// 				console.log("faqTitle : ", item.faqTitle);
+// 				console.log("faqContent : ", item.faqContent);
+				
+				txt += `
+					      <div class="card mb-0">
+					        <div class="card-header" id="heading\${i}">
+						        <h4 class="m-0 position-relative fw-bold">
+						            <a class="custom-accordion-title text-reset d-block collapsed" data-bs-toggle="collapse" href="#collapse\${i}" aria-expanded="false" aria-controls="collapse\${i}">
+						          		\${item.faqTitle}
+						                <i class="mdi mdi-chevron-down accordion-arrow"></i>
+						            </a>
+						        </h4>
+					        </div>
+					        <div id="collapse\${i}" class="collapse" aria-labelledby="heading\${i}" data-bs-parent="#custom-accordion-one" style="">
+						        <div class="card-body">
+						        	\${item.faqContent}
+						        </div>
+							</div>
+					      </div>
+						`;
+				
+				let listBox = document.querySelector("#listBox");
+				let col = document.createElement("div");
+				col.className = "accordion custom-accordion col-xl-8 " + i;
+			 	col.id = "custom-accordion-one";
+				col.style.cssText = "margin: 3px;"
+				listBox.append(col);
+				col.innerHTML = txt;
+				
+			});
+		},
+		error : function() {
+			contsole.log("faqList - error");
+		}
+	});
+}
+
+
+
+
+
+
+let faqUdtFlag = true;
+function faqUpdateList() {
+	
+	if(faqUdtFlag ){	// 최초 수정하기를 누른거
+		faqUdtFlag = false;
+		$.ajax({
+			type : 'POST',
+			url : '/faq/faqList',
+			dataType : 'json',
+			success : function(data) {
+//	 			console.log("faqUpdateList - success");
+//	 			console.log("faqUpdateList - data : ", data);			
+				
+				// 기본 리스트 지우기
+// 				let listBox = document.querySelector('#listBox');
+				$('#listBox').empty()
+// 				while (listBox.firstChild) { 
+// 					listBox.removeChild(listBox.firstChild);
+// 				}
+				
+				// 수정 버전 리스트 띄우기
+				var txt = "";
+				$.each(data, function(i, item) {
+					
+//	 				console.log("i : ", i);
+//	 				console.log("faqNo : ", item.faqNo);
+//	 				console.log("faqTitle : ", item.faqTitle);
+//	 				console.log("faqContent : ", item.faqContent);
+					
+					txt += `
+							<div class="accordion custom-accordion col-xl-8">
+							      <div class="card mb-0">
+							        <div class="card-header" id="heading\${i}">
+								        <h4 class="m-0 position-relative fw-bold">
+								            <a class="custom-accordion-title text-reset d-block" data-bs-toggle="collapse" aria-expanded="true" aria-controls="collapse\${i}">
+								          		\${item.faqTitle}
+								          		<button type="button" onclick="faqUpdate('\${item.faqNo}', '\${item.faqTitle}', '\${item.faqContent}')" class="btn btn-secondary waves-effect waves-light" style="margin-left: 3px; padding: 5px 10px 5px">수정</button>
+								          		<button type="button" onclick="faqDelete('\${item.faqNo}')" class="btn btn-secondary waves-effect waves-light" style="margin-left: 3px; padding: 5px 10px 5px">삭제</button>
+								            </a>
+								        </h4>
+							        </div>
+							        <div id="collapse\${i}" class="collapse show" aria-labelledby="heading\${i}" data-bs-parent="#custom-accordion-one">
+								        <div class="card-body">
+								        	\${item.faqContent}
+								        </div>
+									</div>
+						     	 </div>
+					     	 </div>
+							`;
+					
+				});	// end of each
+				$('#listBox').append(txt)
+			},
+			error : function() {
+				contsole.log("faqUpdateList - error");
+			}
+		});	
+	}else{			// 다시 수정하기를 누른거
+		faqUdtFlag = true;
+		let listBox = document.querySelector('#listBox');
+		while (listBox.firstChild) { 
+			listBox.removeChild(listBox.firstChild);
+		}
+		
+		faqList();
+	}
+	
+}
+
+
+
+
+
+let faqInsFlag = true;
+function faqInsert() {
+	
+	let formArea;	
+	
+	if(faqInsFlag) {
+		faqInsFlag = false;
+		
+	// 접속한 아이디 가져와서 확인하는 절차 필요
+	
+	// 입력 폼 띄우기
+	let txt = "";
+	txt = `
+			<div id="formArea" style="display: flex; justify-content: center;">
+				<div class="col-lg-6">
+					<form name="ajax-form" action="#" method="post" class="contact-form mt-4 mt-lg-0" data-parsley-validate="" novalidate="">
+					    <div class="row">
+					        <div class="col-12">
+					            <div class="mb-3">
+					                <label class="form-label">질문</label>
+					                <input class="form-control" id="faqTitle" name="faqTitle" type="text" placeholder="ex. BOAT-IN은 어떤 프로그램인가요?" value="" required="">
+					            </div>
+					        </div>
+							
+					        <div class="col-12">
+					            <div class="mb-3">
+					                <label class="form-label">답변</label>
+					                <textarea class="form-control" id="faqContent" name="faqContent" rows="6" placeholder="ex. 글쎄요 저도 잘..." required=""></textarea>
+					            </div>
+					        </div>
+						    <div class="row justify-content-center">
+						       	<button type="button" class="btn btn-primary col-6" id="insertBtn">완료</button>
+						    </div>
+					    </div>
+					</form>
+				</div>
+			</div>
+		`;
+		
+	let listBox = document.querySelector("#listBox");
+	listBox.setAttribute("class", "row pt-3 justify-content-center");
+	listBox.innerHTML = txt;
+
+	let faqVO;
+	
+	$("#insertBtn").on("click", function() {
+		
+		let faqTitle = $("#faqTitle").val();
+		let faqContent = $("#faqContent").val();
+		console.log("faqContent : ", faqContent);
+		console.log("faqTitle : ", faqTitle);
+		
+		faqVO = {
+				faqTitle : faqTitle,
+				faqContent : faqContent
+		};
+		console.log("faqVO : ", faqVO);
+	
+		$.ajax({
+			type : "POST",
+			url : "/faq/faqInsert",
+			data : JSON.stringify(faqVO),
+			contentType : "application/json; charset=UTF-8",
+			dataType : "json",
+			success : function(data) {
+				console.log("faqInsert - data : ", data);
+				console.log("faqInsert - success");
+				alert("입력 완료~!");
+				
+				formArea = document.querySelector("#formArea");
+				console.log("formArea : ", formArea);
+				formArea.setAttribute("style", "display: none");
+				
+				faqList();
+			},
+			error : function() {
+				console.log("faqInsert - error");
+			}		
+		});	// end of ajax
+	});	// end of onclick
+	
+	}else{
+		faqInsFlag = true;
+		
+		console.log("왔니?");
+		
+		formArea = document.querySelector("#formArea");
+		console.log("formArea : ", formArea);
+		
+		formArea.setAttribute("style", "display: none");
+		
+		faqList();
+	}
+
+}
+
+
+
+
+function faqUpdate(a,b,c) {
+	
+	let faqNo = a;
+	let faqTitle = b;
+	let faqContent = c;
+// 	console.log("faqNo : ", faqNo);
+// 	console.log("faqTitle : ", faqTitle);
+// 	console.log("faqContent : ", faqContent);
+	
+	// 수정 버전 폼 띄우기
+	let txt = "";
+	txt = `
+			<div id="formArea" style="display: flex; justify-content: center;">
+				<div class="col-lg-6"> 
+					<form name="ajax-form" action="#" method="post" class="contact-form mt-4 mt-lg-0" data-parsley-validate="" novalidate="">
+					    <div class="row">
+					        <div class="col-12">
+					            <div class="mb-3">
+					            	<h3 id="faqNo">\${faqNo}번</h3>
+					                <label class="form-label">질문</label>
+					                <input class="form-control" id="faqTitle" name="faqTitle" type="text" placeholder="\${faqTitle}" value="" required="">
+					            </div>
+					        </div>
+							
+					        <div class="col-12">
+					            <div class="mb-3">
+					                <label class="form-label">답변</label>
+					                <textarea class="form-control" id="faqContent" name="faqContent" rows="6" placeholder="\${faqContent}" required=""></textarea>
+					            </div>
+					        </div>
+						    <div class="row justify-content-center">
+						       	<button type="button" class="btn btn-primary col-6" id="updateBtn">완료</button>
+						    </div>
+					    </div>
+					</form>
+				</div>
+			</div>
+		`;
+	
+	let listBox = document.querySelector("#listBox");
+	listBox.setAttribute("class", "row pt-3 justify-content-center");
+	listBox.innerHTML = txt;
+	
+	let faqVO;
+	
+	$("#updateBtn").on("click", function() {
+
+		let faqno = $("#faqNo").text();
+		let faqNo = faqno.slice(0, -1);
+		let faqTitle = $("#faqTitle").val();
+		let faqContent = $("#faqContent").val();
+		console.log("updateBtn - faqNo : ", faqNo);
+		console.log("updateBtn - faqTitle : ", faqTitle);
+		console.log("updateBtn - faqContent : ", faqContent);
+		
+		faqVO = {
+					faqNo : faqNo,
+					faqTitle : faqTitle,
+					faqContent : faqContent											
+				};
+		console.log("faqVO : ", faqVO);
+		
+		$.ajax({
+			type : "POST",
+			url : "/faq/faqUpdate",
+			data : JSON.stringify(faqVO),
+			dataType : "json",
+			contentType : "application/json; charset=UTF-8",
+			success : function(data) {
+				console.log("faqUpdate - success");
+				console.log("faqUpdate - data : ", data);
+				alert("수정 완료~!");
+				
+				// 수정 버전 폼 숨기기
+				let formArea = document.querySelector("#formArea");
+				console.log("formArea : ", formArea);
+				formArea.setAttribute("style", "display: none");
+				
+				// 기본 리스트 띄우기
+				faqList();
+			},
+			error : function() {
+				console.log("faqUpdate - error");
+			}
+		});
+	})
+}
+
+
+
+
+
+function faqDelete(a) {
+	
+	let faqNo = a;
+	console.log("faqNo - faqDelete : ", faqNo);
+	
+	let faqVO = { faqNo : faqNo };
+	
+	$.ajax({
+		type : "POST",
+		url : "/faq/faqDelete",
+		data : JSON.stringify(faqVO),
+		contentType : "application/json; charset=UTF-8",
+		dataType : "json",
+		success : function(data) {
+			console.log("faqDelete - success");
+			alert("삭제 완료~!");
+			
+			// 수정 버전 리스트 지우기
+			let listBox = document.querySelector("#listBox");
+			while(listBox.firstChild) {
+				listBox.removeChild(listBox.firstChild);
+			}
+			
+			// 기본 리스트 띄우기
+			faqList();
+		},
+		error : function() {
+			console.log("faqDelete - error");
+		}
+	});
+	
+	
+	
+	
+}
+
+
+
+</script>
+
+
+
+
+

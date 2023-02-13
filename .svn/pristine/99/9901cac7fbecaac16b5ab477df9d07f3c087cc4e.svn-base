@@ -1,0 +1,50 @@
+package kr.or.ddit.controller.admin.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProjectVO;
+import kr.or.ddit.vo.SubWorkVO;
+import kr.or.ddit.vo.TopWorkCategoryVO;
+import kr.or.ddit.vo.TopWorkRelationVO;
+import kr.or.ddit.vo.TopWorkVO;
+
+@Service
+public class AdminServiceImpl implements IAdminService {
+    @Inject
+    private CommonDao dao;
+    @Override
+    public List<MemberVO> getAllMember() throws Exception {
+        return dao.selectList("getAllMember");
+    }
+    @Override
+    public List<ProjectVO> getAllProject() throws Exception {
+        return dao.selectList("getAllProject");
+    }
+    @Override
+    public Map<String, Object> getAllDatas() throws Exception {
+        List<ProjectVO> projectList = dao.selectList("getAllProject");
+        List<TopWorkCategoryVO> twCategoryList = dao.selectList("getAlltwCategory");
+        List<TopWorkVO> topWorkList = dao.selectList("getAllTopWork");
+        List<SubWorkVO> subWorkList = dao.selectList("getAllSubWork");
+        List<TopWorkRelationVO> twRelationList = dao.selectList("getAlltwRelation");
+        
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectList", projectList);
+        map.put("twCategoryList", twCategoryList);
+        map.put("topWorkList", topWorkList);
+        map.put("subWorkList", subWorkList);
+        map.put("twRelationList", twRelationList);
+        
+        return map;
+    }
+    
+    
+}

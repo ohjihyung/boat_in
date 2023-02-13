@@ -1,0 +1,63 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.ChatContentVO;
+import kr.or.ddit.vo.ChatRoomVO;
+import kr.or.ddit.vo.ChatUserVO;
+import kr.or.ddit.vo.FileLocationVO;
+import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.MemberVO;
+
+
+public interface ChatMapper {
+
+	List<ChatRoomVO> selectRoomsById(String memberId) throws Exception;
+
+	int insertChatContent(ChatContentVO chatContentVO) throws Exception;
+
+	List<ChatContentVO> getChatContents(String roomId) throws Exception;
+
+	String getMemPic(String myId)throws Exception;
+
+	String getRoomTitleByRoomId(String roomId)throws Exception;
+
+	int insertRoom(ChatRoomVO roomVO) throws Exception;
+
+	int insertInvitedUser(ChatUserVO chatUserVO) throws Exception;
+
+	int updateIsOnlineT(ChatUserVO userVO) throws Exception;
+
+	int updateIsOnlineF(ChatUserVO userVO) throws Exception;
+
+	List<ChatUserVO> getOfflineUser(String roomId) throws Exception;
+
+	int insertNoRead(ChatUserVO ChatUserVO) throws Exception;
+
+	String getNotReadCnt(Map<String, String> getNCntData) throws Exception;
+
+	ChatContentVO getLastChat(String roomId)throws Exception;
+
+	List<MemberVO> getuserImgs(String roomId) throws Exception;
+
+	void deleteUnread(Map<String, String> data) throws Exception;
+
+	void deleteRoom(Map<String, String> data) throws Exception;
+
+	List<ChatUserVO> getuserName(String roomId) throws Exception;
+
+	int insertChatFileLocation(FileLocationVO vo) throws Exception;
+
+	int sendChatFile_O(FileVO fileVO) throws Exception;
+
+	int insertChatFile(ChatContentVO chatContentVO) throws Exception;
+
+	int updateIsOnlineAllF(ChatUserVO userVO) throws Exception;
+
+	String showUnreadIcon(String myId) throws Exception;
+
+
+
+
+}

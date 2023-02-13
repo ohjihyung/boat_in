@@ -1,0 +1,755 @@
+<%-- <%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+
+<!-- <!-- 캘린더 CSS--> -->
+<!-- <link -->
+<!-- 	href="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css" -->
+<!-- 	rel="stylesheet" /> -->
+
+<!-- <!-- 티피 --> -->
+<!-- <link rel="stylesheet" -->
+<!-- 	href="https://unpkg.com/tippy.js@6/animations/scale.css" /> -->
+<!-- <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script> -->
+
+
+<!-- <!-- 피커 --> -->
+<!-- <link rel="stylesheet" -->
+<!-- 	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+<!-- <link rel="stylesheet" type="text/css" -->
+<!-- 	href="https://npmcdn.com/flatpickr/dist/themes/dark.css"> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
+<!-- <script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script> -->
+
+<!-- <!-- 레인지바 --> -->
+<!-- <link -->
+	href="${pageContext.request.contextPath }/resources/dist/assets/libs/ion-rangeslider/css/ion.rangeSlider.min.css"
+<!-- 	rel="stylesheet" type="text/css" /> -->
+
+<style>
+white-space
+:
+ 
+pre-wrap
+;
+</style>
+
+
+
+ <div class="content-page">
+	<div class="content">
+		<div class="container-fluid">
+			start page title
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box">
+						<h4 class="page-title">캘린더얌</h4>
+						<div>
+							<ol class="breadcrumb m-0">
+								<li class="breadcrumb-item"><a href="javascript: void(0);">Codefox</a></li>
+								<li class="breadcrumb-item"><a href="javascript: void(0);">Apps</a></li>
+								<li class="breadcrumb-item active">캘린더</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end page title -->
+
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<!-- <div class="col-lg-3">
+                                    <button class="btn btn-lg font-16 btn-primary w-100" id="btn-new-event"><i class="mdi mdi-plus-circle-outline"></i> Create New Event</button>
+                                    
+                                    <div id="external-events">
+                                        <br>
+                                        <p class="text-muted">Drag and drop your event or click in the calendar</p>
+                                        <div class="external-event bg-success" data-class="bg-success">
+                                            <i class="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>New Theme Release
+                                        </div>
+                                        <div class="external-event bg-info" data-class="bg-info">
+                                            <i class="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>My Event
+                                        </div>
+                                        <div class="external-event bg-warning" data-class="bg-warning">
+                                            <i class="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>Meet manager
+                                        </div>
+                                        <div class="external-event bg-danger" data-class="bg-danger">
+                                            <i class="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>Create New theme
+                                        </div>
+                                    </div>
+
+
+                                    <div class="mt-5 d-none d-xl-block">
+                                        <h5 class="text-center">How It Works ?</h5>
+
+                                        <ul class="ps-3">
+                                            <li class="text-muted mb-3">
+                                                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                                            </li>
+                                            <li class="text-muted mb-3">
+                                                Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage.
+                                            </li>
+                                            <li class="text-muted mb-3">
+                                                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div> end col -->
+
+						<div class="col-lg-9">
+							<div id="calendar"></div>
+						</div>
+						<!-- end col -->
+
+					</div>
+					<!-- end row -->
+				</div>
+				<!-- end card body-->
+			</div>
+			<!-- end card -->
+
+			<!-- Add New Event MODAL -->
+			<div class="modal fade" id="event-modal" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header py-3 px-4 border-bottom-0 d-block">
+							<button type="button" class="btn-close float-end"
+								data-bs-dismiss="modal" aria-label="Close"
+								onclick="insertModalClose()"></button>
+							<h5 class="modal-title" id="modal-title">작업 추가</h5>
+						</div>
+						<div class="modal-body px-4 pb-4 pt-0">
+							<form class="needs-validation" name="event-form" id="form-event"
+								novalidate>
+								<div class="row">
+									<div class="col-12">
+										<div class="mb-3">
+											<label class="form-label">Work Title</label> <input
+												class="form-control" placeholder="작업을 입력해주세요." type="text"
+												name="title" id="event-title" required />
+											<div class="invalid-feedback">작업 입력은 필수입니다.</div>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Worker</label> <input
+												class="form-control" placeholder="담당자를 입력해주세요." type="text"
+												name="worker" id="event-worker" required />
+											<div class="invalid-feedback">담당자를 설정해주세요.</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="mb-3">
+											<label class="form-label">Category</label> <select
+												class="form-select" name="category" id="event-category"
+												required>
+												<option value="emergency" selected>긴급</option>
+												<option value="important">중요</option>
+												<option value="normal">일반</option>
+											</select>
+											<div class="invalid-feedback">Please select a valid
+												event category</div>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Date</label>
+											
+										    <div style="display: flex; justify-content: space-around;">	
+												<div class="col-6">
+													<label class="form-label" for="birth">시작일</label> <input
+														class="form-control" id="birth" pattern="\d{4}-\d{2}-\d{2}"
+														placeholder="" required th:field="*{birth2}" type="text"
+														value="">
+												</div>
+												<div class="col-6">
+													<label class="form-label" for="birth2">종료일</label> <input
+														class="form-control" id="birth2" pattern="\d{4}-\d{2}-\d{2}"
+														placeholder="" required th:field="*{birth2}" type="text"
+														value="">
+												</div>
+											</div>
+
+
+											<div class="invalid-feedback">Please select a valid
+												event day</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col-md-6 col-4">
+										<button type="button" class="btn btn-danger"
+											id="btn-delete-event">Delete</button>
+									</div>
+									<div class="col-md-6 col-8 text-end">
+										<button type="button" class="btn btn-light me-1"
+											id="btnModalClose" data-bs-dismiss="modal">Close</button>
+										<button type="button" class="btn btn-success"
+											id="btn-save-event">Save</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<!-- end modal-content-->
+				</div>
+				<!-- end modal dialog-->
+			</div>
+			<!-- end modal-->
+
+
+			<!-- Add Detail MODAL -->
+			<div class="modal fade" id="detail-modal" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header py-3 px-4 border-bottom-0 d-block">
+							<button type="button" class="btn-close float-end"
+								data-bs-dismiss="modal" aria-label="Close"
+								onclick="detailModalClose()"></button>
+							<h5 class="modal-title" id="modal-title">작업 상세보기</h5>
+						</div>
+						<div class="modal-body px-4 pb-4 pt-0">
+							<form class="needs-validation" name="event-form" id="form-event"
+								novalidate>
+								<div class="row">
+									<div class="col-12">
+										<div class="mb-3">
+											<label class="form-label">Work Title</label> <input
+												type="hidden" id="detail-topWorkNo" /> <input
+												class="form-control" placeholder="작업을 입력해주세요." type="text"
+												name="title" id="detail-title" required />
+											<div class="invalid-feedback">작업 입력은 필수입니다.</div>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Worker</label> <input
+												class="form-control" placeholder="담당자를 입력해주세요." type="text"
+												name="worker" id="detail-content" required />
+											<div class="invalid-feedback">담당자를 설정해주세요.</div>
+										</div>
+									</div>
+									<div class="col-12">
+										<div class="mb-3">
+											<label class="form-label">Category</label> <select
+												class="form-select" name="category" id="detail-category"
+												required>
+												<option value="emergency" selected>긴급</option>
+												<option value="important">중요</option>
+												<option value="normal">일반</option>
+											</select>
+											<div class="invalid-feedback">Please select a valid
+												event category</div>
+										</div>
+										<div class="mb-3">
+											<label class="form-label">Date</label> <input
+												class="form-control" placeholder="기간을 정해주세요." type="text"
+												id="detail-date" required />
+											<div class="invalid-feedback">Please select a valid
+												event day</div>
+										</div>
+										<!-- 레인지 바 -->
+										<div class="mb-3">
+											<label class="form-label">진행상황</label> <input type="text"
+												id="range_15">
+											<div class="invalid-feedback">Please select a valid
+												event day</div>
+										</div>
+										<!-- 레인지바 끝 -->
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col-md-6 col-4">
+										<button type="button"
+											class="btn btn-dark waves-effect waves-light"
+											id="btn-share-detail">
+											<i class="mdi mdi-email-outline me-1"></i>Share
+										</button>
+										<button type="button"
+											class="btn btn-danger waves-effect waves-light"
+											id="btn-delete-detail">Delete</button>
+									</div>
+									<div class="col-md-6 col-8 text-end">
+										<button type="button" class="btn btn-light me-1"
+											id="btn-close-detail" data-bs-dismiss="modal">Close</button>
+										<button type="button"
+											class="btn btn-primary waves-effect waves-light"
+											id="btn-update-detail">Update</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<!-- end modal-content-->
+				</div>
+				<!-- end modal dialog-->
+			</div>
+			<!-- end detail-modal-->
+
+
+
+		</div>
+		<!-- end col-12 -->
+	</div>
+	<!-- end row -->
+
+</div>
+<!-- container -->
+
+</div>
+<!-- content -->
+</div>
+<!-- 내꺼 -->
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<!-- 데이트피커 -->
+
+<script
+	src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js"></script>
+<!-- fullcalendar 언어 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js"></script>
+<!-- 풀캘린더 데이트 포맷 -->
+<script class="cssdesk" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js" type="text/javascript"></script>
+
+	
+
+<!-- 템플맀거 -->
+<script
+	src="${pageContext.request.contextPath }/resources/dist/assets/js/vendor.min.js"></script>
+<script
+	src="${pageContext.request.contextPath }/resources/dist/assets/libs/moment/min/moment.min.js"></script>
+<script
+	src="${pageContext.request.contextPath }/resources/dist/assets/js/app.min.js"></script>
+
+<script
+	src="${pageContext.request.contextPath }/resources/dist/assets/libs/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+<!-- Range slider init js-->
+<script
+	src="${pageContext.request.contextPath }/resources/dist/assets/js/pages/range-sliders.init.js"></script>
+
+<script>
+//디테일 프로세스 바 관련
+console.log(document.querySelector("#range_15"));
+
+
+//피커
+const fp = flatpickr(document.getElementById("birth"), {
+    //'monthSelectorType' : 'static',
+    locale: "ko",
+    enableTime: "true",
+    onValueUpdate: () => {
+    	   //console.log("업데이트");
+    },
+    onDayCreate: () => {
+    	   //console.log("크리에이트");
+    },
+    
+});
+const fp2 = flatpickr(document.getElementById("birth2"), {
+    //'monthSelectorType' : 'static',
+    locale: "ko",
+    enableTime: "true",
+    onValueUpdate: () => {
+    	   //console.log("업데이트");
+    },
+    onDayCreate: () => {
+    	   //console.log("크리에이트");
+    },
+    
+});
+
+console.log(fp);
+
+
+const birth = document.querySelector("#birth");
+
+birth.addEventListener("change", () => {
+	console.log("값 바뀜", event.target.value);
+	const date = event.target.value;
+	console.log(date.replace(" ", "/"));
+});
+
+
+
+//달력 로드하려면 컨트롤러가 필요
+myRender();
+
+
+/////////////인서트용 모달////////////////////////////
+const insertModalOpen = (arg) => {
+    //console.log(arg);
+    const topWorkStart = arg.startStr;
+    const topWorkEnd = arg.endStr;
+    
+    //날짜값 피커에 넣어주기 (시간 기본값 10:00, 12:00)
+    document.querySelector("#birth").value = topWorkStart + " 10:00";
+    document.querySelector("#birth2").value = topWorkEnd + " 12:00";
+    //모달 보여주기
+	document.querySelector("#event-modal").classList.add("show");
+    document.querySelector("#event-modal").style.display = "block";
+};
+
+
+var btnInsertModalClose = document.querySelector("#btnModalClose");
+var btnInsertModalDelete = document.querySelector("#btn-delete-event");
+var btnInsertModalSave = document.querySelector("#btn-save-event");
+
+//modal 클로즈(숨기기) //모든 값 채우면 자동으로 모달이 닫힌다. -> 버튼타입이 submit이라 -> button으로 바꿈
+btnInsertModalClose.addEventListener("click", () => {
+	insertModalClose();
+});
+
+const insertModalClose = () => {
+	document.querySelector("#event-modal").classList.remove("show");
+    document.querySelector("#event-modal").style.display = "none";
+};
+
+btnInsertModalDelete.addEventListener("click", () => {
+	document.querySelector("#event-title").value = "";
+});
+
+btnInsertModalSave.addEventListener("click", (event) => {
+	const topWorkContent = document.querySelector("#event-title").value;
+	const topWorkTitle = document.querySelector("#event-worker").value;
+	const topWorkCategory = document.querySelector("#event-category").value;
+	
+	if (!topWorkTitle || !topWorkContent) {
+	    //	console.log("타이틀없다");
+		return;
+	}
+    //피커 값 포맷 수정	
+	const topWorkStart = document.querySelector("#birth").value.replace(" ", "T");
+	const topWorkEnd = document.querySelector("#birth2").value.replace(" ", "T");
+	
+	const map = { 
+		topWorkContent,
+		topWorkTitle,
+		topWorkCategory,
+		topWorkStart,
+		topWorkEnd,
+		topWorkFile: "null",
+		proNo: "100", //여기 프로젝트 번호 들어가야함
+		twCategoryNo: "db",
+	};
+	//console.log(map);
+	
+	const obj = {};
+	obj.method = "post";
+	obj.url = "/calendar/insert";
+    obj.header = "json";
+    obj.sendData = JSON.stringify(map);
+    
+    myAsync(obj, (data) => {
+    	   //console.log(data);
+    	   insertModalClose();
+    	   //글쓰기 후 렌더링
+       myRender();
+    });
+    
+});
+/////////////인서트용 모달 끝///////////////////////////
+
+
+////////////디테일용 모달/////////////////////////////
+var btnDetailModalClose = document.querySelector("#btn-close-detail");
+var btnDetailModalShare = document.querySelector("#btn-share-detail");
+var btnDetailModalSave = document.querySelector("#btn-update-detail");
+var btnDetailModalDelete = document.querySelector("#btn-delete-detail");
+
+btnDetailModalDelete.addEventListener("click", () => {
+	const topWorkNo = document.querySelector("#detail-topWorkNo").value;
+	
+	if(!confirm("정말 삭제하시겠습니까?")) {
+	    return;
+	}
+	
+	console.log("삭제를 해볼까 topWorkNo : ", topWorkNo);
+	
+	const topWorkVO = {
+		topWorkNo,
+	};
+	
+	const obj = {};
+	obj.method = "post";
+	obj.url = "/calendar/delete";
+	obj.header = "json";
+	obj.sendData = JSON.stringify(topWorkVO);
+
+	
+	myAsync(obj, (responseData) => {
+		console.log(responseData);
+		myRender();
+	});
+});
+
+const detailModalOpen = (topWorkVO) => {
+	//프로그레스 바 //페이지 새로고침하고 최초로 모달창 열었을때 위치 안맞음.
+	document.querySelector(".irs-single").innerText = topWorkVO.topWorkProgress; //-8.1%한걸로 위치 잡아줘야함
+	
+	let bar;
+	if (topWorkVO.topWorkProgress == "0") {
+		bar = Number(topWorkVO.topWorkProgress);
+	} else {
+		bar = Number(topWorkVO.topWorkProgress) - 8.1;
+	}
+	console.log("바 : ", bar);
+	document.querySelector(".irs-single").style= `left: \${bar}%`;
+	document.querySelector(".irs-handle").style= `left: \${bar}%`;
+	document.querySelector(".irs-bar").style= `left: 0px; width: \${bar + 3}%`;
+	////////////////////
+	console.log("모달열고 데이터 : ",topWorkVO);
+	document.querySelector("#detail-topWorkNo").value = topWorkVO.topWorkNo;
+	document.querySelector("#detail-title").value = topWorkVO.topWorkTitle;
+	document.querySelector("#detail-content").value = topWorkVO.topWorkContent;
+	//카테고리는 따로 받아야함
+	document.querySelector("#detail-category").value = topWorkVO.topWorkCategory;
+	document.querySelector("#detail-date").value = `\${topWorkVO.topWorkStart.replace("T", " ")} ~ \${topWorkVO.topWorkEnd.replace("T", " ")}`;
+	
+	document.querySelector("#detail-modal").classList.add("show");
+    document.querySelector("#detail-modal").style.display = "block";
+};
+
+const detailModalClose = () => {
+	document.querySelector("#detail-modal").classList.remove("show");
+    document.querySelector("#detail-modal").style.display = "none";
+};
+
+btnDetailModalClose.addEventListener("click", () => {
+	detailModalClose();
+});
+
+
+
+btnDetailModalSave.addEventListener("click", (event) => {
+	//작업 진행도 (rangeBar)
+	const topWorkProgress = document.querySelector(".irs-single").innerText;
+	//console.log(document.querySelector("#detail-dragNo").value);
+	const topWorkNo = document.querySelector("#detail-topWorkNo").value;
+	const topWorkTitle = document.querySelector("#detail-title").value;
+	const topWorkContent = document.querySelector("#detail-content").value;
+	const twCategoryNo = document.querySelector("#detail-category").value;
+	
+	const map = {
+		topWorkNo,
+		topWorkTitle,
+		topWorkContent,
+		twCategoryNo,
+		topWorkProgress,
+	};
+	
+	const obj = {};
+	obj.method = "post";
+	obj.url = "/calendar/update";
+	obj.header = "json";
+	obj.sendData = JSON.stringify(map);
+	
+	myAsync(obj, (responseData) => {
+		console.log(responseData);
+		//수정 후 렌더링
+		myRender();
+		detailModalClose();
+	});
+});
+
+function myRender() {
+    const promise = new Promise((resolve, reject) => {
+        const obj = {};
+        obj.url = "/calendar/list";
+        obj.method = "post";
+        
+        myAsync(obj, (responseData) => {
+        	   console.log(responseData);
+           resolve(JSON.parse(responseData));
+        });
+    });
+
+    promise
+    .then((data) => {
+        
+        let text = "[";
+        for (let i = 0; i < data.length; i++) {
+               text += "{ ";
+               text += '"topWorkNo" : ' + '"' + data[i].topWorkNo + '", ';
+               text += '"proNo" : ' + '"' + data[i].proNo + '", ';
+               text += '"topWorkContent" : ' + '"' + data[i].topWorkContent + '", '; //제목
+               text += '"title" : ' + '"' + data[i].topWorkTitle + '", '; //워크네임(작업자)
+               text += '"topWorkProgress" : ' + '"' + data[i].topWorkProgress + '", '; 
+               text += '"topWorkLike" : ' + '"' + data[i].topWorkProgress + '", '; 
+               text += '"topWorkFile" : ' + '"' + data[i].topWorkProgress + '", '; 
+               
+                   if (data[i].twCategoryNo == "emergency") {
+                       text += '"color" : "tomato",';
+                       //console.log("토마토");
+                   }
+                   if (data[i].twCategoryNo == "important") {
+                       text += '"color" : "skyblue",';
+                       //console.log("블루");
+                   }
+                   if (data[i].twCategoryNo == "normal") {
+                       text += '"color" : "green",';
+                       //console.log("초록");
+                   }
+               
+               text += '"start" : ' +'"' + (data[i].topWorkStart + "").substr(0, 10) + '", '; //T로 해야 캘린더에 출력됨.
+               text += '"end" : '  + '"' + (data[i].topWorkEnd + "").substr(0, 10) + '"';     //시간값까지 뿌려주면 드래그로 리사이즈를 못한다.
+               
+               //console.log(data[i].topWorkStart.substr(0, 10));
+                   if (i == data.length - 1){
+                   text += "} ";
+               } else {
+                   text += "}, ";
+               }
+        }
+        //extendedProps: {
+        //    department: 'BioChemistry'
+        //}, 형식으로 데ㅐ이터 담아줄 수 있음.
+        
+        text += "]";
+        text = text.replace(/\n/gi,"\\n"); //개행문자 파싱오류 ...모든 \n을 \\n으로 바꿔야함
+        let json = JSON.parse(text);
+        
+        //alert("이제 달력출력");
+        // calendar element 취득
+        var calendarEl = document.querySelector("#calendar");
+        // full-calendar 생성하기
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          //plugins: ['interaction', 'dayGridPlugin'], //이거하면 왜 오륜가
+          firstDay                  : 1,
+          height                    : "700px", // calendar 높이 설정
+          expandRows                : true, // 화면에 맞게 높이 재설정
+          slotMinTime               : "08:00", // Day 캘린더에서 시작 시간
+          slotMaxTime               : "20:00", // Day 캘린더에서 종료 시간
+          weekends                  : true,
+          nowIndicator              : true,
+          interaction: true,
+          // 해더에 표시할 툴바
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek", //여기서 정렬기준 조정
+          },
+          initialView: "dayGridMonth", // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+          //initialDate: "2021-07-15", // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+          editable                 : true, // 수정 가능?
+          navLinks                 : true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+          selectable               : true, // 달력 일자 드래그 설정가능
+          nowIndicator             : true, // 현재 시간 마크
+          dayMaxEvents             : true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+          locale                   : "ko", // 한국어 설정
+          eventMouseEnter: function(info) {
+              console.log("인포", info);
+              console.log("인포2", info.event._def.extendedProps);
+                const topWorkContent = info.event._def.extendedProps.topWorkContent;
+                const progress = info.event._def.extendedProps.topWorkProgress;
+                tippy(info.el, {
+                	   allowHTML: true,
+                	   //작업자를 관계테이블에서 따로 빼와야함
+                   content:  "작업내용 : " + topWorkContent + "<br> 진행도 " + progress + "%",
+                   theme: 'gradient',
+                   delay: [0,100],
+                   position:'top',
+                   animation:'scale',
+                   interactive:'true',
+                   //followCursor: true,
+                });
+          },
+          /////////////////////////
+          eventResize: function(obj) {
+                console.log("리사이즈되냐?");//된다
+          },
+          eventClick: function(obj) {
+                console.log("클릭했어");
+                //console.dir(obj);
+                //console.log(obj);
+                console.log("pk : " + obj.event.extendedProps.topWorkNo);
+                const topWorkNo = obj.event.extendedProps.topWorkNo;
+                
+                let topWorkVO = null;
+                for (item of data) {
+                    if (item.topWorkNo == topWorkNo) {
+                    	//여기서 아이템(vo)을 넘겨주자
+                          console.log("아이템 : ", item);
+                          topWorkVO = item;
+                          break;
+                    }
+                }
+                
+                detailModalOpen(topWorkVO);
+          },
+          /////////////////////////
+          
+          eventAdd: function (obj) {
+            // 이벤트가 추가되면 발생하는 이벤트
+            /* console.log("이벤트추가!");
+            console.dir(obj.event._context.viewTitle);
+            console.dir(obj.event._context.dateProfile); */
+          },
+          eventChange: function (obj) {
+            // 이벤트가 수정되면 발생하는 이벤트
+            //console.log("이동했다", obj);
+            //console.log(obj.event._def);
+            //console.log("topWorkNo : " + obj.event._def.extendedProps.topWorkNo);
+            //console.log(obj.event.startStr.substr(0, 16)); // 시작일 (분단위 까지만 데이터 가져오기)
+            //console.log(obj.event.endStr.substr(0, 16));  //변경된 종료일(분단위 까지만 데이터 가져오기) 
+            
+            const map = {};
+            map.topWorkNo = obj.event._def.extendedProps.topWorkNo;
+            map.topWorkStart = obj.event.startStr.substr(0, 16);
+            map.topWorkEnd = obj.event.endStr.substr(0, 16);
+            console.log("이동시...:", map);
+            
+            const obj2 = {};
+            obj2.method = "post";
+            obj2.url = "/calendar/updateMove";
+            obj2.header = "json";
+            obj2.sendData = JSON.stringify(map);
+            
+            myAsync(obj2, (result) => {
+                    //$('#updateModal').modal('show');
+                    myRender();
+            });
+          },
+          eventRemove: function (obj) {
+            // 이벤트가 삭제되면 발생하는 이벤트
+            console.log(obj);
+          },
+          select: function (arg) {
+        	//div테스트  
+        
+            // 캘린더에서 클릭 혹은 드래그로 이벤트를 생성할 수 있다.
+            // 2. 여기서 시작일, 종료일, 제목, 타이틀 받아 일감 추가하기
+
+            //calendar.unselect(); //셀렉트된 셀은 하늘색, 언셀렉하면 사라짐
+            //insertModalOpen(arg);
+          },
+          // 이벤트 //1. 여기서 이벤트를 json으로 만들어서 뿌리면 될 듯.
+          //리스트 데이터 넣기
+          events: json, //2. function() 으로 바꿔서 여기서 데이터 로딩해보기
+          
+          eventMouseLeave: function(event) {
+               
+          },
+          
+        });
+        // 캘린더 랜더링
+        calendar.render();
+    });
+
+}
+
+function myAsync(obj, pCb) {
+    let header =
+      obj.header == "json"
+        ? "application/json"
+        : "application/x-www-form-urlencoded";
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open(obj.method, obj.url, true);
+    xhr.setRequestHeader("Content-type", header);
+  
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        pCb(xhr.responseText);
+      }
+    };
+  
+    xhr.send(obj.sendData);
+}
+
+</script> --%>

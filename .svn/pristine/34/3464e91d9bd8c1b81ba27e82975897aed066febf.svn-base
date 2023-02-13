@@ -1,0 +1,28 @@
+package kr.or.ddit.controller.project;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RequestMapping("/proquanti")
+@Controller
+@Slf4j
+public class ProjectQuantityController {
+	
+	@GetMapping("/home")
+	public String proQuantityHome() {
+		
+		return "content/projectQuantity";
+	}
+	
+	@PostMapping("/totalcnt")
+	public String proQuantiList() {
+		
+		return "OK";
+	}
+	
+	
+}

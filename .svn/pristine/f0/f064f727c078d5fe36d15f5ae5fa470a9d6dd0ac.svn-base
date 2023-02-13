@@ -1,0 +1,75 @@
+package kr.or.ddit.controller.project.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.ProjectMapper;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProjectJoinStateVO;
+import kr.or.ddit.vo.ProjectVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class ProjectServiceImpl implements IProjectService {
+    @Inject
+    private ProjectMapper mapper;
+    @Inject
+    private CommonDao dao;
+
+    @Override
+    public String insert(ProjectVO projectVO) throws Exception {
+        //1. 프로젝트 생성됨
+        //테스트용으로 멤버아이디 어드민으로 줘봄.
+        //projectVO.setMemberId("admin");
+        mapper.insert(projectVO);
+        //셀렉트 키로 인해 이후엔 proNo가 담겨있음
+        log.debug("생성 후 projectaVO : {}", projectVO);
+
+        //2. 프로젝트 참여 인원에 해당 멤버 넣어주기. -> 생성된 프로젝트번호, 생성자 아이디가 꼭 필요함.
+        ProjectJoinStateVO proJSVO = new ProjectJoinStateVO();
+        proJSVO.setProNo(projectVO.getProNo());
+        proJSVO.setMemberId(projectVO.getMemberId());
+        proJSVO.setProAuth("1");
+        log.debug("proJSVO : {}", proJSVO);
+
+        mapper.insertJoinState(proJSVO);
+
+
+        //이후에 proNo 리턴해줘서 새로운 프로젝트의 홈으로 보내주기
+        return projectVO.getProNo();
+    }
+
+    @Override
+    public List<ProjectVO> list(MemberVO memberVO) throws Exception {
+        return mapper.list(memberVO);
+    }
+
+
+	@Override
+	public List<ProjectJoinStateVO> selectTeamMember(String proNo) throws Exception {
+		return mapper.selectTeamMember(proNo);
+	}
+    
+    // 프로젝트 하나 정보 불러오기
+	@Override
+	public ProjectVO selectOne(String proNo)throws Exception {
+		return mapper.selectOne(proNo);
+	}
+
+    @Override
+    public List<MemberVO> memberList(ProjectVO projectVO) throws Exception {
+        // TODO Auto-generated method stub
+        return mapper.memberList(projectVO);
+    }
+
+    @Override
+    public ProjectVO getProjectPeriod(ProjectVO vo) throws Exception {
+        return dao.select("getProjectPeriod", vo);
+    }
+
+}

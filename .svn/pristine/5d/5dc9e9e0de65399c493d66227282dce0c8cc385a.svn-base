@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 
+        [마이바티스] 스프링에서 '_'를 사용한 컬럼명을 사용 시 (ex)BOOK테이블의 BOOK_ID
+        카멜케이스로 읽어줌(bookId)
+     -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!-- <typeAliases>
+        <typeAlias type="kr.or.ddit.vo.TopWorkVO" alias="topWorkVO"/>
+        <typeAlias type="kr.or.ddit.vo.MemberVO" alias="memberVO"/>
+        <typeAlias type="kr.or.ddit.vo.MemberAuthVO" alias="memberAuthVO"/>
+        <typeAlias type="kr.or.ddit.vo.TopWorkRelationVO" alias="topWorkRelationVO"/>
+        <typeAlias type="kr.or.ddit.vo.TopWorkCategoryVO" alias="topWorkCategoryVO"/>
+        <typeAlias type="kr.or.ddit.vo.ProjectLogVO" alias="projectLogVO"/>
+        <typeAlias type="kr.or.ddit.vo.ProjectVO" alias="projectVO"/>
+        <typeAlias type="kr.or.ddit.vo.ProjectJoinStateVO" alias="projectJoinStateVO"/>
+        <typeAlias type="kr.or.ddit.vo.MemberVO" alias="memberVO"/>
+        <typeAlias type="kr.or.ddit.vo.ProjectLogVO" alias="projectLogVO"/>
+        <typeAlias type="kr.or.ddit.vo.LoginLogVO" alias="loginLogVO"/>
+        <typeAlias type="kr.or.ddit.vo.DevinVO" alias="devinVO"/>
+        <typeAlias type="kr.or.ddit.vo.WidgetVO" alias="widgetVO"/>
+        <typeAlias type="kr.or.ddit.vo.WidgetBarVO" alias="widgetBarVO"/>
+        <typeAlias type="kr.or.ddit.vo.FileLocationVO" alias="fileLocationVO"/>
+        <typeAlias type="kr.or.ddit.vo.FileVO" alias="fileVO"/>
+        <typeAlias type="kr.or.ddit.vo.FileTreeVO" alias="fileTreeVO"/>
+        <typeAlias type="kr.or.ddit.vo.GdocsVO" alias="gdocsVO"/>
+        <typeAlias type="kr.or.ddit.vo.SubWorkVO" alias="subWorkVO"/>
+    </typeAliases> -->
+     
+    <typeAliases>
+        <package name="kr.or.ddit.vo"/>
+    </typeAliases>
+    
+</configuration>

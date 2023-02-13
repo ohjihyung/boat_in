@@ -1,0 +1,279 @@
+package kr.or.ddit.controller.letter;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import kr.common.CommonDao;
+import kr.or.ddit.controller.letter.service.ILetterService;
+import kr.or.ddit.vo.FileVO;
+import kr.or.ddit.vo.LetterVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/letter")
+public class LetterController {
+
+    @Inject
+    ILetterService service;
+    @Inject
+    CommonDao dao;
+
+    @GetMapping("/home")
+    public String letterHome() {
+        return "content/letter";
+    }
+
+    @PostMapping(value = "/insert", produces = "text/p; charset=utf-8")
+    @ResponseBody
+    public String sendLetter(@RequestBody LetterVO letterVO) {
+        log.debug("쪽지보내기 들어옴 받은객체 : {}", letterVO);
+        String letterNo = service.sendLetter_H(letterVO);
+
+        log.debug("나갈 쪽지 번호 : {}", letterNo);
+
+        return letterNo;
+    }
+
+    @PostMapping(value = "/mylist", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<LetterVO> myLetterList(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("받은쪽지함 들어옴 받은객체 : {}", letterVO);
+        List<LetterVO> list = new ArrayList<>();
+
+        list = dao.selectList("myLetterList", letterVO.getMemberId());
+
+        log.debug("myLetterList : {}", list);
+
+        return list;
+    }
+
+    @PostMapping(value = "/sendlist", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<LetterVO> sendLetterList(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("보낸쪽지함 들어옴 받은객체 : {}", letterVO);
+        List<LetterVO> list = new ArrayList<>();
+
+        list = dao.selectList("sendLetterList", letterVO.getMemberId());
+
+        log.debug(" sendLetterList: {}", list);
+
+        return list;
+    }
+
+    @PostMapping(value = "/dellist", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<LetterVO> delLetterList(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("휴지통 들어옴 받은객체 : {}", letterVO);
+        List<LetterVO> list = new ArrayList<>();
+
+        list = dao.selectList("delLetterList", letterVO.getMemberId());
+
+        log.debug(" delLetterList: {}", list);
+
+        return list;
+    }
+
+    @PostMapping(value = "/letterdetail", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public LetterVO letterDetail(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("쪽지 상세보기 디테일 : {} ", letterVO);
+        // 해당쪽지번호로 불러오기
+        String letterNo = letterVO.getLetterNo();
+        dao.update("letterCheck", letterVO);
+        LetterVO vo = dao.select("letterSelectOne", letterNo);
+
+        return vo;
+    }
+
+    @PostMapping(value = "/sendletterdetail", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public LetterVO sendLetterDetail(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("보낸 쪽지 상세보기 디테일 : {} ", letterVO);
+        // 해당쪽지번호로 불러오기
+        String letterNo = letterVO.getLetterNo();
+        LetterVO vo = dao.select("letterSelectOne", letterNo);
+
+        return vo;
+    }
+
+    @PostMapping(value = "/letterdelete", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String letterDelete(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("쪽지 삭제  : {} ", letterVO);
+        int del = dao.update("letterDel", letterVO);
+        if (del > 0) {
+            String delcnt = del + " 개 삭제되었습니다.";
+            return delcnt;
+        }
+        return "NO";
+    }
+
+    @PostMapping(value = "/refreshletter", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String refreshLetter(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("쪽지 복구  : {} ", letterVO);
+        int refresh = dao.update("refreshLetter", letterVO);
+        if (refresh > 0) {
+            String recnt = refresh + " 개 복구됨.";
+            return recnt;
+        }
+        return "NO";
+    }
+
+    @PostMapping(value = "/markletter", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String markletter(@RequestBody LetterVO letterVO) throws Exception {
+        log.debug("즐겨찾기 업데이트  : {} ", letterVO);
+        LetterVO vo = dao.select("letterSelectOne", letterVO.getLetterNo());
+
+        if (vo.getLetterMark().equals("1")) {
+            letterVO.setLetterMark("0");
+            dao.update("markletter", letterVO);
+            return "0";
+        } else if (vo.getLetterMark().equals("0")) {
+            letterVO.setLetterMark("1");
+            dao.update("markletter", letterVO);
+            return "1";
+        }
+
+        return "NO";
+    }
+
+    @PostMapping(value = "/uploadletterfile", produces = "text/plain;charset=utf-8") // 생성
+    @ResponseBody
+    public String insNahum(LetterVO letterVO, HttpServletRequest req) throws Exception {
+        log.debug("넘어온 값: {} ", letterVO);
+
+        ServletContext sc = req.getSession().getServletContext();
+        String realPath = sc.getRealPath("/resources/uploads");
+        letterVO.getLetterFiles()
+                .transferTo(new File(realPath + "/" + letterVO.getLetterFiles().getOriginalFilename()));
+        log.debug("설정된 값 : {} ", letterVO);
+        // DB에 경로를 저장하기 위해서
+        letterVO.setLetterFile("/resources/uploads/" + letterVO.getLetterFiles().getOriginalFilename());
+
+        String cnt = service.sendLetter_H(letterVO);
+
+        return "NG";
+    }
+    
+    @PostMapping(value = "/uploadAjaxLetter_K", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String uploadAjaxLetter_K(MultipartFile[] uploadFile,
+            @RequestParam("jsonData") String jsonData, HttpServletRequest req) throws Exception {
+        
+        System.out.println(jsonData);
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(jsonData);
+        System.out.println(element);
+        log.debug("element : {}", element);
+        
+        Gson gson = new Gson();
+        
+        Map<String, String> map = new HashMap<>();
+        
+        map = gson.fromJson(jsonData, map.getClass());
+        
+        log.debug("map: {}", map);
+        System.out.println(map.get("memberId"));
+        
+        String letterNo = element.getAsJsonObject().get("letterNo").getAsString();
+        String memberId = element.getAsJsonObject().get("memberId").getAsString();
+        
+        String path = req.getSession().getServletContext().getRealPath("resources/upload/letter/" + letterNo);
+        log.debug("path : {}", path);
+        
+        log.debug("letterNo : {}", letterNo);
+        
+        int fileLNo = service.sendLetterFileLocation_K();
+        
+        //폴더 생성
+        
+        File uploadPathunder = new File(path);
+        
+        if (!uploadPathunder.exists()) uploadPathunder.mkdirs();
+        
+        for (MultipartFile multipartFile : uploadFile) {
+            FileVO fileVO = new FileVO();
+            
+            //UUID 로 파일 중복 방지
+            String uploadFileName = multipartFile.getOriginalFilename();
+            fileVO.setFileRealName(uploadFileName); // 진짜 이름 설정
+
+            String uploadFileSize = String.valueOf(multipartFile.getSize());
+            fileVO.setFileSize(uploadFileSize); // 파일 사이즈 설정
+
+            uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+
+            UUID uuid = UUID.randomUUID();
+            uploadFileName = uuid.toString() + "_" + uploadFileName; // 2lkwake9fdslafk;la_남성이미지.png
+            fileVO.setFileName(uploadFileName);
+            
+            try {
+                File saveFile = new File(uploadPathunder, uploadFileName);
+                multipartFile.transferTo(saveFile);
+                fileVO.setUuid(uuid.toString()); // 12dsakj12jkldsakldd21
+                fileVO.setFilePath("\\" + uploadFileName);
+
+                fileVO.setFileLNo(fileLNo);
+                if (checkImageType(saveFile)) {
+                    fileVO.setImage("true");
+//               // 썸내일 만드는 것
+//               FileOutputStream thumbnail = new FileOutputStream(new File(uploadPathunder, "s_"+uploadFileName));
+//               Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 50, 50);
+//               thumbnail.close();
+                } else {
+                    fileVO.setImage("false");
+                }
+                
+                fileVO.setFileUploader(memberId);
+                
+                log.debug(fileVO.toString());
+                log.debug("fileVO : {}", fileVO);
+                
+                service.sendLetterFile_K(fileVO);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+        
+        return "wow";
+    }
+    
+    
+    // 파일인지 이미지인지 구별해주는 메서드
+    private boolean checkImageType(File file) {
+        try {
+            String contentType = Files.probeContentType(file.toPath());
+            log.debug("contentType : {}", contentType);
+            return contentType.startsWith("image");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+}

@@ -1,0 +1,29 @@
+package kr.or.ddit.controller.cs;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.controller.cs.service.INoticeService;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/notice")
+public class NoticeController {
+	
+	@Autowired
+	INoticeService noticeService;
+
+	/**
+	 * 공지사항 홈 화면
+	 * @return notice.jsp
+	 */
+	@GetMapping("/noticeMain")
+	public String noticeMain() {
+		return "content/notice";
+	}
+	
+	
+}

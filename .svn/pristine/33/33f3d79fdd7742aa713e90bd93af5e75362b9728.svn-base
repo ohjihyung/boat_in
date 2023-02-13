@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!-- 템플릿용 -->
+<!-- Tiles 설정 -->
+<tiles-definitions>
+    <!-- mainTemplate 설정 -->
+    <definition name="index" template="/WEB-INF/views/index.jsp">
+        <put-attribute name="topbar" value="/WEB-INF/views/tiles/topbar.jsp"/>
+        <put-attribute name="leftSidebar" value="/WEB-INF/views/tiles/leftSidebar.jsp"/>
+        <put-attribute name="rightSidebar" value="/WEB-INF/views/tiles/rightSidebar.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp"/>
+    </definition>
+    
+    <definition name="content/*" extends="index">
+        <put-attribute name="content" value="/WEB-INF/views/content/{1}.jsp"/>
+    </definition>
+</tiles-definitions>

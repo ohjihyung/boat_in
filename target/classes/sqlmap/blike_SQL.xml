@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.BlikeMapper">
+
+	<insert id="insertLike" parameterType="BlikeVO">
+		INSERT INTO BLIKE 
+		VALUES (
+			#{blikeNo},  #{blikeWmember}, #{blikeLmember}
+		)
+	</insert>
+	
+	<delete id="deleteLike" parameterType="BlikeVO">
+		DELETE FROM BLIKE 
+		WHERE BLIKE_NO = #{blikeNo}
+		
+	</delete>
+	
+	<select id="selectList" parameterType="BlikeVO" resultType="BlikeVO">
+		SELECT *
+		FROM BLIKE
+		WHERE BLIKE_NO = #{blikeNo}
+	</select>
+
+	<select id="checkLike" parameterType="Map" resultType="Map">
+		SELECT A.BLIKE_NO
+		     , A.BLIKE_WMEMBER
+		     , A.BLIKE_LMEMBER
+		     , B.DVI_COMENT_NO
+		     , C.DVI_NO
+		  FROM BLIKE A
+		  LEFT JOIN DEVIN_COMENT B
+		    ON A.BLIKE_NO = B.DVI_COMENT_NO
+		  LEFT JOIN DEVIN C
+		    ON B.DVI_NO = C.DVI_NO
+		 WHERE C.DVI_NO = #{dviNo}
+		   AND A.BLIKE_LMEMBER = #{memberId}
+		 GROUP BY A.BLIKE_NO, A.BLIKE_WMEMBER, A.BLIKE_LMEMBER, B.DVI_COMENT_NO, C.DVI_NO
+	</select>
+	
+	<select id="checkMyLike" parameterType="Map" resultType="Map">
+		 SELECT A.*
+		   FROM BLIKE A
+		  WHERE A.BLIKE_NO = #{dviComentNo}
+		    AND A.BLIKE_LMEMBER = #{memberId}
+	</select>
+	
+	<insert id="insertMyLike" parameterType="Map">
+		INSERT INTO BLIKE (
+			BLIKE_NO,
+			BLIKE_WMEMBER,
+			BLIKE_LMEMBER
+		) VALUES (
+			#{dviComentNo},
+			#{wMember},
+			#{memberId}
+		)
+	</insert>
+	
+	<delete id="deleteMyLike" parameterType="Map">
+		DELETE FROM BLIKE
+	     WHERE BLIKE_NO = #{dviComentNo}
+	       AND BLIKE_LMEMBER = #{memberId}
+	</delete>
+</mapper>
+
+

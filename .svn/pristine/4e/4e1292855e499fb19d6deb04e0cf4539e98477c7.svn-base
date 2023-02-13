@@ -1,0 +1,56 @@
+package kr.or.ddit.controller.devin.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.DevinMapper;
+import kr.or.ddit.vo.DevinVO;
+
+@Service
+public class DevinServiceImpl implements IDevinService {
+
+	// 2023.01.05 커밋시점 만들기
+	
+	@Inject
+	private DevinMapper mapper;
+	@Inject
+	private CommonDao dao;
+
+	@Override
+	public int insert(DevinVO devinVO) throws Exception {
+		
+		return mapper.insert(devinVO);
+	}
+
+	@Override
+	public List<DevinVO> selectList() throws Exception {
+		return mapper.selectList();
+	}
+
+	@Override
+	public DevinVO select(String dviNo) throws Exception {
+		mapper.incrementHit(dviNo);
+		return mapper.select(dviNo);
+	}
+
+	@Override
+	public int update(DevinVO devInVO) throws Exception {
+		return mapper.update(devInVO);
+	}
+
+	@Override
+	public List<DevinVO> search(String dviTitle) throws Exception {
+		return mapper.search(dviTitle);
+	}
+
+	@Override
+	public void delete(DevinVO vo) throws Exception {
+		dao.delete("deleteDevIn", vo);
+	}
+
+	
+}

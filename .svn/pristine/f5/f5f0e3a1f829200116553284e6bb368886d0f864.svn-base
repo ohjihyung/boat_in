@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.DevinMapper">
+
+	<insert id="insert" parameterType="devinVO">
+		<selectKey resultType="string" keyProperty="dviNo" order="BEFORE">
+			SELECT 'DN' || LPAD(SEQ_DEVIN.NEXTVAL, 3, '0') FROM dual
+		</selectKey>
+		INSERT INTO DEVIN(
+		DVI_NO, MEMBER_ID, DVI_TITLE, DVI_CONTENT, DVI_HIT, DVI_DATE, DVI_LIKE
+		) VALUES (
+		#{dviNo}, #{memberId}, #{dviTitle}, #{dviContent}, 0, SYSDATE, 0
+		)
+	</insert>
+
+	<select id="selectList" resultType="devinVO">
+		SELECT DVI_NO, MEMBER_ID, DVI_TITLE, DVI_CONTENT, DVI_HIT, DVI_DATE, DVI_LIKE
+		FROM DEVIN
+		WHERE SUBSTR(DVI_NO,3) > 0
+		ORDER BY SUBSTR(DVI_NO,3), DVI_DATE DESC
+	</select>
+
+	<select id="select" resultType="devinVO" parameterType="String">
+		SELECT *
+		FROM DEVIN
+		WHERE DVI_NO = #{dviNo}
+	</select>
+
+	<update id="update" parameterType="devinVO">
+		UPDATE DEVIN
+		SET DVI_TITLE = #{dviTitle},
+			DVI_CONTENT = #{dviContent}
+		WHERE DVI_NO = #{dviNo}
+	</update>
+
+	<delete id="deleteDevIn" parameterType="devinVO">
+		DELETE FROM DEVIN 
+		WHERE DVI_NO = #{dviNo}
+	</delete>
+
+	<update id="incrementHit" parameterType="String">
+		UPDATE DEVIN
+		SET DVI_HIT = DVI_HIT + 1
+		WHERE DVI_NO = #{dviNo}
+	</update>
+
+	<!-- 댓글 관련 sql -->
+	<insert id="devinComentInsert" parameterType="devinComentVO">
+		<selectKey resultType="string" keyProperty="dviComentNo" order="BEFORE">
+			SELECT 'DCN' || LPAD(SEQ_DEVIN_COMENT.NEXTVAL, 3, '0') FROM dual
+		</selectKey>
+		INSERT INTO DEVIN_COMENT (
+		DVI_COMENT_NO, DVI_NO , MEMBER_ID , DVI_COMENT_CONTENT
+		, DVI_COMENT_DATE , DVI_COMENT_STATE, DVI_COMENT_LIKE
+		) VALUES (
+		#{dviComentNo}, #{dviNo}, #{memberId}, #{dviComentContent}
+		, sysdate, 0, 0
+		)
+	</insert>
+	
+	<select id="devinComentSelectList" parameterType="devinVO"
+		resultType="devinComentVO">
+		SELECT *
+		FROM DEVIN_COMENT
+		WHERE DVI_NO = #{dviNo}
+		  AND DVI_COMENT_STATE = '0'
+		ORDER BY SUBSTR(DVI_COMENT_NO,3) ASC
+	</select>
+
+	<select id="devinComentSelect" resultType="devinComentVO" parameterType="String">
+		SELECT *
+		FROM DEVIN_COMENT
+		WHERE DVI_COMENT_NO = #{dviComentNo}
+	</select>
+
+	<update id="devinComentUpdate" parameterType="devinComentVO">
+		UPDATE DEVIN_COMENT
+		SET DVI_COMENT_CONTENT = #{dviComentContent}
+		WHERE DVI_COMENT_NO = #{dviComentNo}
+	</update>
+
+	<update id="devinComentDelete" parameterType="devinComentVO">
+		UPDATE DEVIN_COMENT
+		SET DVI_COMENT_STATE = '1'
+		WHERE DVI_COMENT_NO = #{dviComentNo}
+	</update>
+
+
+
+
+
+
+
+
+</mapper>

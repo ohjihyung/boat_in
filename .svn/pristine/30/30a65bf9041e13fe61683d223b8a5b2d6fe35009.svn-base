@@ -1,0 +1,34 @@
+package kr.or.ddit.controller.chat.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.ChatContentVO;
+import kr.or.ddit.vo.ChatRoomVO;
+import kr.or.ddit.vo.ChatUserVO;
+import kr.or.ddit.vo.MemberVO;
+
+public interface IChatService {
+
+	List<ChatRoomVO> getRoomsById(String memberId) throws Exception;
+
+	List<ChatContentVO> getChatContents(String string) throws Exception;
+
+	String getRoomTitleByRoomId(String roomId) throws Exception;
+
+	int insertRoom(ChatRoomVO roomVO) throws Exception;
+
+	int insertInvitedUser(ChatUserVO chatUserVO) throws Exception;
+
+	String getNotReadCnt(Map<String, String> getNCntData) throws Exception;
+
+	ChatContentVO getLastChat(String roomId) throws Exception;
+
+	List<MemberVO> getuserImgs(String roomId) throws Exception;
+
+	void deleteUnread(Map<String, String> data)throws Exception;
+
+	void deleteRoom(Map<String, String> data) throws Exception;
+
+	List<ChatUserVO> getuserName(String roomId) throws Exception;
+}

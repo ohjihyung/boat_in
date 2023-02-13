@@ -1,0 +1,285 @@
+package kr.or.ddit.controller.topwork.kanban;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.controller.topwork.service.ITopWorkService;
+import kr.or.ddit.controller.upload.IUploadService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProjectLogVO;
+import kr.or.ddit.vo.SubWorkVO;
+import kr.or.ddit.vo.TopWorkCategoryVO;
+import kr.or.ddit.vo.TopWorkComentVO;
+import kr.or.ddit.vo.TopWorkRelationVO;
+import kr.or.ddit.vo.TopWorkVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/kanban")
+public class KanbanController {
+
+    @Inject
+    private ITopWorkService calendarService; //이름을 ITopWorkService로 바꿔야함
+
+    @Inject
+    private IUploadService uploadService;
+
+    @GetMapping("/main")
+    public String kanbanMain() {
+        log.debug("메인");
+
+        return "content/kanbanboard";
+    }
+
+    @PostMapping(value = "/list", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkVO> kanbanList(
+            @RequestParam(name = "proNo", required = false) String proNo,
+            @RequestParam(name = "mode", required = false) String mode) throws Exception {
+        log.debug("리스트 번호 : {}", proNo);
+        log.debug("리스트 mode : {}", mode);
+        List<TopWorkVO> list = calendarService.list(proNo);
+        log.debug("리스트 결과물 : {}", list);
+
+        return list;
+    }
+
+    @PostMapping(value = "/insert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String kanbanInsert(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("인서트 들어옴, {}", topWorkVO);
+
+        String topWorkNo = calendarService.insert(topWorkVO);
+
+        return topWorkNo;
+    }
+
+    @PostMapping(value = "/categoryList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkCategoryVO> categoryList(
+            @RequestParam(name = "proNo", required = false) String proNo,
+            @RequestParam(name = "mode", required = false) String mode) throws Exception{
+        log.debug("카테리스트 proNo : {}", proNo);
+        log.debug("카테고리 mode : {}", mode);
+        
+        List<TopWorkCategoryVO> list = calendarService.categoryList(proNo);
+
+        return list;
+    }
+
+    @PostMapping(value = "/categoryInsert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String categoryInsert(@RequestBody TopWorkCategoryVO topWorkCategoryVO,HttpServletRequest req) throws Exception {
+        log.debug("카테고리 VO : {}", topWorkCategoryVO);
+        calendarService.categoryInsert(topWorkCategoryVO);
+
+        //OJH 22/12/31  카테고리 생성시 프로젝트/카테고리 폴더 생성
+        uploadService.mkCategoryDir(topWorkCategoryVO,req);
+
+        return "카테고리인서트";
+    }
+
+    @PostMapping(value = "/categoryDelete", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String categoryDelete(@RequestBody TopWorkCategoryVO topWorkCategoryVO) throws Exception{
+        log.debug("카테고리 VO : {}", topWorkCategoryVO);
+        calendarService.categoryDelete(topWorkCategoryVO);
+
+        return "카테고리딜리트~";
+    }
+
+    @PostMapping(value = "/topWorkMove", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkMove(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("전송된 객체 : {}", topWorkVO);
+        calendarService.topWorkMove(topWorkVO);
+
+        return "success";
+    }
+
+    @PostMapping(value = "/logInsert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String logInsert(@RequestBody Map<String, String> map) throws Exception {
+        log.debug("전송된 맵 : {}", map);
+        calendarService.logInsert(map);
+
+        return "로그 인서트 성공";
+    }
+    
+    @PostMapping(value = "/logList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<ProjectLogVO> logList(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        List<ProjectLogVO> logList = calendarService.logList(topWorkVO);
+        
+        return logList;
+    }
+
+    @PostMapping(value = "/categoryUpdate", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String categoryUpdate(@RequestBody TopWorkCategoryVO topWorkCategoryVO) throws Exception {
+        log.debug("topWorkCategoryVO : {}", topWorkCategoryVO);
+        calendarService.categoryUpdate(topWorkCategoryVO);
+
+        return "카테고리 업데이트 성공";
+    }
+
+    @PostMapping(value = "/topWorkDetail", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public TopWorkVO topWorkDetail(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("디테일할 객체 : {}", topWorkVO);
+        TopWorkVO vo = calendarService.select(topWorkVO);
+
+        return vo;
+    }
+
+    @PostMapping(value = "/topWorkUpdate", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkUpdate(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("업데이트하러 온 객체 : {}", topWorkVO);
+        calendarService.topWorkUpdate(topWorkVO);
+
+        return "디테일 업데이트 성공";
+    }
+
+    @PostMapping(value = "/topWorkDelete", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkDelete(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("딜리트하러 온 객체 : {}", topWorkVO);
+        calendarService.topWorkDelete(topWorkVO);
+
+        return "디테일 삭제 성공";
+    }
+
+    @PostMapping(value = "/topWorkRelationInsert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkRelationInsert(@RequestBody TopWorkRelationVO topWorkRelationVO) throws Exception {
+        log.debug("관계 왔다 : {}", topWorkRelationVO);
+        calendarService.insertRelation(topWorkRelationVO);
+
+        return "관계 설정 완료";
+    }
+    
+    @PostMapping(value = "/topWorkMyList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkVO> topWorkMyList(@RequestBody Map<String, String> map) throws Exception {
+        log.debug("topWorkMyList 조회할 객체 : {}", map);
+        List<TopWorkVO> topWorkMyList =  calendarService.myList(map);
+        
+        return topWorkMyList;
+    }
+    
+    /**
+     * @return 개인 칸반보드 카테고리
+     */
+    @PostMapping(value = "/categoryPersonal", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkCategoryVO> categoryPersonal() throws Exception {
+        List<TopWorkCategoryVO> categoryPersonalList = calendarService.categoryPersonal();
+        
+        return categoryPersonalList;
+    }
+    
+    /**
+     * 김진호
+     * 개인보드에서 작업 이동시 상태값 변경
+     * @param topWorkVO
+     */
+    @PostMapping(value = "/moveState", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String moveState(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("상태값 바꾸러 온 VO : {}", topWorkVO);
+        calendarService.moveState(topWorkVO);
+        
+        return "상태 변경 성공";
+    }
+    
+    /**
+     * 김진호
+     * @param topWorkVO
+     * @return 작업 상세보기시 작업배정된 멤버들 리스트
+     */
+    @PostMapping(value = "/selectMemberList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkRelationVO> selectMemberList(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("멤버 조회할 작업번호 : {}", topWorkVO);
+        List<TopWorkRelationVO> selectMemberList = calendarService.selectMemberList(topWorkVO);
+        
+        return selectMemberList;
+    }
+    
+    /**
+     * 상위작업 수정
+     * @param topWorkVO
+     */
+    @PostMapping(value = "/topWorkUpdate_K", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String topWorkUpdate_K(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("업데이트할 객체 : {}", topWorkVO);
+        calendarService.topWorkUpdate_K(topWorkVO);
+        
+        return "업데이트 성공";
+    }
+    
+    /**
+     * 디테일 조회시 함께 조회하는 댓글 리스트
+     * @param topWorkVO
+     * @return 해당 상위작업에 작성된 댓글 리스트
+     */
+    @PostMapping(value = "/topWorkComentList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<TopWorkComentVO> topWorkComentList(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("댓글 조회할 상위작업 : {}", topWorkVO);
+        List<TopWorkComentVO> topWorkComentList = calendarService.topWorkComentList(topWorkVO);
+        
+        return topWorkComentList;
+    }
+    
+    /**
+     * 상위작업 댓글 인서트
+     * @param topWorkComentVO
+     */
+    @PostMapping(value = "/topWorkComentInsert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkComentInsert(@RequestBody TopWorkComentVO topWorkComentVO) throws Exception {
+        log.debug("입력한 댓글 : {}", topWorkComentVO);
+        calendarService.topWorkComentInsert(topWorkComentVO);
+        
+        return "댓글 작성 성공";
+    }
+    
+    /**
+     * 김진호
+     * 상위작업 댓글 삭제
+     * 실제로 데이터를 삭제하는게 아니라 상태값을 변경함.
+     * @param topWorkComentVO
+     */
+    @PostMapping(value = "/topWorkComentDelete", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkComentDelete(@RequestBody TopWorkComentVO topWorkComentVO) throws Exception {
+        log.debug("'삭제'로 상태값 바꿀 번호 : {}", topWorkComentVO);
+        calendarService.topWorkComentDelete(topWorkComentVO);
+        
+        return "삭제로 상태값 변경 완료";
+    }
+    
+    @PostMapping(value = "/topWorkComentUpdate", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String topWorkComentUpdate(@RequestBody TopWorkComentVO topWorkComentVO) throws Exception {
+        log.debug("업데이트할 댓글 : {}", topWorkComentVO);
+        calendarService.topWorkComentUpdate(topWorkComentVO);
+        
+        return "댓글 업데이트 완료";
+    }
+}

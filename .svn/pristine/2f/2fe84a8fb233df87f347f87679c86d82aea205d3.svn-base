@@ -1,0 +1,357 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<!-- Right modal content -->
+<script>
+//기본 칸반조회는 프로젝트로 설정
+kanbanRender('project'); 
+//개인 칸반 
+function kanbanRenderPersonal_K() {
+    //김진호
+    //작업 상태별로 새롭게 그려줘야함
+    //필요한 파라미터 - proNo, memberId
+    //카테고리 -> 고정된 카테고리.
+    //작업 -> 조회할 테이블 - TOPWORK_RELATION (TOPWORK와 조인)
+    //개인전용카테고리 불러와서 그리기 -> 이동시에 카테고리가 바뀌는게 아니라 상태값이 바뀜.
+    //-> 첨에 작업 뿌려줄때 상태값에 따라 뿌리기(0, 1, 2)
+    const obj = {
+      proNo,
+      memberId,
+    };
+    
+    axios
+      .post("/kanban/categoryPersonal")
+      .then((res) => {
+         //console.log(res); 해당 프로젝트 내에서 나로 배정된 작업만 가져옴
+        const json = res.data;
+        console.log("개인카테고리 : ", res.data);
+        
+        let text = '<div class="col-xl-10">';
+            text += '<div class="parent">';
+            for (item of json) {
+                text += `<div class="container \${item.twCategoryColor} state-\${item.twCategoryNo}"`;
+                text += ` id="category-\${item.twCategoryNo}">`;
+                text += `     <div class="filtered">`;
+                if (item.twCategoryNo == 0) text += `배정된 작업`;
+                if (item.twCategoryNo == 1) text += `진행중인 작업`;
+                if (item.twCategoryNo == 2) text += `완료 / 승인대기 작업`;
+                text += `     </div>`;
+                text += `</div>`;
+            }
+         
+            text += '</div>';
+            text += '</div>';
+           
+           document.querySelector(".spa").innerHTML = text;
+           
+           axios
+             .post("/kanban/topWorkMyList", obj)
+             .then((res) => {
+                 console.log("개인칸반의 작업들 : ", res.data);
+                 const json1 = res.data;
+                  let text1 = "";
+                  for (item of json1) {
+                    console.log(item.topWorkTitle);
+                    text1 = "";
+                    text1 += `<div class="table-responsive draggable" onclick="detailTopWork_K(\${item.topWorkNo})" id="\${item.topWorkNo}" style="margin: 10px;">`;
+                    text1 += `  <table class="table table-borderless mb-0">`;
+                    text1 += `      <thead class="table-active \${item.twCategoryNo}">`;
+                    text1 += `          <tr>`;
+                    text1 += `              <th>\${item.topWorkTitle}</th>`;
+                    text1 += `          </tr>`;
+                    text1 += `      <tbody class="table-light">`;
+                    text1 += `          <tr>`;
+                    text1 += `              <td>\${item.topWorkContent}</td>`;
+                    text1 += `          </tr>`;
+                    text1 += `      </tbody>`;
+                    text1 += `  </table>`;
+                    text1 += `</div>`;
+                  
+                    //개인보드는 상태별로 분류하므로 상태로 카테고리 아이디 잡아주면 딱 맞음.
+                    let categoryId = "#category-" + item.topWorkState;
+                    console.log("categoryId ", categoryId);
+            
+                    //원하는 위치에 인서트해주는(append처럼) 메소드 insertAdjacentHTML(위치, 문자열)
+                    //console.log("카테고리디브없다구?", document.querySelector(categoryId)); db..필요한정보만가져와야함
+                    
+                    document.querySelector(categoryId).innerHTML += text1;
+                  }
+             })
+             .then((res) => {
+            	//일단 컬러코드 적용을 억지로라도 해보기
+                 //1. thead클래스를 전부 가져온다
+                 //2. 클래스명과 pk가 일치하면 색상코드를 넣어준다.
+                 console.log(
+                   "컬러코드 타겟 : ",
+                   document.querySelectorAll(".draggable")
+                 );
+                 const targets = document.querySelectorAll(".draggable");
+                 for (item of targets) {
+                   //console.log("노드들");
+                   //console.log("타겟부모", item.parentNode.className.split(" ")[1]);
+                   let itemColor = item.parentNode.className.split(" ")[1];
+                   //console.dir(item.children[0].children[0]); //thead 다가져옴
+                   //테이블헤드 색상을 해당 카테고리의 색상으로 변경해준다.
+                   item.children[0].children[0].style.backgroundColor = itemColor;
+                   //이동이 완료되었을때 굳이 재랜더링은 안해줘도 될거같다.
+                   //어차피 본인페이지에도 이동 + 다른사람이 봤을때도 이동 됨.
+                 }
+             });
+      })
+      .then((res) => {
+          //작업까지 그리기 완료 => 그리고나서 드래그 주기
+          const containers = document.querySelectorAll(".container");
+          drag(containers, 'personal');
+      });
+}
+
+function kanbanRender(arg) {
+  let mode = arg; //project 아니면 personal -> 파라미터를 회원아이디로 받으면될듯
+  //console.log("파라미터 있다 : ", arg); 
+  
+  if (mode == 'personal') { 
+      kanbanRenderPersonal_K();
+  } else {
+  axios
+    .post(`/kanban/categoryList?proNo=\${proNo}&mode=\${mode}`) //실제로는 프로젝트 번호(팀번호)를 넘겨줘야함.
+    .then((response) => {
+      //console.log("카테고리", response.data);
+      const json = response.data;
+      //console.log(json);
+      let text = '<div class="col-xl-10">'; //이렇게 그리는 부분은 함수로 빼서 돌려쓰기
+      text += '<div class="parent">';
+      for (item of json) {
+        text += `<div class="container \${item.twCategoryColor}" id="category-\${item.twCategoryNo}">`;
+        text += `     <div class="filtered">\${item.twCategoryName}<button type="button" onclick="categoryUpdatePK(\${item.twCategoryNo})" class="btn btn-soft-secondary waves-effect category-update">`;
+        text += `             수정`;
+        text += `         <button type="button" class="btn btn-soft-secondary waves-effect category-delete"`;
+        text += `                 style="background-color: \${item.twCategoryColor}">`;
+        text += `             X`;
+        text += `         </button>`;
+        text += `     </div>`;
+        text += `</div>`;
+      }
+      text += '</div>';
+      text += '</div>';
+      
+      if (json.length < 1) { //카테고리가 아직 생성되지 않은 프로젝트의 경우
+          text = `<div><h1>생성된 카테고리가 없습니다.</h1></div>`;
+      }
+     
+      document.querySelector(".spa").innerHTML = text;
+    })
+    .then((response) => {
+      topWorkListRender();
+    }) //axios 카테고리 그리기 끝
+    .then((response) => {
+      //카테고리 div 만들어진 후 작업 div들 만들기
+      const containers = document.querySelectorAll(".container");
+      //console.log("드래그콘테이너 : ", containers);
+      drag(containers); //드래그를 추가하고나선 재렌더링시 드래그요소들 안그려짐
+
+      //onclick으로 걸면 event객체 못쓴다
+      const btnCategoryDelete = document.querySelectorAll(".category-delete");
+      const btnCategoryUpdate = document.querySelectorAll(".category-update");
+
+      //수정버튼 이벤트 주기
+      for (item of btnCategoryUpdate) {
+        //console.log("수정버튼들", item);
+        //console.log("수정버튼 영역 카테고리 아이디 : ", item.parentNode.parentNode.id);
+        const twCategoryNo = item.parentNode.parentNode.id.split("-")[1];
+        //console.log("수정할 카테고리 번호 : ", twCategoryNo);
+
+        item.addEventListener("click", (event) => {
+          categoryUpdateModalOpen();
+        });
+      }
+
+      //삭제버튼 이벤트주기
+      for (item of btnCategoryDelete) {
+        const twCategoryNo = item.parentNode.parentNode.id.split("-")[1]; //여기로 이동
+        //console.log(item);
+        item.addEventListener("click", (event) => {
+          //console.log(event.target.parentNode); //i 태그를 버튼 안에 쓰면 아이콘 눌렀을때 그게 타겟으로 잡힘
+          //카테고리 pk 뽑아내기
+          //console.dir(event.target.parentNode.parentNode.id.split("-")[1]);
+
+          if (!confirm("정말 삭제하시겠습니까?")) {
+            return;
+          }
+          // ojh 카테고리 삭제시 해당 카테고리 들고 백단 가기
+          $.ajax({
+            url: '/deleteCategoryFile',
+            method : 'post',
+            data : {twCategoryNo : twCategoryNo},
+            type : 'text',
+              success : function(result){
+                console.log(result);
+              }
+          });
+
+          const topWorkCategoryVO = {
+            twCategoryNo,
+          };
+
+          axios
+            .post("/kanban/categoryDelete", topWorkCategoryVO)
+            .then((res) => {
+              //console.log(res);
+              kanbanRender();
+            });
+        });
+      }
+    });
+  } //조건문 긑
+} //칸반 렌더 끝
+
+//드래그 아이템들 그리기용
+function topWorkListRender() {
+  axios
+    .post(`/kanban/list?proNo=\${proNo}&mode=\${mode}`)
+    .then((response) => {
+      //console.log(response.data);
+      //여기서 div를 만들어줘야함
+      //일단은 모두 배정된 작업에 넣어버리기
+      const json = response.data;
+      console.log("작업들 : ", response.data);
+
+      let text = "";
+      for (item of json) {
+        console.log(item.topWorkTitle);
+        text = "";
+        text += `<div class="table-responsive draggable" onclick="detailOpen(\${item.topWorkNo})" id="\${item.topWorkNo}" style="margin: 10px;">`;
+        text += `  <table class="table table-borderless mb-0">`;
+        text += `      <thead class="table-active \${item.twCategoryNo}">`;
+        text += `          <tr>`;
+        text += `              <th>\${item.topWorkTitle}</th>`;
+        text += `          </tr>`;
+        text += `      <tbody class="table-light">`;
+        text += `          <tr>`;
+        text += `              <td>\${item.topWorkContent}</td>`;
+        text += `          </tr>`;
+        text += `      </tbody>`;
+        text += `  </table>`;
+        text += `</div>`;
+
+        let categoryId = "#category-" + item.twCategoryNo;
+        //원하는 위치에 인서트해주는(append처럼) 메소드 insertAdjacentHTML(위치, 문자열)
+        //console.log("카테고리디브없다구?", document.querySelector(categoryId)); db..필요한정보만가져와야함
+        
+        document
+          .querySelector(categoryId)
+          .insertAdjacentHTML("beforeend", text);
+      }
+    })
+    .then((res) => {
+      //일단 컬러코드 적용을 억지로라도 해보기
+      //1. thead클래스를 전부 가져온다
+      //2. 클래스명과 pk가 일치하면 색상코드를 넣어준다.
+      console.log(
+        "컬러코드 타겟 : ",
+        document.querySelectorAll(".draggable")
+      );
+      const targets = document.querySelectorAll(".draggable");
+      for (item of targets) {
+        //console.log("노드들");
+        //console.log("타겟부모", item.parentNode.className.split(" ")[1]);
+        let itemColor = item.parentNode.className.split(" ")[1];
+        //console.dir(item.children[0].children[0]); //thead 다가져옴
+        //테이블헤드 색상을 해당 카테고리의 색상으로 변경해준다.
+        item.children[0].children[0].style.backgroundColor = itemColor;
+        //이동이 완료되었을때 굳이 재랜더링은 안해줘도 될거같다.
+        //어차피 본인페이지에도 이동 + 다른사람이 봤을때도 이동 됨.
+      }
+    });
+}
+
+//드래그 이벤트주기용
+function drag(target, mode) {
+  target.forEach((container) => {
+    //인자로 자식 div들을 받음
+    //console.log("드래그왜안돼 : ", container);
+    new Sortable(container, {
+      group: {
+        name: "shared", //이게 같은 Sortable 객체들끼리 이동 가능
+      },
+      swapThreshold: 1,
+      animation: 150,
+      ghostClass: "blue-background-class",
+      //sort: false, 이거 false하면 원래 영역 내에서는 안움직임
+      onChoose: function (event) {
+        //클릭한 아이템
+        //선택한 영역 안에 테이블 목록
+      },
+      filter: ".filtered",
+      onEnd: function (event) {
+    	  
+        //내려놓았을때!
+        console.log("이동중", event);
+        //console.log("엔드아이템 : ", event.item.id);
+        const topWorkNo = event.item.id; //내려놓은 아이템 pk번호
+        const beforeTwCategoryNo = event.from.id.split("-")[1]; //도착한 곳 카테고리 pk번호
+        const twCategoryNo = event.to.id.split("-")[1]; //도착한 곳 카테고리 pk번호
+        //여기서 그 영역 div의 id를 가져와야함.
+        //console.log("부모 : ", event.from);
+        //console.log("시작한 부모아이디 : ", event.from.id);
+        //console.log("도착한 부모요소 아이디 : ", event.to.id);//도착한 div영역
+        const changeColor = event.to.className.split(" ")[1]; //도착한 div영역 컬러
+        //console.dir(event.item.firstElementChild.children[0]); //thead
+        event.item.firstElementChild.children[0].style.backgroundColor =
+          changeColor;
+        
+    	if (mode == 'personal') { //이동한 영역으로 상태값을 바꿔줘야한다.
+    		const topWorkState = event.to.id.split("-")[1];
+    		//console.log("바꿀 상태값 : ", topWorkState);
+    		const topWorkVO = {
+    			topWorkNo,
+    			topWorkState,
+    		};
+    		
+    		axios
+    		  .post("/kanban/moveState", topWorkVO)
+    		  .then((res) => {
+    			 console.log(res); 
+    		  });
+    		
+    	} else {
+
+          // OJH 파일 변경을위한 JSON
+       var obj_O = {
+          topWorkNo :topWorkNo ,
+          beforeTwCategoryNo : beforeTwCategoryNo,
+          twCategoryNo : twCategoryNo
+        }
+
+        const obj = {
+          topWorkNo,
+          twCategoryNo,
+        };
+
+        const map = {
+          topWorkNo,
+          beforeTwCategoryNo,
+          twCategoryNo,
+        };
+
+        axios.post("/kanban/topWorkMove", obj).then((res) => {
+          logInsert(map); //topWorkNo로 프로젝트번호 따와야함.
+        })
+        .then((res) => {
+        	$.ajax({
+            	url : '/topWorkMovedUpdate',
+            	method : 'POST',
+            	dataType : 'text',
+            	contentType: "application/json; charset=UTF-8",
+            	data : JSON.stringify(obj_O),
+            	success : function(res){
+            		console.log(res);
+            	}
+            });
+        });
+      }
+      }///조건문 if-else 끝
+    });
+  });
+}
+
+
+
+</script>

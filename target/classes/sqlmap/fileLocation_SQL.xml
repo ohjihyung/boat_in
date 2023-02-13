@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FileLocationMapper">
+	<insert id="insertLocation" parameterType="fileLocationVO" useGeneratedKeys="true">	
+		<selectKey order="BEFORE" resultType="int" keyProperty="fileLNo">
+			select seq_file_l_no.nextval from dual
+		</selectKey>
+		INSERT INTO FILE_LOCATION(FILE_L_NO, file_location) 
+		VALUES(#{fileLNo}, #{fileLocation})
+	</insert>
+	
+	<select id="getfileLocations" parameterType="string" resultType="fileLocationVO">
+		select file_l_no
+		from 
+ 			file_location a, (select * from topwork where tw_category_no = #{twCategory}) b
+		where
+			 a.file_l_no = b.topwork_file
+	</select>
+	
+	<update id="setLocationisDel" parameterType="int">
+		update file_location 
+		set file_isdeleted = 'T'
+		where file_l_no = #{fileLNo}
+	</update>
+</mapper>

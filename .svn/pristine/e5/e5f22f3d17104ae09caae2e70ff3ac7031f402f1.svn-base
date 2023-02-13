@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LetterMapper">
+
+	<insert id="sendLetter_H" parameterType="letterVO">
+		INSERT INTO 
+		LETTER(
+			LETTER_NO
+			,MEMBER_ID
+			,LETTER_DATE
+			,LETTER_SENDER
+			,LETTER_CONTENT
+			,LETTER_TITLE
+			) 
+		VALUES(
+			SEQ_LETTER.NEXTVAL 
+			, #{memberId}
+			, TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI')
+			, #{letterSender}
+			, #{letterContent}
+			, #{letterTitle}
+			)
+	</insert>
+	
+	<select id="myLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_DELSTATE = '0'
+		ORDER BY LETTER_NO DESC
+	</select>
+	<select id="delLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_DELSTATE = '1'
+		ORDER BY LETTER_DATE DESC
+	</select>
+	<select id="markLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_MARK = '1'
+		ORDER BY LETTER_NO DESC
+	</select>
+	<select id="sendLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE LETTER_SENDER = #{memberId}
+		ORDER BY LETTER_NO DESC
+	</select>
+	
+	<select id="letterSelectOne" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER
+		WHERE LETTER_NO = #{letterNo}
+	</select>
+	
+	<!-- 읽으면 확인된걸로 없데이트  -->
+	<update id="letterCheck" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_CHECK = '1'
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	<update id="markletter" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_MARK = #{letterMark}
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	
+	<update id="letterDel" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_DELSTATE = '1'
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	
+	<delete id="realDelLetter" parameterType="letterVO">
+		DELETE LETTER WHERE LETTER_NO = #{letterNo}
+	</delete>
+
+</mapper>

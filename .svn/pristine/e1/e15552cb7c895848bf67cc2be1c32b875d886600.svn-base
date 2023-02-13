@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Detached Layout | Codefox - Responsive Admin Dashboard Template</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+
+        <link href="assets/css/bootstrap-dark.min.css" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" />
+        <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />
+
+        <!-- icons -->
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="loading" data-layout-mode="detached" data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": true}, "topbar": {"color": "dark"}, "showRightSidebarOnPageLoad": true}'>
+
+        <!-- Begin page -->
+        <div id="wrapper">
+
+            <!-- Topbar Start -->
+<div class="navbar-custom">
+    <div class="container-fluid">
+        <ul class="list-unstyled topnav-menu float-end mb-0">
+
+            <li class="d-none d-lg-block">
+                <form class="app-search">
+                    <div class="app-search-box dropdown">
+                        <div class="input-group">
+                            <input type="search" class="form-control" placeholder="Search..." id="top-search">
+                            <button class="btn input-group-text" type="submit">
+                                <i class="fe-search"></i>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu dropdown-lg" id="search-dropdown">
+                            <!-- item-->
+                            <div class="dropdown-header noti-title">
+                                <h6 class="text-overflow text-uppercase">Recent Searches</h6>
+                            </div>
+
+                            <div class="g-3 px-2 pb-2">
+                                <a href="#!" class="btn btn-sm rounded-pill btn-light">profile <i class="fe-search ms-1"></i></a>
+                                <a href="#!" class="btn btn-sm rounded-pill btn-light">yarn <i class="fe-search ms-1"></i></a>
+                            </div>
+            
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="fe-home me-1"></i>
+                                <span>Analytics Report</span>
+                            </a>
+            
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="fe-aperture me-1"></i>
+                                <span>How can I help you?</span>
+                            </a>
+                            
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="fe-settings me-1"></i>
+                                <span>User profile settings</span>
+                            </a>
+
+                            <!-- item-->
+                            <div class="dropdown-header noti-title">
+                                <h6 class="text-overflow mb-2 text-uppercase">Users</h6>
+                            </div>
+
+                            <div class="notification-list">
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="d-flex align-items-start">
+                                        <img class="d-flex me-2 rounded-circle" src="assets/images/users/user-2.jpg" alt="Generic placeholder image" height="32">
+                                        <div class="w-100">
+                                            <h5 class="m-0 font-14">Erwin E. Brown</h5>
+                                            <span class="font-12 mb-0">UI Designer</span>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="d-flex align-items-start">
+                                        <img class="d-flex me-2 rounded-circle" src="assets/images/users/user-5.jpg" alt="Generic placeholder image" height="32">
+                                        <div class="w-100">
+                                            <h5 class="m-0 font-14">Jacob Deo</h5>
+                                            <span class="font-12 mb-0">Developer</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+            
+                        </div>  
+                    </div>
+                </form>
+            </li>
+    
+            <li class="dropdown d-inline-block d-lg-none">
+                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <i class="fe-search noti-icon"></i>
+                </a>
+                <div class="dropdown-menu dropdown-lg dropdown-menu-end p-0">
+                    <form class="p-3">
+                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                    </form>
+                </div>
+            </li>
+    
+            <li class="dropdown d-none d-lg-inline-block">
+                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-toggle="fullscreen" href="#">
+                    <i class="fe-maximize noti-icon"></i>
+                </a>
+            </li>
+    
+            <li class="dropdown d-none d-lg-inline-block topbar-dropdown">
+                <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <img src="assets/images/flags/us.jpg" alt="user-image" height="16">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                    </a>
+    
+                </div>
+            </li>
+            
+            <li class="dropdown notification-list topbar-dropdown">
+                <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <i class="fe-bell noti-icon"></i>
+                    <span class="badge bg-danger rounded-circle noti-icon-badge">5</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-lg">
+    
+                    <!-- item-->
+                    <div class="dropdown-item noti-title">
+                        <h5 class="m-0">
+                            <span class="float-end">
+                                <a href="" class="text-dark">
+                                    <small>Clear All</small>
+                                </a>
+                            </span>Notification
+                        </h5>
+                    </div>
+    
+                    <div class="noti-scroll" data-simplebar>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item active">
+                            <div class="notify-icon">
+                                <img src="assets/images/users/user-1.jpg" class="img-fluid rounded-circle" alt="" /> </div>
+                            <p class="notify-details">Cristina Pride</p>
+                            <p class="text-muted mb-0 user-msg">
+                                <small>Hi, How are you? What about our next meeting</small>
+                            </p>
+                        </a>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-primary">
+                                <i class="mdi mdi-comment-account-outline"></i>
+                            </div>
+                            <p class="notify-details">Caleb Flakelar commented on Admin
+                                <small class="text-muted">1 min ago</small>
+                            </p>
+                        </a>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <div class="notify-icon">
+                                <img src="assets/images/users/user-4.jpg" class="img-fluid rounded-circle" alt="" /> </div>
+                            <p class="notify-details">Karen Robinson</p>
+                            <p class="text-muted mb-0 user-msg">
+                                <small>Wow ! this admin looks good and awesome design</small>
+                            </p>
+                        </a>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-warning">
+                                <i class="mdi mdi-account-plus"></i>
+                            </div>
+                            <p class="notify-details">New user registered.
+                                <small class="text-muted">5 hours ago</small>
+                            </p>
+                        </a>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-info">
+                                <i class="mdi mdi-comment-account-outline"></i>
+                            </div>
+                            <p class="notify-details">Caleb Flakelar commented on Admin
+                                <small class="text-muted">4 days ago</small>
+                            </p>
+                        </a>
+    
+                        <!-- item-->
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <div class="notify-icon bg-secondary">
+                                <i class="mdi mdi-heart"></i>
+                            </div>
+                            <p class="notify-details">Carlos Crouch liked
+                                <b>Admin</b>
+                                <small class="text-muted">13 days ago</small>
+                            </p>
+                        </a>
+                    </div>
+    
+                    <!-- All-->
+                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                        View all
+                        <i class="fe-arrow-right"></i>
+                    </a>
+    
+                </div>
+            </li>
+    
+            <li class="dropdown notification-list topbar-dropdown">
+                <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <img src="assets/images/users/user-1.jpg" alt="user-image" class="rounded-circle">
+                    <span class="pro-user-name ms-1">
+                        Richard <i class="mdi mdi-chevron-down"></i> 
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
+                    <!-- item-->
+                    <div class="dropdown-header noti-title">
+                        <h6 class="text-overflow m-0">Welcome !</h6>
+                    </div>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-user"></i>
+                        <span>My Account</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-settings"></i>
+                        <span>Settings</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-lock"></i>
+                        <span>Lock Screen</span>
+                    </a>
+    
+                    <div class="dropdown-divider"></div>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-log-out"></i>
+                        <span>Logout</span>
+                    </a>
+    
+                </div>
+            </li>
+    
+            <li class="dropdown notification-list">
+                <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">
+                    <i class="fe-settings noti-icon"></i>
+                </a>
+            </li>
+    
+        </ul>
+    
+        <!-- LOGO -->
+        <div class="logo-box">
+            <a href="index.html" class="logo logo-dark text-center">
+                <span class="logo-sm">
+                    <img src="assets/images/logo-sm.png" alt="" height="22">
+                    <!-- <span class="logo-lg-text-light">Codefox</span> -->
+                </span>
+                <span class="logo-lg">
+                    <img src="assets/images/logo-dark.png" alt="" height="20">
+                    <!-- <span class="logo-lg-text-light">U</span> -->
+                </span>
+            </a>
+    
+            <a href="index.html" class="logo logo-light text-center">
+                <span class="logo-sm">
+                    <img src="assets/images/logo-sm.png" alt="" height="22">
+                </span>
+                <span class="logo-lg">
+                    <img src="assets/images/logo-light.png" alt="" height="20">
+                </span>
+            </a>
+        </div>
+    
+        <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
+            <li>
+                <button class="button-menu-mobile waves-effect waves-light">
+                    <i class="fe-menu"></i>
+                </button>
+            </li>
+
+            <li>
+                <!-- Mobile menu toggle (Horizontal Layout)-->
+                <a class="navbar-toggle nav-link" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                    <div class="lines">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+                <!-- End mobile menu toggle-->
+            </li>   
+            
+            <li class="dropdown d-none d-xl-block">
+                <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    Create New
+                    <i class="mdi mdi-chevron-down"></i> 
+                </a>
+                <div class="dropdown-menu">
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <i class="fe-briefcase me-1"></i>
+                        <span>New Projects</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <i class="fe-user me-1"></i>
+                        <span>Create Users</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <i class="fe-bar-chart-line- me-1"></i>
+                        <span>Revenue Report</span>
+                    </a>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <i class="fe-settings me-1"></i>
+                        <span>Settings</span>
+                    </a>
+    
+                    <div class="dropdown-divider"></div>
+    
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <i class="fe-headphones me-1"></i>
+                        <span>Help & Support</span>
+                    </a>
+    
+                </div>
+            </li>
+    
+            <li class="dropdown dropdown-mega d-none d-xl-block">
+                <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    Mega Menu
+                    <i class="mdi mdi-chevron-down"></i> 
+                </a>
+                <div class="dropdown-menu dropdown-megamenu">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5 class="text-dark mt-0">UI Components</h5>
+                                    <ul class="list-unstyled megamenu-list">
+                                        <li>
+                                            <a href="javascript:void(0);">Widgets</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Nestable List</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Range Sliders</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Masonry Items</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Sweet Alerts</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Treeview Page</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Tour Page</a>
+                                        </li>
+                                    </ul>
+                                </div>
+    
+                                <div class="col-md-4">
+                                    <h5 class="text-dark mt-0">Applications</h5>
+                                    <ul class="list-unstyled megamenu-list">
+                                        <li>
+                                            <a href="javascript:void(0);">eCommerce Pages</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">CRM Pages</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Email</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Calendar</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Team Contacts</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Task Board</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Email Templates</a>
+                                        </li>
+                                    </ul>
+                                </div>
+    
+                                <div class="col-md-4">
+                                    <h5 class="text-dark mt-0">Extra Pages</h5>
+                                    <ul class="list-unstyled megamenu-list">
+                                        <li>
+                                            <a href="javascript:void(0);">Left Sidebar with User</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Menu Collapsed</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Small Left Sidebar</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">New Header Style</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Search Result</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Gallery Pages</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0);">Maintenance & Coming Soon</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-center mt-3">
+                                <h3 class="text-dark">Special Discount Sale!</h3>
+                                <h4>Save up to 70% off.</h4>
+                                <button class="btn btn-primary rounded-pill mt-3">Download Now</button>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- end Topbar -->
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="left-side-menu">
+
+                <div class="h-100" data-simplebar>
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+
+                        <ul id="side-menu">
+
+                            <li class="menu-title">Navigation</li>
+
+                            <li>
+                                <a href="index.html">
+                                    <span class="badge bg-success float-end">7</span>
+                                    <i class="fe-airplay"></i>
+                                    <span> Dashboard </span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title mt-2">Apps</li>
+
+                            <li>
+                                <a href="apps-calendar.html">
+                                    <i class="fe-calendar"></i>
+                                    <span> Calendar </span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarEmail" data-bs-toggle="collapse">
+                                    <i class="fe-mail"></i>
+                                    <span> Email </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarEmail">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="email-inbox.html">Inbox</a>
+                                        </li>
+                                        <li>
+                                            <a href="email-read.html">Read Email</a>
+                                        </li>
+                                        <li>
+                                            <a href="email-compose.html">Compose Email</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="apps-members.html">
+                                    <i class="fe-users"></i>
+                                    <span> Members </span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title mt-2">Custom</li>
+
+                            <li>
+                                <a href="#sidebarAuth" data-bs-toggle="collapse">
+                                    <i class="fe-shield"></i>
+                                    <span> Auth Pages </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarAuth">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="auth-login.html">Log In</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-register.html">Register</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-recoverpw.html">Recover Password</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-lock-screen.html">Lock Screen</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-logout.html">Logout</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-confirm-mail.html">Confirm Mail</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-404.html">Error 404</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-404-alt.html">Error 404-alt</a>
+                                        </li>
+                                        <li>
+                                            <a href="auth-500.html">Error 500</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarExpages" data-bs-toggle="collapse">
+                                    <i class="fe-book-open"></i>
+                                    <span> Extra Pages </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarExpages">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="pages-starter.html">Starter</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-timeline.html">Timeline</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-profile.html">Profile</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-aboutus.html">About Us</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-contactus.html">Contact Us</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-faqs.html">FAQs</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-pricing.html">Pricing</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-maintenance.html">Maintenance</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-coming-soon.html">Coming Soon</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages-invoice.html">Invoice</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarLayouts" data-bs-toggle="collapse">
+                                    <i class="fe-layout"></i>
+                                    <span class="badge bg-soft-danger text-danger float-end">New</span>
+                                    <span> Layouts </span>
+                                </a>
+                                <div class="collapse" id="sidebarLayouts">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="layouts-horizontal.html">Horizontal</a>
+                                        </li>
+                                        <li>
+                                            <a href="layouts-detached.html">Detached</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="menu-title mt-2">Components</li>
+
+                            <li>
+                                <a href="#sidebarUiKit" data-bs-toggle="collapse">
+                                    <i class="fe-briefcase"></i>
+                                    <span> UI Kit </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarUiKit">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="ui-buttons.html">Buttons</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-cards.html">Cards</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-avatars.html">Avatars</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-tabs-accordions.html">Tabs & Accordions</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-modals.html">Modals</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-progress.html">Progress</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-notifications.html">Notifications</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-offcanvas.html">Offcanvas</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-placeholders.html">Placeholders</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-spinners.html">Spinners</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-carousel.html">Carousel</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-list-group.html">List Group</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-video.html">Embed Video</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-dropdowns.html">Dropdowns</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-general.html">General UI</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-typography.html">Typography</a>
+                                        </li>
+                                        <li>
+                                            <a href="ui-grid.html">Grid</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarExtendedui" data-bs-toggle="collapse">
+                                    <i class="fe-target"></i>
+                                    <span class="badge bg-info float-end">Hot</span>
+                                    <span> Extended UI </span>
+                                </a>
+                                <div class="collapse" id="sidebarExtendedui">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="extended-nestable.html">Nestable List</a>
+                                        </li>
+                                        <li>
+                                            <a href="extended-range-slider.html">Range Slider</a>
+                                        </li>
+                                        <li>
+                                            <a href="extended-sweet-alert.html">Sweet Alert</a>
+                                        </li>
+                                        <li>
+                                            <a href="extended-tour.html">Tour Page</a>
+                                        </li>
+                                        <li>
+                                            <a href="extended-scrollspy.html">Scrollspy</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="widgets.html">
+                                    <i class="fe-gift"></i>
+                                    <span> Widgets </span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarIcons" data-bs-toggle="collapse">
+                                    <i class="fe-box"></i>
+                                    <span> Icons </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarIcons">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="icons-two-tone.html">Two Tone</a>
+                                        </li>
+                                        <li>
+                                            <a href="icons-colored.html">Colored</a>
+                                        </li>
+                                        <li>
+                                            <a href="icons-feather.html">Feather</a>
+                                        </li>
+                                        <li>
+                                            <a href="icons-mdi.html">Material Design</a>
+                                        </li>
+                                        <li>
+                                            <a href="icons-dripicons.html">Dripicons</a>
+                                        </li>
+                                        <li>
+                                            <a href="icons-font-awesome.html">Font Awesome 5</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarForms" data-bs-toggle="collapse">
+                                    <i class="fe-disc"></i>
+                                    <span> Forms </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarForms">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="forms-elements.html">General Elements</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-advanced.html">Advanced</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-validation.html">Validation</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-pickers.html">Pickers</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-wizard.html">Wizard</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-masks.html">Masks</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-quilljs.html">Quilljs Editor</a>
+                                        </li>
+                                        <li>
+                                            <a href="forms-file-uploads.html">File Uploads</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarTables" data-bs-toggle="collapse">
+                                    <i class="fe-grid"></i>
+                                    <span> Tables </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarTables">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="tables-basic.html">Basic Tables</a>
+                                        </li>
+                                        <li>
+                                            <a href="tables-datatables.html">Data Tables</a>
+                                        </li>
+                                        <li>
+                                            <a href="tables-editable.html">Editable Tables</a>
+                                        </li>
+                                        <li>
+                                            <a href="tables-responsive.html">Responsive Tables</a>
+                                        </li>
+                                        <li>
+                                            <a href="tables-tablesaw.html">Tablesaw Tables</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarCharts" data-bs-toggle="collapse">
+                                    <i class="fe-bar-chart-line-"></i>
+                                    <span> Charts </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarCharts">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="charts-apex.html">Apex Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-flot.html">Flot Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-morris.html">Morris Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-chartjs.html">Chartjs Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-peity.html">Peity Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-chartist.html">Chartist Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-c3.html">C3 Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-sparklines.html">Sparklines Charts</a>
+                                        </li>
+                                        <li>
+                                            <a href="charts-knob.html">Jquery Knob Charts</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarMaps" data-bs-toggle="collapse">
+                                    <i class="fe-map"></i>
+                                    <span> Maps </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarMaps">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="maps-google.html">Google</a>
+                                        </li>
+                                        <li>
+                                            <a href="maps-vector.html">Vector</a>
+                                        </li>
+                                        <li>
+                                            <a href="maps-mapael.html">Mapael</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a href="#sidebarMultilevel" data-bs-toggle="collapse">
+                                    <i class="fe-folder-plus"></i>
+                                    <span> Multi Level </span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <div class="collapse" id="sidebarMultilevel">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <a href="#sidebarMultilevel2" data-bs-toggle="collapse">
+                                                Second Level <span class="menu-arrow"></span>
+                                            </a>
+                                            <div class="collapse" id="sidebarMultilevel2">
+                                                <ul class="nav-second-level">
+                                                    <li>
+                                                        <a href="javascript: void(0);">Item 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript: void(0);">Item 2</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <a href="#sidebarMultilevel3" data-bs-toggle="collapse">
+                                                Third Level <span class="menu-arrow"></span>
+                                            </a>
+                                            <div class="collapse" id="sidebarMultilevel3">
+                                                <ul class="nav-second-level">
+                                                    <li>
+                                                        <a href="javascript: void(0);">Item 1</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#sidebarMultilevel4" data-bs-toggle="collapse">
+                                                            Item 2 <span class="menu-arrow"></span>
+                                                        </a>
+                                                        <div class="collapse" id="sidebarMultilevel4">
+                                                            <ul class="nav-second-level">
+                                                                <li>
+                                                                    <a href="javascript: void(0);">Item 1</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript: void(0);">Item 2</a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">Detached</h4>
+                                    <div>
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Codefox</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Layouts</a></li>
+                                            <li class="breadcrumb-item active">Detached</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            <div class="col-md-6 col-xl-3">
+                                <div class="widget-rounded-circle card bg-purple shadow-none">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="avatar-lg rounded-circle bg-soft-light">
+                                                    <i class="fe-bar-chart-line- font-28 avatar-title text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-end">
+                                                    <h2 class="text-white mt-2">$<span data-plugin="counterup">92,847</span></h2>
+                                                    <p class="text-white mb-0 text-truncate">Statistics</p>
+                                                </div>
+                                            </div>
+                                        </div> <!-- end row-->
+                                    </div>
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="widget-rounded-circle card bg-info shadow-none">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="avatar-lg rounded-circle bg-soft-light">
+                                                    <i class="fe-users font-28 avatar-title text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-end">
+                                                    <h2 class="text-white mt-2"><span data-plugin="counterup">56</span>k</h2>
+                                                    <p class="text-white mb-0 text-truncate">Users Today</p>
+                                                </div>
+                                            </div>
+                                        </div> <!-- end row-->
+                                    </div>
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="widget-rounded-circle card bg-pink shadow-none">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="avatar-lg rounded-circle bg-soft-light">
+                                                    <i class="fe-shuffle font-28 avatar-title text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-end">
+                                                    <h2 class="text-white mt-2"><span data-plugin="counterup">2568</span></h2>
+                                                    <p class="text-white mb-0 text-truncate">Request Per Minute</p>
+                                                </div>
+                                            </div>
+                                        </div> <!-- end row-->
+                                    </div>
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="widget-rounded-circle card bg-success shadow-none">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="avatar-lg rounded-circle bg-soft-light">
+                                                    <i class="fe-download font-28 avatar-title text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-end">
+                                                    <h2 class="text-white mt-2"><span data-plugin="counterup">523</span></h2>
+                                                    <p class="text-white mb-0 text-truncate">New Downloads</p>
+                                                </div>
+                                            </div>
+                                        </div> <!-- end row-->
+                                    </div>
+                                </div> <!-- end widget-rounded-circle-->
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row-->
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                            </div>
+                                        </div>
+    
+                                        <h4 class="header-title mb-0">Statistics</h4>
+    
+                                        <div dir="ltr">
+                                            <div id="apex-area-charts" class="mt-0"></div>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card -->
+                            </div> <!-- end col-->
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                            </div>
+                                        </div>
+    
+                                        <h4 class="header-title mb-3">Product License</h4>
+                                        <div class="position-relative">
+                                            <div class="row align-items-center">
+                                                <div class="col-xl-5">
+                                                    <h5>Standard <span class="text-muted fw-normal"> - Single Site</span> <b class="px-2">-</b> <span class="text-muted">30%</span></h5>
+                                                </div>
+                                                <div class="col-xl-7">
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row align-items-center mt-2">
+                                                <div class="col-xl-5">
+                                                    <h5>Multisite <span class="text-muted fw-normal"> - Unlimited sites</span> <b class="px-2">-</b> <span class="text-muted">60%</span></h5>
+                                                </div>
+                                                <div class="col-xl-7">
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row align-items-center mt-2">
+                                                <div class="col-xl-5">
+                                                    <h5>Extended <span class="text-muted fw-normal"> - For paying users</span> <b class="px-2">-</b> <span class="text-muted">85%</span></h5>
+                                                </div>
+                                                <div class="col-xl-7">
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-6 col-lg-12 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row align-items-center">
+                                                    <div class="col-5">
+                                                        <div class="apex-charts" id="sparkline-chart-1"></div>
+                                                    </div>
+                                                    <div class="col-6 offset-1">
+                                                        <div class="text-end">
+                                                            <p class="font-14 mb-1">Total Products Sales</p>
+                                                            <h2 class="fw-bold mb-1">64.5K</h2>
+                                                            <h5 class="mb-0 text-success"><i class="mdi mdi-trending-up font-18 me-1"></i>20.7%</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="col-xl-6 col-lg-12 col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row align-items-center">
+                                                    <div class="col-5">
+                                                        <div class="apex-charts" id="sparkline-chart-2"></div>
+                                                    </div>
+                                                    <div class="col-6 offset-1">
+                                                        <div class="text-end">
+                                                            <p class="font-14 mb-1">Active Users</p>
+                                                            <h2 class="fw-bold mb-0">50.24K</h2>
+                                                            <h5 class="mb-0 text-success"><i class="mdi mdi-trending-up font-18 me-1"></i>20.7%</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="w-100">
+                                                <h5 class="text-muted mt-0">Active Users</h5>
+                                                <h2 class="mb-0">24,600</h2>
+                                            </div>
+                                            <i class="mdi mdi-account text-light display-3 float-end"></i>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-3">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut ratione voluptate msequi nesciunt.</p>
+                                        <div>
+                                            <a href="#" class="text-primary float-end"><i class="mdi mdi-arrow-right font-20"></i></a>
+                                            <span class="bg-soft-primary fw-medium text-primary rounded px-2 font-12 py-1">Excellent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="w-100">
+                                                <h5 class="text-muted mt-0">Business Profile</h5>
+                                                <h2 class="mb-0">$40,340</h2>
+                                            </div>
+                                            <i class="mdi mdi-office-building text-light display-3 float-end"></i>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-3">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+                                        <div>
+                                            <a href="#" class="text-primary float-end"><i class="mdi mdi-arrow-right font-20"></i></a>
+                                            <span class="bg-soft-warning fw-medium text-warning rounded px-2 font-12 py-1">Excellent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="w-100">
+                                                <h5 class="text-muted mt-0">Market Price</h5>
+                                                <h2 class="mb-0">$1,180</h2>
+                                            </div>
+                                            <i class="mdi mdi-database-marker text-light display-3 float-end"></i>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-3">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.</p>
+                                        <div>
+                                            <a href="#" class="text-primary float-end"><i class="mdi mdi-arrow-right font-20"></i></a>
+                                            <span class="bg-soft-pink fw-medium text-pink rounded px-2 font-12 py-1">Excellent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                            </div>
+                                        </div>
+    
+                                        <h4 class="header-title mb-3">Recent Product</h4>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-centered mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product Name</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>Status</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>ASOS Ridley High Waist</td>
+                                                        <td>$79.49</td>
+                                                        <td>82</td>
+                                                        <td><span class="badge text-success border border-success">Active</span></td>
+                                                        <td>$6,518.18</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Marco Lightweight Shirt</td>
+                                                        <td>$128.50</td>
+                                                        <td>37</td>
+                                                        <td><span class="badge text-warning border border-warning">Pending</span></td>
+                                                        <td>$4,754.50</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Half Sleeve Shirt</td>
+                                                        <td>$39.99</td>
+                                                        <td>64</td>
+                                                        <td><span class="badge text-primary border border-primary">Done</span></td>
+                                                        <td>$2,559.36</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lightweight Jacket</td>
+                                                        <td>$20.00</td>
+                                                        <td>184</td>
+                                                        <td><span class="badge text-info border border-info">Progress</span></td>
+                                                        <td>$3,680.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Marco Shoes</td>
+                                                        <td>$28.49</td>
+                                                        <td>69</td>
+                                                        <td><span class="badge text-warning border border-warning">Pending</span></td>
+                                                        <td>$1,965.81</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ASOS Ridley High Waist</td>
+                                                        <td>$79.49</td>
+                                                        <td>82</td>
+                                                        <td><span class="badge text-primary border border-primary">Done</span></td>
+                                                        <td>$6,518.18</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div> <!-- end table responsive-->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                            </div>
+                                        </div>
+    
+                                        <h4 class="header-title mb-3">Latest Update</h4>
+                                        <div class="align-items-center border-bottom border-light pb-2 mb-1">
+                                            <h3 class="float-end my-2 py-1">45K</h3>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-md rounded-circle bg-soft-info">
+                                                    <i class="mdi mdi-sale font-26 avatar-title text-info"></i>
+                                                </div>
+                                                
+                                                <div class="ms-2">
+                                                    <h5 class="mb-1 mt-0 fw-bold">Total Sales</h5>
+                                                    <p class="text-muted mb-0">New Sale 20.5k</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="align-items-center border-bottom border-light py-2 my-1">
+                                            <h3 class="float-end my-2 py-1">13K</h3>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-md rounded-circle bg-soft-warning">
+                                                    <i class="mdi mdi-autorenew font-26 avatar-title text-warning"></i>
+                                                </div>
+                                                
+                                                <div class="ms-2">
+                                                    <h5 class="mb-1 mt-0 fw-bold">Product Cost</h5>
+                                                    <p class="text-muted mb-0">Total Cost 12.3k</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="align-items-center border-bottom border-light py-2 my-1">
+                                            <h3 class="float-end my-2 py-1">16M</h3>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-md rounded-circle bg-soft-pink">
+                                                    <i class="mdi mdi-emoticon-happy-outline font-26 avatar-title text-pink"></i>
+                                                </div>
+                                                
+                                                <div class="ms-2">
+                                                    <h5 class="mb-1 mt-0 fw-bold">Satisfaction Users</h5>
+                                                    <p class="text-muted mb-0">Total Users 26M</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="align-items-center pt-2 mt-1">
+                                            <h3 class="float-end my-2 py-1">75K</h3>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-md rounded-circle bg-soft-dark">
+                                                    <i class="mdi mdi-cash-multiple font-26 avatar-title text-dark"></i>
+                                                </div>
+                                                
+                                                <div class="ms-2">
+                                                    <h5 class="mb-1 mt-0 fw-bold">Product Income</h5>
+                                                    <p class="text-muted mb-0">Income 65.4k</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                            </div>
+                                        </div>
+    
+                                        <h4 class="header-title mb-3">Total Users</h4>
+                                        <div class="text-center mb-4">
+                                            <div class="apex-charts" id="radialBar"></div>
+                                        </div>
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-5">
+                                                <h5><i class="mdi mdi-circle-double text-info me-1"></i> Last Month</h5>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 55%;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center justify-content-center mt-1">
+                                            <div class="col-5">
+                                                <h5><i class="mdi mdi-circle-double text-pink me-1"></i> Last week</h5>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar bg-pink" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> &copy; Codefox theme by <a href="">Coderthemes</a> 
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-sm-block">
+                                    <a href="javascript:void(0);">About Us</a>
+                                    <a href="javascript:void(0);">Help</a>
+                                    <a href="javascript:void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="right-bar">
+            <div data-simplebar class="h-100">
+
+                <h6 class="fw-semibold px-3 m-0 py-2 font-16 bg-light">
+                    <span class="d-block py-2">Theme Settings</span>
+                </h6>
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Color Scheme</h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="light"
+                            id="light-mode-check" checked />
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="dark"
+                            id="dark-mode-check" />
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+
+                    <!-- Width -->
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Width</h6>
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="width" value="fluid" id="fluid-check" checked />
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="width" value="boxed" id="boxed-check" />
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+
+                    <!-- Menu positions -->
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Menus (Leftsidebar and Topbar) Positon</h6>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="menus-position" value="fixed" id="fixed-check"
+                            checked />
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="menus-position" value="scrollable"
+                            id="scrollable-check" />
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <!-- Left Sidebar-->
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Left Sidebar Color</h6>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-color" value="light" id="light-check" />
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-color" value="dark" id="dark-check" checked/>
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-color" value="brand" id="brand-check" />
+                        <label class="form-check-label" for="brand-check">Brand</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-color" value="gradient" id="gradient-check" />
+                        <label class="form-check-label" for="gradient-check">Gradient</label>
+                    </div>
+
+                    <!-- size -->
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Left Sidebar Size</h6>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-size" value="default"
+                            id="default-size-check" checked />
+                        <label class="form-check-label" for="default-size-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-size" value="condensed"
+                            id="condensed-check" />
+                        <label class="form-check-label" for="condensed-check">Condensed <small>(Small)</small></label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="leftsidebar-size" value="compact"
+                            id="compact-check" />
+                        <label class="form-check-label" for="compact-check">Compact <small>(Icon View)</small></label>
+                    </div>
+
+                    <!-- Topbar -->
+                    <h6 class="fw-medium font-14 mt-4 mb-2 pb-1">Topbar</h6>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="topbar-color" value="dark" id="darktopbar-check"
+                            checked />
+                        <label class="form-check-label" for="darktopbar-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input type="checkbox" class="form-check-input" name="topbar-color" value="light" id="lighttopbar-check" />
+                        <label class="form-check-label" for="lighttopbar-check">Light</label>
+                    </div>
+
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                        <a href="https://wrapbootstrap.com/theme/codefox-admin-dashboard-template-WB0X27670?ref=coderthemes" class="btn btn-danger mt-2" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+
+                </div>
+
+            </div> <!-- end simplebar-menu-->
+        </div>
+        <!-- /Right-bar -->
+
+        <!-- Right bar overlay-->
+        <div class="rightbar-overlay"></div>
+
+        <!-- Vendor js -->
+        <script src="assets/js/vendor.min.js"></script>
+
+        <!-- Plugins js-->
+        <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+
+        <!-- Dashboar 1 init js-->
+        <script src="assets/js/pages/dashboard-1.init.js"></script> 
+
+        <!-- App js-->
+        <script src="assets/js/app.min.js"></script>
+        
+    </body>
+</html>

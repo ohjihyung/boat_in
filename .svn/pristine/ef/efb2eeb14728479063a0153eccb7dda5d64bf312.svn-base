@@ -1,0 +1,42 @@
+package kr.or.ddit.handler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class ChatHandler extends TextWebSocketHandler{
+	//접속한 사람들(웹소켓 세션) 담아둘 리스트
+	private static List<WebSocketSession> list = new ArrayList<WebSocketSession>();
+
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		System.out.println("잘들어왔나?" + session.getId());
+		list.add(session);
+	}
+
+	@Override // 메세지가 클라이언트로 부터 왔을 때
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		//String uMsg = message.getPayload();
+		// 방번호도 여기서 처리해라
+		log.debug("클라이언트가 보낸 메세지 : {}",message.getPayload()); // 디버깅용
+		System.out.println("클라이언트가 보낸 메세지 : " + message.getPayload());
+		for (WebSocketSession webSocketSession : list) {
+			if(!webSocketSession.equals(session)) { //보낸 사람은 빼고 나머지 사람들에게만
+				webSocketSession.sendMessage(message);
+			}
+		}
+	}
+	@Override  //접속이 끊어졌을 때
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		log.info("## 누군가 떠남");
+		list.remove(session);
+	}
+
+}

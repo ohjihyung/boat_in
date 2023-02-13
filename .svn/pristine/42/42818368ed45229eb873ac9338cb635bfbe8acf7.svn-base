@@ -1,0 +1,9 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.QnAVO;
+
+public interface QnaMapper {
+
+	int insertQna(QnAVO qnaVO) throws Exception;
+
+}

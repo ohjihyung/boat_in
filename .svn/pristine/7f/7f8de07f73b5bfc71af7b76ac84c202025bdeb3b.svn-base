@@ -1,0 +1,5 @@
+package kr.or.ddit.controller.chat.service;
+
+public class ChatServiceImpl  implements IChatService{
+
+}

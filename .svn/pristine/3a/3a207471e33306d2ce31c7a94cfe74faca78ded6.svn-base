@@ -1,0 +1,27 @@
+package kr.or.ddit.controller.chat.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.ChatMapper;
+import kr.or.ddit.vo.ChatRoomVO;
+
+@Service
+public class ChatServiceImpl  implements IChatService{
+
+	@Autowired
+	CommonDao dao;
+
+	@Autowired
+	ChatMapper chatMapper;
+
+	@Override
+	public List<ChatRoomVO> getRoomsById(String memberId) throws Exception{
+		// TODO Auto-generated method stub
+		return chatMapper.selectRoomsById(memberId);
+	}
+
+}

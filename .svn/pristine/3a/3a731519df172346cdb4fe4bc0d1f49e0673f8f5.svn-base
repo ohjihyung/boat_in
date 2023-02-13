@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ChatMapper">
+	<select id="selectRoomsById" parameterType="string" resultType="ChatRoomVO">
+		select * from chat_room a, chat_user b
+		where a.chat_r_no = b.chat_r_no and b.member_pk = #{memberId}
+	</select>
+	
+	<insert id="insertChatContent" parameterType="ChatContentVO">
+		INSERT INTO CHAT_CONTENT 
+	    (CHAT_C_CODE, CHAT_C_NO, MEMBER_PK, CHAT_DATE, CHAT_CONTENT)
+	    VALUES(SEQ_C_CODE.NEXTVAL, #{chatCNo}, #{memberPk}, #{chatDate}, #{chatContent})
+	</insert>
+	
+	<select id ="getChatContents" parameterType="string" resultType="ChatContentVO">
+		select a.member_pk,
+        a.chat_content,
+        a.chat_date,
+        a.chat_file,
+        a.chat_ptype,
+        b.member_name,
+        b.member_pic
+		from chat_content a, member b
+		where a.member_pk  = b.member_id 
+		and a.chat_c_no = #{roomId} 
+		order by chat_date ASC
+	</select>
+	
+	<select id="getMemPic" parameterType="string" resultType="string">
+	    SELECT member_pic
+	      FROM MEMBER
+	     WHERE MEMBER_ID = #{memberId}
+	 </select>
+	 
+	 <select id="getRoomTitleByRoomId" parameterType="string" resultType="string">
+	 	select chat_r_title 
+	 	from chat_room
+	 	where chat_r_no = #{roomId}
+	 </select>
+	 
+	 
+	 <insert id="insertRoom" parameterType="ChatRoomVO" >
+	 	<selectKey resultType="string" keyProperty="chatRNo" order="BEFORE">
+	 		SELECT SEQ_CHAT_R_NO.NEXTVAL FROM DUAL
+	 	</selectKey>
+	 	INSERT INTO CHAT_ROOM 
+	 	(CHAT_R_NO, CREATER_ID, CHAT_R_PERSON,CHAT_R_TITLE)
+	 	VALUES(#{chatRNo} , #{createrId}, #{chatRPerson}, #{chatRTitle})
+	 </insert>
+	 
+	 <insert id="insertInvitedUser" parameterType="ChatUserVO" >
+	 	<selectKey resultType="string" keyProperty="chatRNo" order="BEFORE">
+	 		SELECT SEQ_CHAT_R_NO.CURRVAL FROM DUAL
+	 	</selectKey>
+	 	INSERT INTO CHAT_USER
+	 	(MEMBER_PK, CHAT_R_NO)
+	 	VALUES(#{memberPk}, #{chatRNo})
+	 </insert>
+	 
+	 <update id="updateIsOnlineT" parameterType="ChatUserVO">
+	 	update chat_user
+		set is_online = 'true'
+		where member_pk = #{memberPk} 
+     	and  chat_r_no = #{chatRNo} 
+	 </update>
+	 
+	 <update id="updateIsOnlineF" parameterType="ChatUserVO">
+	 	update chat_user
+		set is_online = 'false'
+		where member_pk = #{memberPk} 
+     	and  chat_r_no = #{chatRNo} 
+	 </update>
+	 
+	 <select id="getOfflineUser" parameterType="string" resultType="ChatUserVO">
+	 select member_pk, chat_r_no from chat_user 
+     where chat_r_no = #{roomId}
+		 and is_online = 'false' 
+	 </select>
+	 
+	 <insert id="insertNoRead" parameterType="ChatUserVO">
+	 	insert into chat_no_read
+	 	(member_pk, chat_r_no, state)
+	 	values(#{memberPk},#{chatRNo}, 'unread')
+	 </insert>
+	 
+	 <select id="getNotReadCnt" parameterType="hashMap" resultType="string">
+	 	select count(*) from chat_no_read
+		where member_pk = #{memberId}
+		and chat_r_no = #{roomId}
+	 </select>
+	 
+	 <select id="getLastChat" parameterType="string" resultType="ChatContentVO">
+	 select *
+		from(
+   			 select *
+  			 from chat_content
+   			 where chat_c_no = #{roomId}
+   			 order by chat_date DESC
+			)
+			where ROWNUM = 1
+	 </select>
+	 
+	 <select id="getuserImgs" parameterType="string" resultType="MemberVO"> 
+		select
+       		distinct b.member_pic
+		from chat_user a, member b
+			where a.member_pk = b.member_id and a.chat_r_no = #{roomId}
+	 
+	 </select>
+	 
+	<delete id="deleteUnread" parameterType="map">
+		delete chat_no_read
+		where member_pk = #{Id} and chat_r_no = #{roomId}
+	</delete>
+	
+	<delete id="deleteRoom" parameterType="map">
+	delete from chat_user
+	where member_pk = #{myId} and chat_r_no = #{roomId}
+	</delete>
+	
+	<select id="getuserName" parameterType="string" resultType="ChatUserVO">
+		select * from chat_user
+		where chat_r_no = #{roomId}
+		order by member_pk desc 
+	</select>
+	
+	   <insert id="insertChatFileLocation" parameterType="fileLocationVO">
+       <selectKey resultType="Integer" keyProperty="fileLNo" order="BEFORE">
+            SELECT SEQ_FILE_L_NO.NEXTVAL
+              FROM DUAL
+        </selectKey>
+    
+        INSERT INTO FILE_LOCATION (
+            FILE_L_NO
+          , FILE_LOCATION
+          , FILE_UPLOAD_DATE
+          , FILE_ISDELETED
+        ) VALUES (
+            #{fileLNo}
+          , 'CHAT'
+          , SYSDATE
+          , 'F'
+        )
+    </insert>
+    
+      <insert id="sendChatFile_O" parameterType="fileVO">
+        INSERT INTO BFILE (
+            FILE_L_NO
+          , FILE_L_NO2
+          , FILE_REAL_NAME
+          , FILE_SIZE
+          , FILE_DOWNCNT
+          , FILE_PATH
+          , FILE_ISDELETED
+          , FILE_UPLOADER
+          , FILE_ISIMAGE
+          , FILE_UUID
+          , FILE_NAME
+        ) VALUES (
+            #{fileLNo}
+          , SEQ_FILE_L_NO2.NEXTVAL
+          , #{fileRealName}
+          , #{fileSize}
+          , #{fileDowncnt}
+          , #{filePath}
+          , #{image}
+          , #{fileUploader}
+          , #{image}
+          , #{uuid}
+          , #{fileName}
+        )      
+    </insert>
+	
+	<insert id="insertChatFile" parameterType="ChatContentVO">
+		INSERT INTO CHAT_CONTENT 
+	    (CHAT_C_CODE, CHAT_C_NO, MEMBER_PK, CHAT_CONTENT, CHAT_DATE,CHAT_PTYPE, CHAT_FILE)
+	    VALUES(SEQ_C_CODE.NEXTVAL, #{chatCNo}, #{memberPk}, #{chatContent}, #{chatDate}, #{chatPtype}, #{chatFile})
+	</insert>
+	
+</mapper>

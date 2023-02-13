@@ -1,0 +1,84 @@
+package kr.or.ddit.controller.letter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.JsonFactory;
+
+import kr.common.CommonDao;
+import kr.or.ddit.controller.letter.service.ILetterService;
+import kr.or.ddit.vo.LetterVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/letter")
+public class LetterController {
+	
+	@Inject
+	ILetterService service;
+	@Inject
+	CommonDao dao;
+	
+	@GetMapping("/home")
+	public String letterHome () {
+		return "content/letter";
+	}
+	@GetMapping("/inbox")
+	public String letterInbox() {
+		return "letter/inbox";
+	}
+	@GetMapping("/compose")
+	public String letterCompose() {
+		return "letter/compose";
+	}
+	
+	@GetMapping("/detail")
+	public String letterDeatil() {
+		return "letter/detail";
+	}
+	
+	
+	
+	@PostMapping(value = "/insert" ,produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public String sendLetter(@RequestBody LetterVO letterVO) {
+		log.debug("쪽지보내기 들어옴 받은객체 : {}" ,letterVO);
+		int res = service.sendLetter_H(letterVO);
+		
+		if (res >0) {
+			log.debug("인서트 성공 ");
+			
+		}
+		return "OK";
+	}
+	
+	@PostMapping(value = "/mylist",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public List<LetterVO> myLetterList(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("받은쪽지함 들어옴 받은객체 : {}" ,letterVO);
+		List<LetterVO> list = new ArrayList<>();
+		
+		list = dao.selectList("myLetterList",letterVO.getMemberId());
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("data", list);
+		log.debug("myLetterList : {}",list);
+		
+		
+		return list;
+	}
+	
+	
+}

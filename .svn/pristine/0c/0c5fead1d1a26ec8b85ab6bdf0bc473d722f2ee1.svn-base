@@ -1,0 +1,19 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class ProjectJoinStateVO {
+    private String proJSNo;
+    private String proNo;
+    private String memberId;
+    private String proAuth;
+    private String proJoinState;
+    
+    //프로젝트별 멤버 출력할 때 추가로 필요한 정보들
+    private String memberName;
+    private String memberPic;
+    private String memberState;
+    
+    
+}

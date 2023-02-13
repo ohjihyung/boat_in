@@ -1,0 +1,12 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class TopWorkCategoryVO {
+    public String twCategoryNo;
+    public String twCategoryName;
+    public String twCategoryColor;
+    public String proNo;
+    public String twCategoryState;
+}

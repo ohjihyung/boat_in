@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="content-page">
+	<div class="content">
+
+		<div class="row mt-3">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="header-title mb-4">
+						
+						통계 페이지</h4>
+						<button id="testbtn" class="btn btn-primary">값확인</button>
+
+						<ul class="nav nav-tabs nav-bordered nav-justified">
+							<li class="nav-item"><a href="#quanti-member" data-bs-toggle="tab" aria-expanded="true" class="nav-link active"> 회원관련 통계</a></li>
+							<li class="nav-item"><a href="#quanti-project" data-bs-toggle="tab" aria-expanded="false" class="nav-link "> 프로젝트 이용 관련</a></li>
+							<li class="nav-item"><a href="#quanti-file" data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 자료 관련  </a></li>
+							<li class="nav-item"><a href="#quanti-else" data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 기타통계 </a></li>
+							<li class="nav-item"><a href="#quanti-GA" data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 구글애널리틱스 </a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="quanti-member">
+								<p>유입경로  </p>
+								
+								<p>이용자 이메일  </p>
+								<p>기간별 가입인원  </p>
+								<p>30일 이상 미접속 인원 (ip로그인기록) </p>
+							</div>
+							<div class="tab-pane " id="quanti-project">
+								<p>카테고리별 프로젝트 생성현황 </p>
+								<p>프로젝트별 작업갯수 현황  </p>
+								<p>하위작업 이용현황 </p>
+							</div>
+							<div class="tab-pane" id="quanti-file">
+								<p>주로 업로드된 파일 종류</p>
+								<p>파일위치별 사용량 </p>
+							</div>
+							<div class="tab-pane" id="quanti-else">
+								<p>위젯 종류별 사용 현황</p>
+								<p>게시판별  이용현황 </p>
+								<p>채팅 이용현황 </p>
+							</div>
+							<div class="tab-pane" id="quanti-GA">
+								<p>접속자현황</p>
+								
+								<iframe src="https://analytics.google.com/analytics/web/#/p350449611/reports/reportinghub">
+								
+								</iframe>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#testbtn').on('click', function() {
+		alert('되냐?')
+	})
+</script>

@@ -1,0 +1,24 @@
+package kr.or.ddit.controller.member.service;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IMemberService {
+
+	public void memberRegister(MemberVO memberVO);
+
+	public MemberVO selectOne(String email);
+
+	public void updateState(MemberVO memberVO);
+
+    public MemberVO selectMember(MemberVO vo) throws Exception;
+
+    /**
+     *  채팅에서 해당 유저 ID로 이름가져오기
+     * @param memberId
+     * @return  해당 유저 이름 가져옴
+     */
+	public String getUserNameById(String memberId);
+
+
+
+}

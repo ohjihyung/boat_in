@@ -1,0 +1,16 @@
+package kr.or.ddit.vo;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class MyFileVO {
+	private String memberId;
+	private String filePath;
+	private String fileRealName;
+	private String isImage;
+	private String fileUploader;
+}

@@ -1,0 +1,86 @@
+package kr.or.ddit.controller.project;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.common.CommonDao;
+import kr.or.ddit.vo.TopWorkVO;
+import lombok.extern.slf4j.Slf4j;
+
+@RequestMapping("/proquanti")
+@Controller
+@Slf4j
+public class ProjectQuantityController {
+	
+	@Inject
+	private CommonDao dao;
+	
+	@GetMapping("/home")
+	public String proQuantityHome() {
+		
+		return "content/projectQuantity";
+	}
+	
+	@PostMapping("/totalcnt")
+	@ResponseBody
+	public String proQuantiTotalCnt(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("totalcnt 받은객체 :{} ",topworkVO);
+		String res = dao.select("proQuantiTotalCnt", topworkVO);
+		return res;
+	}
+	
+	@PostMapping("/statecnt")
+	@ResponseBody
+	public String proQuantiStateCnt(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("proQuantiStateCnt 받은객체 :{} ",topworkVO);
+		String res = dao.select("proQuantiStateCnt", topworkVO);
+		log.debug("state cnt 결과 : {} " ,res );
+		return res;
+	}
+	
+	@PostMapping("/deadworkcnt")
+	@ResponseBody
+	public String proQuantiDeadWorkCnt(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("proQuantiDeadWorkCnt 받은객체 :{} ",topworkVO);
+		String res = dao.select("proQuantiDeadWorkCnt", topworkVO);
+		log.debug("deadworkcnt 결과 : {} " ,res );
+		return res;
+	}
+	
+	@PostMapping("/myworkcnt")
+	@ResponseBody
+	public List<TopWorkVO> proQuantiMyWorkCnt(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("proQuantiMyWorkCnt 받은객체 :{} ",topworkVO);
+		List<TopWorkVO> res = dao.selectList("proQuantiMyWorkCnt", topworkVO);
+		log.debug("myworkcnt 결과 : {} " ,res );
+		return res;
+	}
+	
+	@PostMapping("/myworkrate")
+	@ResponseBody
+	public List<TopWorkVO> proQuantiMyWorkRate(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("proQuantiMyWorkRate 받은객체 :{} ",topworkVO);
+		List<TopWorkVO> res = dao.selectList("proQuantiMyWorkRate", topworkVO);
+		log.debug("myworkrate 결과 : {} " ,res );
+		return res;
+	}
+	
+	@PostMapping("/toalworkrate")
+	@ResponseBody
+	public List<TopWorkVO> proQuantiTotalWorkRate(@RequestBody TopWorkVO topworkVO) throws Exception {
+		log.debug("proQuantiTotalWorkRate 받은객체 :{} ",topworkVO);
+		List<TopWorkVO> res = dao.selectList("proQuantiTotalWorkRate", topworkVO);
+		log.debug("toalworkrate 결과 : {} " ,res );
+		return res;
+	}
+	
+	
+}

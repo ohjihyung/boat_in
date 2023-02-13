@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ProjectMapper">
+    <insert id="insert" parameterType="projectVO">
+        <selectKey resultType="String" keyProperty="proNo" order="BEFORE">
+            SELECT SEQ_PROJECT.NEXTVAL
+              FROM DUAL
+        </selectKey>
+        INSERT INTO PROJECT (
+            PRO_NO
+          , PRO_NAME
+          , MEMBER_ID
+          , PRO_START
+          , PRO_END
+          , PRO_TYPE
+        ) VALUES (
+            #{proNo}
+          , #{proName}
+          , #{memberId}
+          , #{proStart}
+          , #{proEnd}
+          , #{proType}
+        )
+    </insert>
+    
+    <insert id="insertJoinState" parameterType="projectJoinStateVO">
+        INSERT INTO PROJECT_JOIN_STATE (
+            PRO_J_S_NO
+          , PRO_NO
+          , MEMBER_ID
+          , PRO_AUTH
+          , PRO_JOINSTATE
+        ) VALUES (
+            SEQ_PROJECT_JOIN.NEXTVAL
+          , #{proNo}
+          , #{memberId}
+          , #{proAuth}
+          , 1
+        )
+    </insert>
+    
+    <select id="list" parameterType="memberVO" resultType="projectVO">
+        SELECT A.PRO_NO
+		     , A.PRO_NAME
+		     , B.MEMBER_ID
+		     , A.PRO_TYPE
+		  FROM PROJECT A
+		  LEFT JOIN PROJECT_JOIN_STATE B
+		    ON A.PRO_NO = B.PRO_NO
+		 WHERE A.PRO_FINISH = 0
+		   AND B.MEMBER_ID = #{memberId}
+		 GROUP BY A.PRO_NO, A.PRO_NAME, B.MEMBER_ID, A.PRO_TYPE
+		 ORDER BY TO_NUMBER(A.PRO_NO) ASC
+    </select>
+    
+    <select id="selectTeamMember"  parameterType="string" resultType="projectJoinStateVO">
+    	SELECT * 
+    	  FROM MEMBER A, PROJECT_JOIN_STATE B
+    	WHERE A.MEMBER_ID = B.MEMBER_ID
+    	    AND B.PRO_NO = #{proNo} AND NOT A.MEMBER_STATE = 9
+    	 ORDER BY B.PRO_AUTH
+    </select>
+    
+    
+    <select id="selectOne" resultType="projectVO" parameterType="String">
+    	SELECT * 
+    	FROM PROJECT
+    	WHERE PRO_NO = #{proNo}
+    </select>
+    
+    <select id="memberList" parameterType="projectVO" resultType="memberVO">
+          SELECT A.*
+               , B.MEMBER_NAME
+               , B.MEMBER_PIC
+               , B.MEMBER_STATE
+		    FROM PROJECT_JOIN_STATE A
+		    LEFT JOIN MEMBER B
+		      ON A.MEMBER_ID = B.MEMBER_ID
+		   WHERE A.PRO_NO = #{proNo}
+		     AND NOT B.MEMBER_STATE = 9
+		   ORDER BY A.PRO_AUTH
+    </select>
+    
+    <update id="updateProTotalRate" parameterType="map">
+	    UPDATE PROJECT 
+	    SET PRO_TOTALRATE = (
+				SELECT AVG(TOPWORK_PROGRESS) 
+				FROM  TOPWORK 
+				WHERE PRO_NO  = #{proNo1})
+		WHERE PRO_NO = #{proNo2}
+    </update>
+    
+    <select id="getProjectPeriod" parameterType="projectVO" resultType="projectVO">
+        SELECT *
+          FROM PROJECT
+         WHERE PRO_NO = #{proNo}
+    </select>
+    
+    <select id="getAllProject" resultType="projectVO">
+        SELECT PRO_NO
+             , PRO_NAME
+             , PRO_TYPE
+             , MEMBER_ID
+             , PRO_DELETE
+          FROM PROJECT
+    </select>
+    
+    <update id="updateProjectName" parameterType="projectVO">
+        UPDATE PROJECT
+           SET PRO_NAME = #{proName}
+         WHERE PRO_NO = #{proNo}
+    </update>
+    
+    <select id="selectProject" parameterType="projectVO" resultType="projectVO">
+        SELECT *
+          FROM PROJECT
+         WHERE PRO_NO = #{proNo}
+    </select>
+    
+    <update id="projectNotDelete" parameterType="projectVO">
+        UPDATE PROJECT
+           SET PRO_DELETE = 0
+         WHERE PRO_NO = #{proNo}
+    </update>
+    
+    <update id="projectDelete" parameterType="projectVO">
+        UPDATE PROJECT
+           SET PRO_DELETE = 1
+         WHERE PRO_NO = #{proNo}
+    </update>
+    
+    <update id="updateManager" parameterType="projectJoinStateVO">
+        UPDATE PROJECT
+           SET MEMBER_ID = #{memberId}
+         WHERE PRO_NO = #{proNo}
+    </update>
+    
+    <select id="getProjectResult" parameterType="projectVO" resultType="Map">
+        SELECT A.*
+		     , B.PRO_START
+		     , B.PRO_END
+		  FROM TOPWORK A
+		  LEFT JOIN PROJECT B
+		    ON A.PRO_NO = B.PRO_NO
+		 WHERE A.PRO_NO = #{proNo}
+    </select>
+    
+    <update id="finishProject" parameterType="Map">
+        UPDATE PROJECT
+	       SET PRO_FINISH = 1
+	         , PRO_FINISH_DATE = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+	         , PRO_FINISH_REASON = #{finishReason}
+	     WHERE PRO_NO = #{proNo}
+    </update>
+    
+    
+    <select id="finishList" parameterType="memberVO" resultType="projectVO">
+        SELECT A.PRO_NO
+             , A.PRO_NAME
+             , B.MEMBER_ID
+             , A.PRO_TYPE
+          FROM PROJECT A
+          LEFT JOIN PROJECT_JOIN_STATE B
+            ON A.PRO_NO = B.PRO_NO
+         WHERE A.PRO_FINISH = 1
+           AND B.MEMBER_ID = #{memberId}
+         GROUP BY A.PRO_NO, A.PRO_NAME, B.MEMBER_ID, A.PRO_TYPE
+         ORDER BY TO_NUMBER(A.PRO_NO) ASC
+    </select>
+</mapper>

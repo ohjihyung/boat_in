@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ProjectQuantityMapper">
+	<select id="proQuantiTotalCnt" parameterType="topworkVO" resultType="String">
+		SELECT COUNT(*) 
+		FROM TOPWORK 
+		WHERE PRO_NO= #{proNo}
+		AND TOPWORK_DELETE ='F'
+	</select>
+	<select id="proQuantiStateCnt" parameterType="topworkVO" resultType="String">
+		SELECT COUNT(*) 
+		FROM TOPWORK 
+		WHERE PRO_NO= #{proNo}
+		AND TOPWORK_STATE= #{topWorkState}
+		AND TOPWORK_DELETE ='F'
+	</select>
+	
+	<!-- 마감일 지난작업들 날짜 비교문 0보다 큰것들이 지난거 -->
+	<select id="proQuantiDeadWorkCnt" parameterType="topworkVO" resultType="String">
+		SELECT COUNT(*) 
+		FROM TOPWORK 
+		WHERE ROUND(TO_DATE(SUBSTR(TOPWORK_END,0,10))- SYSDATE) >  0 
+		AND PRO_NO = #{proNo}
+		AND TOPWORK_DELETE ='F'
+	</select>
+	
+	<!-- 마감일 임박한 작업 통계 -->
+	<select id="deadlineWorkList" parameterType="topworkVO" resultType="topworkVO">
+		SELECT  A.TOPWORK_NO,
+            A.PRO_NO,
+            B.MEMBER_ID,
+            A.TOPWORK_TITLE,
+            A.TOPWORK_PROGRESS,
+            TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_START,0,10)),'YYYY/MM/DD') AS TOPWORK_START ,
+            TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_END,0,10)),'YYYY/MM/DD') AS TOPWORK_END 
+		FROM TOPWORK A, TOPWORK_RELATION B
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO
+		AND A.PRO_NO = #{proNo}
+        AND ROUND(TO_DATE(SUBSTR(TOPWORK_END,0,10))- SYSDATE) >=0 
+        AND TOPWORK_DELETE = 'F'
+        ORDER BY TOPWORK_END
+	</select>
+	<!-- 최근 배정된 작업리스트  -->
+	<select id="newRegiWorkList" parameterType="topworkVO" resultType="topworkVO">
+		SELECT  A.TOPWORK_NO,
+            A.PRO_NO,
+            B.MEMBER_ID,
+            A.TOPWORK_TITLE,
+            A.TOPWORK_PROGRESS,
+            A.TOPWORK_STATE,
+            TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_START,0,10)),'YYYY/MM/DD') AS TOPWORK_START ,
+            TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_END,0,10)),'YYYY/MM/DD') AS TOPWORK_END 
+		FROM TOPWORK A, TOPWORK_RELATION B
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO
+		AND A.PRO_NO = #{proNo}
+        AND TOPWORK_DELETE = 'F'
+        ORDER BY TOPWORK_NO
+	</select>
+	
+	
+	<!-- 팀원별 할당된 작업량  vo cnt추가 -->
+	<select id="proQuantiMyWorkCnt" parameterType="topworkVO" resultType="topworkVO">
+		SELECT A.MEMBER_ID , COUNT(B.TOPWORK_NO) AS TOPWORK_CNT
+		FROM TOPWORK_RELATION A, TOPWORK B 
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO 
+		AND B.PRO_NO = #{proNo}
+		GROUP BY A.MEMBER_ID
+	</select>
+	
+	<!-- 팀원별 할당된 전체 평균 진행도 vo avg추가  -->
+	<select id="proQuantiMyWorkRate" parameterType="topworkVO" resultType="topworkVO">
+		SELECT A.MEMBER_ID , AVG(B.TOPWORK_PROGRESS) AS TOPWORK_RATE
+		FROM TOPWORK_RELATION A, TOPWORK B 
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO 
+		AND B.PRO_NO = #{proNo}
+		GROUP BY A.MEMBER_ID
+	</select>
+	
+	<!-- 프로젝트 작업별 진행도  작업번호,타이틀, 진행도 컬럼만 추출해서쓸것-->
+	<!-- 최근 배정된 작업들 오더바이 날짜순으로  -->
+	<!-- 위 두개 같은 쿼리로 쓰면될듯 -->
+	<select id="proQuantiTotalWorkRate" parameterType="topworkVO" resultType="topworkVO">
+		SELECT * FROM TOPWORK WHERE PRO_NO = #{proNo}
+		ORDER BY TOPWORK_START DESC
+	</select>
+	
+	
+	<!-- 작업별 담당자 정보 불러오기 -->
+	<select id="getDirector" parameterType="topworkVO" resultType="topworkVO">
+		SELECT *
+		FROM TOPWORK_RELATION A, TOPWORK B 
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO 
+		AND B.PRO_NO = #{proNo}
+	</select>
+		
+	<select id="readyConfirmWorkList" parameterType="topworkVO" resultType="topworkVO">
+		SELECT * 
+		FROM TOPWORK_RELATION A, TOPWORK B,TOPWORK_CATEGORY C 
+		WHERE A.TOPWORK_NO = B.TOPWORK_NO 
+		AND B.TW_CATEGORY_NO = C.TW_CATEGORY_NO
+		AND B.PRO_NO= #{proNo}
+		AND B.TOPWORK_STATE= '2'
+	</select>
+	
+	<update id="updateProJoinAuth_H" parameterType="projectJoinStateVO">
+		UPDATE PROJECT_JOIN_STATE SET PRO_AUTH= #{proAuth}
+    	WHERE MEMBER_ID = #{memberId}
+    	AND PRO_NO = #{proNo}
+	</update>
+	<update id="firePro_H" parameterType="projectJoinStateVO">
+		UPDATE PROJECT_JOIN_STATE SET PRO_JOINSTATE= #{proJoinState}
+    	WHERE MEMBER_ID = #{memberId}
+    	AND PRO_NO = #{proNo}
+	</update>
+	
+	<select id="proLogTotalRate" parameterType="topworkVO" resultType="projectLogVO" >
+		SELECT ROUND(AVG(PRO_LOG_PROGRESS_TOTAL)) AS PRO_LOG_PROGRESS_TOTAL,
+		        PRO_LOG_DATE
+		FROM PROJECT_LOG 
+		WHERE PRO_NO = #{proNo}
+		GROUP BY PRO_LOG_DATE
+		ORDER BY 2
+	</select>
+	
+	<select id="detailProject_h" parameterType="topworkVO" resultType="projectVO" >
+		SELECT * FROM PROJECT WHERE PRO_NO = #{proNo}
+	</select>
+	
+	
+</mapper>

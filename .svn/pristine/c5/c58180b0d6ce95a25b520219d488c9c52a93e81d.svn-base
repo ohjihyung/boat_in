@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Root Context: defines shared resources visible to all other web components -->
+    <!-- 
+        root-context.xml : 스프링 설정을 위한 파일
+        
+        스프링 설정이란?
+        - view와 관련되지 않은 객체를 정의
+        - service(비즈니스 기능), Dao(Repository:저장소), DB등 비즈니스 로직과 관련된 설정
+        - BasicDataSource dataSource = new BasicDataSource();
+          dataSource.setDriverClassName() = "oracle.jdbc.driver.OracleDriver";
+     -->
+     
+     
+    
+  <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <!-- <property name="driverClassName" value="oracle.jdbc.pool.OracleDataSource"></property>
+        <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:XE"></property> --> 
+        
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+        <property name="url" value="jdbc:log4jdbc:oracle:thin:@112.220.114.130:1521:XE"></property>   
+        <property name="username" value="team2_202207F"></property>
+        <property name="password" value="java"></property>
+    </bean> 
+    
+    
+     <!-- dataSource : 데이터베이스와 관련된 정보를 설정한다. -->
+ <!--     <bean id="dataSource" class=My Project 50406"org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <property name="url" value="jdbc:oracle:thin:@192.168.56.1:1521:xe"/>
+        <property name="username" value="spring"/>
+        <property name="password" value="java"/>
+     </bean> -->
+     
+     <!--  
+        데이터베이스와 연결을 맺고 끊어질 때까지의 라이프 사이클을 관리해주는 SqlSession 객체를 생성
+        1) dataSouce
+        2) Mapper xml의 위치 지정
+            - src/main/resources/
+      -->
+      <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:/sqlmap/**/*_SQL.xml"/>
+        <property name="configLocation" value="classpath:/config/mybatisAlias/mybatisAlias.xml"/>
+      </bean>
+      
+      <!-- 
+        데이터베이스에 개별적으로 쿼리를 실행시키는 객체
+        이 객체를 통해서 query를 실행한다.
+      -->
+      <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <!-- <constructor-arg name="sqlSessionFactory" index="0" ref="sqlSessionFactory"/> -->
+        <constructor-arg ref="sqlSession"></constructor-arg>
+      </bean>
+      
+      <bean id="commonDao" class="kr.common.CommonDao">
+      	<property name="sqlSession" ref="sqlSessionTemplate"></property>
+      </bean>
+      <!-- 
+        Mapper 인터페이스 설정
+        개발자가 직업 DAO를 설정하지 않아도 자동으로 Mapper 인터페이스를 활용하는 객체를 생성하게 된다.
+       -->
+       <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+            <property name="basePackage" value="kr.or.ddit.mapper"/>
+       </bean>
+       
+       <!-- 웹소켓 context 실행되게 root에다가 저장 -->
+       <import resource="websocket-context.xml"/>
+       
+</beans>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.vo.AdminQuantiVO">
+	<!-- 회원별 이메일 총갯수  유입경로 -->
+	<select id="adminEmailCnt" resultType="adminQuantiVO">
+		SELECT EMAIL , COUNT(*) AS CNT FROM 
+		(SELECT SUBSTR(MEMBER_ID, INSTR(MEMBER_ID, '@') -0 ) AS EMAIL
+		FROM MEMBER)
+		GROUP BY EMAIL
+	</select>
+	<!-- 회원 가입현황  -->
+	<select id="adminMemRegdate" resultType="adminQuantiVO">
+		SELECT MEMBER_REGDATE AS DATA,
+		    COUNT(*) AS CNT
+		FROM MEMBER
+		GROUP BY MEMBER_REGDATE
+	</select>
+	<!-- 프로젝트 종류별 총계 -->
+	<select id="adminProtype" resultType="adminQuantiVO">
+		SELECT PRO_TYPE AS DATA, COUNT(*)  AS CNT 
+		FROM PROJECT
+		GROUP BY PRO_TYPE
+	</select>
+	
+	<!-- 프로젝트별 작업갯수   -->
+	<select id="adminProTopworkCnt" resultType="adminQuantiVO">
+		SELECT PRO_NO AS DATA, COUNT(*) AS CNT FROM TOPWORK 
+		GROUP BY PRO_NO
+	</select>
+	
+	<!-- 파일 종류별 갯수  -->
+	<select id="adminFileTypeCnt" resultType="adminQuantiVO">
+		SELECT  DATA,
+		        COUNT(*) AS CNT FROM 
+		        (SELECT  SUBSTR(FILE_REAL_NAME, INSTR(FILE_REAL_NAME,'.',-3 )) AS DATA
+		        FROM BFILE )
+		GROUP BY DATA
+	</select>
+	<!-- 파일 종류별 용량합계  -->
+	<select id="adminFileSize" resultType="adminQuantiVO">
+		SELECT  DATA,
+		        TO_CHAR(SUM(FILE_SIZE),'9,999,999,999') AS FILE_SIZE FROM 
+		        (SELECT  SUBSTR(FILE_REAL_NAME, INSTR(FILE_REAL_NAME,'.',-3 )) AS DATA,
+		                FILE_SIZE
+		        FROM BFILE )
+		GROUP BY DATA
+	</select>
+	<!-- 프로젝트별 평균 소요기간  -->
+	<select id="adminProPeriod" resultType="adminQuantiVO">
+		SELECT PRO_END, PRO_START,
+	    (TO_DATE(PRO_END) - TO_DATE(PRO_START)) AS PERIOD FROM PROJECT
+	</select>
+	
+	<!-- 프로젝트 종류 별  평균 소요 인력 -->
+	<select id="adminProAvgMem" resultType="adminQuantiVO">
+		SELECT PRO_NO,
+				COUNT(*) AS CNT 
+		FROM PROJECT_JOIN_STATE
+		WHERE PRO_JOINSTATE= '1'
+		GROUP BY PRO_NO
+	</select>
+	<!-- 위젯별 사용량   -->	
+	<select id="adminWidgetCnt" resultType="adminQuantiVO">
+		SELECT A.WIDGET_NO, A.WIDGET_NAME, B.CNT  
+		FROM WIDGET A, 
+		    	(SELECT WIDGET_NO ,COUNT(*) AS CNT FROM WIDGETBAR
+		    	GROUP BY  WIDGET_NO) B
+		WHERE A.WIDGET_NO = B.WIDGET_NO
+	</select>
+	
+	<select id="adminQnaCnt" resultType="adminQuantiVO">
+		SELECT QNA_DATE AS PERIOD , COUNT(*) AS CNT 
+		FROM QNA 
+		GROUP BY QNA_DATE
+	</select>
+	
+	<!-- 미접속 10일 경과 회원 목록  -->
+	<select id="adminNologin" resultType="adminQuantiVO">
+		SELECT MEMBER_ID, MAX(LOGIN_DATE) AS RECENTLOG  FROM LOGIN_LOG
+		GROUP BY MEMBER_ID 
+		ORDER BY RECENTLOG 
+<!-- 		HAVING SYSDATE - TO_DATE(MAX(LOGIN_DATE)) > 10  -->
+	</select>
+	
+	<select id="#" resultType="adminQuantiVO">
+	</select>
+</mapper>

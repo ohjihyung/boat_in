@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ChatMapper">
+	<select id="selectRoomsById" parameterType="string" resultType="ChatRoomVO">
+		select * from chat_room a, chat_user b
+		where a.chat_r_no = b.chat_r_no and b.member_pk = #{memberId}
+	</select>
+	
+	<insert id="insertChatContent" parameterType="ChatContentVO">
+		INSERT INTO CHAT_CONTENT 
+	    (CHAT_C_NO, MEMBER_PK, CHAT_DATE, CHAT_CONTENT)
+	    VALUES(#{chatCNo}, #{memberPk}, #{chatDate}, #{chatContent})
+	</insert>
+	
+	<select id ="getChatContents" parameterType="string" resultType="ChatContentVO">
+		select a.member_pk,
+        a.chat_content,
+        a.chat_date,
+        b.member_name,
+        b.member_pic
+		from chat_content a, member b
+		where a.member_pk  = b.member_id 
+		and a.chat_c_no = #{roomId} 
+		order by chat_date ASC
+	</select>
+	
+	<select id="getMemPic" parameterType="string" resultType="string">
+	    SELECT member_pic
+	      FROM MEMBER
+	     WHERE MEMBER_ID = #{memberId}
+	 </select>
+	 
+</mapper>

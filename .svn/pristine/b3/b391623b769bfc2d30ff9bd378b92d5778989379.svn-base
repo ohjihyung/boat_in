@@ -1,0 +1,414 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<body>
+	<div class="content-page">
+		<div class="content">
+
+			<!-- Start Content-->
+			<div class="container-fluid">
+
+				<!-- start page title -->
+				<div class="row">
+					<div class="col-12">
+						<div class="page-title-box">
+							<h4 class="page-title">DEVIN</h4>
+							<div>
+								<ol class="breadcrumb m-0">
+									<li class="breadcrumb-item"><a href="javascript: void(0);">BOAT-IN</a></li>
+									<li class="breadcrumb-item active">DEVIN</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end page title -->
+				
+				<div class="row" id="detail-target"></div>
+				
+				<div class="row" id="insert-target"></div>
+
+				<div class="row" id="update-target"></div>
+				
+				<div class="row" id="list-target">
+					<div class="col-12">
+						<div class="card" >
+							<div class="card-body">
+
+								<h5 class="mt-0">개발자 지식IN</h5>
+								<p class="sub-header font-13">Inline edit like a spreadsheet on two columns only and without identifier column.</p>
+								<div class="table-responsive">
+									<div class="inbox-widget" data-simplebar style="max-height: 600px;">
+										<table class="table mb-0">
+											<thead>
+												<tr>
+													<th>#</th>
+													<th>제목</th>
+													<th>작성자</th>
+													<th>작성일</th>
+													<th>조회수</th>
+												</tr>
+											</thead>
+
+											<tbody id="tbody_C">
+											</tbody>
+										</table>
+									</div><!-- end .table-responsive-->
+								</div><!-- end card-body -->
+								<br>
+							</div><!-- end card -->
+						</div><!-- end col -->
+						<button type="button" class="btn btn-primary" id="newBtn" onclick="renderDevinInsert_C()">등록</button>
+					</div><!-- end row -->
+				</div><!-- container -->
+			</div><!-- content -->
+
+		</div>
+	</div>
+</body>
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+<!-- 토스트 UI에디터 -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css" />
+<script src="https://uicdn.toast.com/editor/2.0.0/toastui-editor-all.min.js"></script>
+
+<script type="text/javascript">
+renderDevinList_C();
+
+//채진영
+//디테일 화면 그리기
+function renderDetail_C(devinVO) {
+	//디테일 내용 보여주기
+	document.querySelector("#detail-target").style.display = "block";
+	//리스트 내용 감추기
+	document.querySelector("#list-target").style.display = "none";
+	//인서트 화면 감추기
+	document.querySelector("#insert-target").style.display = "none";
+	//업데이트 화면 감추기
+	document.querySelector("#update-target").style.display = "none";
+	
+	
+	console.log("받은 데이터 : ", devinVO);
+	
+	let text = ``;
+	text += `<div class="col-lg-12">`;
+	text += ` <div class="card h-100">`;
+	text += `    <div class="card-header">`;
+	text += `        <h2 class="card-title"> \${devinVO.dviTitle }</h2>`;
+	text += `        <br>`;
+	text += `        <div class="card-tools">`; 
+	text += `            <i class="fe-user"></i>&nbsp; \${devinVO.memberId } &nbsp;&nbsp;`;
+	text += `            <i class="fe-calendar"></i>&nbsp; \${devinVO.dviDate } </div>`;
+	text += `        <div class="card-tools">`;
+	text += `            <i class="fe-thumbs-up"></i><span>&nbsp; \${devinVO.dviLike }</span> &nbsp;&nbsp;`;
+	text += `            <i class="fe-eye"></i>&nbsp; \${devinVO.dviHit }`;
+	text += `        </div>`;
+	text += `    </div>`;
+	text += `    <div class="card-body">`;
+	text += `        <div class="inbox-widget" data-simplebar style="max-height: 600px;">\${devinVO.dviContent }</div>`;
+	text += `    </div>`;
+	text += ` </div>`;
+	text += `    <div class="row">`;
+	text += `        <div class="col-12">`;
+	text += `            <button type="button" class="btn btn-success waves-effect waves-light" onclick="renderDevinList_C()">목록</button>`;
+	text += `            <button type="button" class="btn btn-primary waves-effect waves-light" onclick="renderDevinUpdate_C()">수정</button>`;
+	text += `            <button type="button" class="btn btn-danger waves-effect waves-light" id="delBtn">삭제</button>`;
+	text += `        </div>`;
+    text += `    </div>`;
+	text += `</div>`;
+	document.querySelector("#detail-target").innerHTML = text;
+	console.log(text);
+	
+	// initialValue는 기본값이 content로 되어 있음
+	// 사용하기 위해서는 넣을 데이터를 content로 선언해야함
+
+	window.onload = async function loadDetails() {
+		// 데이터를 돌려주는 API GET Method
+		// 안에 작성글의 데이터인 details.content가 포함되어 있다.
+    const details = await QuestionDetail(question_id);
+
+    // 마크다운 조회
+    const viewer = toastui.Editor.factory({
+        el: document.querySelector('#viewer'),
+        viewer: true,
+        height: '500px',
+        initialValue: details.content
+    });
+}
+
+// 채진영 리스트 그리기
+function renderDevinList_C() {
+  //디테일 감추기
+  document.querySelector("#detail-target").style.display = "none";
+  //리스트 보여주기
+  document.querySelector("#list-target").style.display = "block";
+  //인서트 화면 감추기
+  document.querySelector("#insert-target").style.display = "none";
+  //업데이트 화면 감추기
+  document.querySelector("#update-target").style.display = "none";
+  
+  axios
+    .get("/devin/list")
+    .then((res) => {//ajax일때는 success 안에 쓸 것.
+    	//console.log("게시물", res.data);
+    	let text = ``;
+    	const json = res.data;
+    	
+    	for (item of json) { //아작스의 success
+    		text += `<tr>`;
+    		text += `  <td>\${item.dviNo}</td>`;
+    		text += `  <td>`;
+    		text += `    <a href="javascript:devDetail('\${item.dviNo}');">\${item.dviTitle}</a>`;
+    		text += `  </td>`;
+    		text += `  <td>\${item.memberId}</td>`;
+    		text += `  <td>\${item.dviDate}</td>`;
+    		text += `  <td>\${item.dviHit}</td>`;
+    		text += `</tr>`;
+    	}
+    	
+    	console.log("체킁:",text);
+    	
+    	document.querySelector("#tbody_C").innerHTML = text;
+    	console.log("테이블 : ", text);
+    });
+}
+  
+  function devDetail(dviNo) {
+	  //console.log("조회할 글 번호", dviNo);
+	  const devVO = {
+	    dviNo,
+	  };
+	  console.log("보낼 객체 : ", devVO);
+	  
+	  axios
+	    .post("/devin/select", devVO)
+	    .then((res) => {
+	    	//console.log(res.data);
+	    	const data = res.data;
+	    	renderDetail_C(data);
+	    });
+  }; 
+
+// 채진영 인서트그리기
+function renderDevinInsert_C() {
+	//디테일 감추기
+	document.querySelector("#detail-target").style.display = "none";
+	//리스트 감추기
+	document.querySelector("#list-target").style.display = "none";
+	//인서트 화면 보여주기
+	document.querySelector("#insert-target").style.display = "block";
+	//업데이트 화면 감추기
+	document.querySelector("#update-target").style.display = "none";
+	
+	// 업데이트할 그 글번호를 가지고 가서 수정해줘야함 그게 지금 안됨 확인 20230109
+	 axios
+	    .get("/devin/list")
+	    .then((res) => {//ajax일때는 success 안에 쓸 것.
+	    	//console.log("게시물", res.data);
+	    	let text = ``;
+	    	const json = res.data;
+	
+	let text = ``;
+	text += `<div class="col-lg-12">`;
+	text += `	<div class="card h-100">`;
+// 	text += `		<form action="insert" method="post" id="devinForm">`;
+	text += `			<input type="hidden" name="dviNo" /> <input type="hidden" name="memberId" id="memberId" value="" />`;
+	text += `			<div class="card-body">`;
+	text += `				<div class="form-group">`;
+	text += `					<label for="inputName">제목</label> <input type="text" id="dviTitle" name="dviTitle" value="" class="form-control" placeholder="제목을 입력해주세요"><br>`;
+	text += `				</div>`;
+	text += `				<div class="form-group">`;
+	text += `					<label for="inputName">내용</label>`;
+	text += `					<div id="editor" class="form-control" style="height:550px;"></div>`;
+	text += `					<br>`;
+	text += `					<div id="contents"></div>`;
+	text += `					<input type="hidden" name="dviContent" id="concon" value="">`;
+	text += `				</div>`;
+	text += `				<div class="row">`;
+	text += `					<div class="col-12">`;
+	text += `						<input type="button" value="목록" id="listBtn" class="btn btn-success waves-effect waves-light" onclick="renderDevinList_C()">`; 
+	text += `						<input type="submit" value="등록" id="formBtn" class="btn btn-primary waves-effect waves-light" >`;
+	text += `					</div>`;
+	text += `				</div>`;
+	text += `			</div>`;
+// 	text += `		</form>`;
+	text += `	</div>`;
+	text += `</div>`;
+	
+	
+	document.querySelector("#insert-target").innerHTML = text;
+	console.log(text);
+	
+	const Editor = toastui.Editor;
+	
+	const editor = new Editor({
+		  el: document.querySelector('#editor'),
+		  height: '550px',
+		  initialEditType: 'markdown',
+		  previewStyle: 'vertical'
+		});
+	
+	var memberId = localStorage.getItem("id")
+	console.log("memberId : ", memberId)
+	$("#memberId").val(memberId)
+
+	var formBtn = $("#formBtn");
+	
+	formBtn.on("click", function(){
+ 		alert(editor.getHtml());
+ 		const dviTitle = document.getElementById('dviTitle').value;
+        console.log("dviTitle",dviTitle) //콘솔에 제목 안에 text 찍힘
+ 		
+ 		
+        let sendData = {
+        	memberId: memberId,
+        	dviTitle: dviTitle,
+        	dviContent : editor.getHtml().replaceAll('"',"'")
+        };
+        
+        $.ajax({
+        	type:"post",
+        	url:"/devin/insert2",
+        	data:JSON.stringify(sendData),
+        	contentType:"application/json;charset=utf-8",
+        	dataType:"json",
+        	success:function(rslt){
+        		console.log("항상확인:",rslt);
+        		console.log("원하는값:",rslt.dviNo);
+        		//devDetail(rslt.getDviNo());
+        		devDetail(rslt.dviNo);
+        	}
+        })
+        
+        
+ 		console.log("editor.getHtml()", editor.getHtml());
+ 		cont = editor.getHtml();
+ 		conte = cont.replaceAll('"',"'")
+ 		
+ 		console.log("아작스용",sendData);
+ 		
+// 		conte = cont.replace("<p>","")
+// 		conten = conte.replace("</p>","")
+// 		content = conten.replace("<br>","")
+		
+		$("#concon").val(conte);
+	})
+	
+}
+
+function devDetail(dviNo) {
+	  //console.log("조회할 글 번호", dviNo);
+	  const devVO = {
+	    dviNo,
+	  };
+	  console.log("보낼 객체 : ", devVO);
+	  
+	  axios
+	    .post("/devin/select", devVO)
+	    .then((res) => {
+	    	//console.log(res.data);
+	    	const data = res.data;
+	    	renderDevinUpdate_C(data);
+	    });
+}; 
+
+// 채진영 업데이트 그리기
+function renderDevinUpdate_C() {
+	//디테일 감추기
+	document.querySelector("#detail-target").style.display = "none";
+	//리스트 감추기
+	document.querySelector("#list-target").style.display = "none";
+	//인서트 화면 감추기
+	document.querySelector("#insert-target").style.display = "none";
+	//업데이트 화면 보여주기
+	document.querySelector("#update-target").style.display = "block";
+	
+	let text = ``;
+	text += `<div class="col-lg-12">`;
+	text += `	<div class="card h-100">`;
+// 	text += `		<form action="/devin/update" method="post" id="devinForm">`;
+	text += `			<input type="hidden" name="dviNo" value="${devinVO.dviNo }" />`; 
+	text += `			<input type="hidden" name="memberId" id="memberId" value="" />`;
+	text += `			<div class="card-body">`;
+	text += `				<div class="form-group">`;
+	text += `					<label for="inputName">제목</label>`;
+	text += `					<input type="text" id="dviTitle" name="dviTitle" value="${devinVO.dviTitle }" class="form-control" placeholder="제목을 입력해주세요"><br>`;
+	text += `				</div>`;
+	text += `				<div class="form-group">`;
+	text += `					<label for="inputName">내용</label>`;
+	text += `					<div id="editor" class="form-control" style="height:550px;"></div>`;
+	text += `					<br>`;
+	text += `					<div id="contents"></div>`;
+	text += `					<input type="hidden" name="dviContent" id="concon" value="${devinVO.dviContent }">`;
+	text += `				</div>`;
+	text += `				<div class="row">`;
+	text += `					<div class="col-12">`;
+	text += `						<input type="button" value="목록" id="listBtn" class="btn btn-success waves-effect waves-light" onclick="renderDevinList_C()">`; 
+	text += `						<input type="submit" value="수정" id="formBtn" class="btn btn-primary waves-effect waves-light" onclick="renderDevinUpdate_C()">`;
+	text += `					</div>`;
+	text += `				</div>`;
+	text += `			</div>`;
+// 	text += `		</form>`;
+	text += `	</div>`;
+	text += `</div>`;
+	
+	document.querySelector("#update-target").innerHTML = text;
+	console.log(text);
+	
+	const Editor = toastui.Editor;
+	
+	const editor = new Editor({
+		  el: document.querySelector('#editor'),
+		  height: '550px',
+		  initialEditType: 'markdown',
+		  previewStyle: 'vertical'
+		});
+	console.log("devinVO",devinVO)
+	//editor.setHtml("${devinVO.dviContent }");
+		editor.setHtml("<H1>나다!!!!</H1>");
+	var formBtn = $("#formBtn");
+	
+	formBtn.on("click", function(){
+ 		alert(editor.setHTML("${devinVO.dviContent }"));
+ 		const dviTitle = document.getElementById('dviTitle').value;
+        console.log("dviTitle",dviTitle) //콘솔에 제목 안에 text 찍힘
+ 		
+        let sendData = {
+        	dviNo: dviNo,
+        	dviTitle: dviTitle,
+        	dviContent : editor.getHtml().replaceAll('"',"'")
+        };
+        
+        $.ajax({
+        	type:"post",
+        	url:"/devin/update2",
+        	data:JSON.stringify(sendData),
+        	contentType:"application/json;charset=utf-8",
+        	dataType:"json",
+        	success:function(rslt){
+        		console.log("항상확인:",rslt);
+        		console.log("원하는값:",rslt.dviNo);
+        		//devDetail(rslt.getDviNo());
+        		devDetail(rslt.dviNo);
+        	}
+        })
+        
+        
+ 		console.log("editor.getHtml()", editor.getHtml());
+ 		cont = editor.getHtml();
+ 		conte = cont.replaceAll('"',"'")
+ 		
+ 		console.log("아작스용",sendData);
+ 		
+// 		conte = cont.replace("<p>","")
+// 		conten = conte.replace("</p>","")
+// 		content = conten.replace("<br>","")
+		
+		$("#concon").val(conte);
+	})
+	
+}
+</script>

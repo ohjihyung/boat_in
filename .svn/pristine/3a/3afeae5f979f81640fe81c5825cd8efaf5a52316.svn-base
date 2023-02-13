@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ProjectJoinMapper">
+<!--vo alias :  projectJoinStateVO -->
+
+	<insert id="insertProJoin" parameterType="projectJoinStateVO">
+		INSERT INTO PROJECT_JOIN_STATE (
+            PRO_J_S_NO
+          , PRO_NO
+          , MEMBER_ID
+        ) VALUES (
+            SEQ_PROJECT_JOIN.NEXTVAL
+          , #{proNo}
+          , #{memberId}
+        )
+	</insert>
+	<!-- 0비참가 1 참가 기본값 0 참가상태 업데이트와 권한 업데이트 귀찮으니 따로쓰겟다; -->
+	<update id="updateProJoinState" parameterType="projectJoinStateVO">
+		UPDATE PROJECT_JOIN_STATE 
+		SET PRO_JOINSTATE= #{proJoinState} 
+		WHERE PRO_NO= #{proNo} AND MEMBER_ID = #{memberId} 
+	</update>
+	<!--권한변경 "1: PM 2: PL 3: MEMBER 기본값 초대시 3" -->
+	<update id="updateProAuth" parameterType="projectJoinStateVO">
+		UPDATE PROJECT_JOIN_STATE 
+		SET PRO_AUTH= '' 
+		WHERE PRO_NO= '' AND MEMBER_ID = '' 
+	</update>
+	
+	<!-- 중복체크를 위한 프로젝트별 회원조회  -->
+	<select id="selectProJoin" resultType="projectJoinStateVO" parameterType="projectJoinStateVO">
+		SELECT * FROM  PROJECT_JOIN_STATE
+		WHERE PRO_NO = #{proNo}
+		AND MEMBER_ID = #{memberId}
+	</select>
+	
+	
+	
+</mapper>

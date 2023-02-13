@@ -1,0 +1,257 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+	#chat_modal {
+		display : none;
+		width : 300px;
+		padding : 20px 60px;
+		border : 1px solid #888;
+		border-radius : 3px;
+	}
+	
+	#chat_modal .chat_modal_close_btn {
+		position :absolute;
+		top :10px;
+		right : 10px;
+	}
+</style>
+<div class="content-page">
+	<div class="content" style="height: 800px;">
+		<!-- Start Content-->
+		<div class="container-fluid" style="display:flex;margin: 30px;height: 100%;">
+			<div class="col-xl-3">
+				<div class="card" style="height: 100%;">
+					<div class="card-body">
+						<h4 class="header-title mb-3">
+							채팅방 <i class="mdi mdi-account-multiple ms-1"></i>
+							<div>
+							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signup-modal">채팅방 생성</button>
+							</div>
+						</h4>
+						<div class="list-group">
+							<a href="javascript:openRoom(123)" class="list-group-item list-group-item-action">
+								<div class="d-flex align-items-center pb-1" id="tooltips-container" >
+									<img src="/assets/images/users/user-5.jpg" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent"  style="z-index:5;">
+									<img src="/assets/images/users/user-5.jpg" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent"  style="z-index:10;position:relative;right:20px; ">
+									<img src="/assets/images/users/user-5.jpg" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent"  style="z-index:15;position:relative;right:50px;">
+									<div class="w-100 ms-2">
+										<h5 class="mb-1">
+											1번chat팅방
+										</h5>
+<!-- 										<p class="mb-0 font-13 text-muted">Co Founder</p> -->
+									</div>
+									<i class="mdi mdi-chevron-right h2"></i>
+								</div>
+							</a> 
+							<a href="javascript:openRoom(124)" class="list-group-item list-group-item-action" >
+								<div class="d-flex align-items-center pb-1" id="tooltips-container" >
+									<img src="/assets/images/users/user-5.jpg" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">
+									<div class="w-100 ms-2">
+										<h5 class="mb-1">
+											2번chat팅방
+										</h5>
+<!-- 										<p class="mb-0 font-13 text-muted">Co Founder</p> -->
+									</div>
+									<i class="mdi mdi-chevron-right h2"></i>
+								</div>
+							</a> 
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- container -->
+			<div class="col-xl-8" style="height: auto;">
+				<div class="card" style="height: 100%;">
+					<div class="card-body" style="display:flex;flex-direction: column;justify-content: flex-end;">
+						<div class="border border-light p-2 mb-0">
+							<div class="d-flex align-items-start">
+								<img class="me-2 avatar-sm rounded-circle" src="/assets/images/users/user-4.jpg" alt="Generic placeholder image">
+								<div class="w-100">
+									<h5 class="">
+										Thelma Fridley <small class="text-muted"> 1 hour ago</small>
+									</h5>
+									<div class="">
+										안녕하세요 ?
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 	<span class="input-icon"> <textarea rows="3" class="form-control" placeholder="Write something..."></textarea>
+							</span>		 -->			
+									<div>
+										<div id="id_chatwin" style="overflow:auto; height:200px;"></div>
+										<input type="text" id="id_message" /> 
+										<input type="button" id="id_send" value="떤쏭"> 
+									<!-- 	<input type="button" id="id_exit" value="나갈령"> -->
+									</div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 새로운방 만드는 모달창 -->
+  <!-- makeRoom modal content -->
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="auth-logo text-center mt-2 mb-4">
+					<a href="index.html" class="logo logo-dark"> <span class="logo-lg"> <img src="../assets/images/logo-dark.png" alt="" height="20">
+					</span>
+					</a> <a href="index.html" class="logo logo-light"> <span class="logo-lg"> <img src="../assets/images/logo-light.png" alt="" height="20">
+					</span>
+					</a>
+				</div>
+
+				<form id="createForm" class="px-3" action="javascript:createRoom()">
+					<div class="mb-3">
+						<label for="chatRoomName" class="form-label">채팅방 이름</label> <input class="form-control" type="text" id="chatRoomName" required="" placeholder="채팅방 이름">
+					</div>
+
+					<div class="mb-3">
+						<label for="chatRoomMember" class="form-label">초대할 인원</label> <input class="form-control" type="text" id="emailaddress" required="" placeholder="boat123@boat.com">
+					</div>
+
+					<div class="mb-3">
+						<label for="chatRoomLimit" class="form-label">최대 인원</label> <input class="form-control" type="text" required="" id="" placeholder="3">
+					</div>
+					<div class="mb-3 text-center">
+						<button class="btn btn-primary" type="submit">생성</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<script>
+var myId;
+var myName;
+var beforeRoomId;
+let webSocket;
+const c_chatWin = document.querySelector("#id_chatwin");
+const c_message = document.querySelector("#id_message");		
+const c_send = document.querySelector("#id_send");
+//const c_exit = document.querySelector("#id_exit");
+
+$(document).ready(function(){
+	myId = localStorage.getItem("id");
+	myName = getName(myId);
+	//1.해당 페이지 오면 나에 관한 방정보들 세팅 
+	showRoom();
+}); // end of .ready
+
+//해당 유저가 속한 채팅방 목록 뿌려주는 비동기 
+function showRoom(){
+    console.log("showRoom", myId);
+    var xhr = new XMLHttpRequest();
+    var myIdData = {"myId" : myId};
+    xhr.open("post", '/chat/getRoomsById', true);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4 && xhr.status == 200){
+			//console.log("showRoom data", xhr.responseText);
+			var data = JSON.parse(xhr.responseText);
+			console.log(data);
+			//console.log(data[0].chatRNo);
+			for(var i in data){
+				console.log(data[i].chatRNo);
+			}
+			
+		}
+	};
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(myIdData));
+}
+
+function createRoom(){
+	alert("createRoom 들어옴");
+	
+} // end of createRoom
+
+//OJH 비동기로 이름 가져오기  
+function getName(myId){
+	var xhr = new XMLHttpRequest(); 
+	var datao = {"myId" : myId};
+	xhr.open("post",'/chat/getNameById',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status==200){
+			console.log(xhr.responseText);
+			myName = xhr.responseText;
+		}
+	};
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(datao));
+} // end of getname
+
+function connect(roomId) {
+	   beforeRoomId = roomId;
+	   console.log("beforeRoomId : ", beforeRoomId);
+	   c_chatWin.innerHTML = "";
+		webSocket = new WebSocket("ws://192.168.144.3/ws-chat"); // End Point   ws-chat/1234
+		console.log("websocket : ", webSocket);
+		//이벤트에 이벤트핸들러 뜽록 
+		console.log("connect안의 myName",myName);
+		console.log("connect안의 roomId", roomId);
+		webSocket.onopen = () => {			
+			console.log(webSocket.readyState); // 1이면 연결된거임 
+			fOpen(roomId); // 소켓 접속되면 짜똥 실행할 함수(fOpen) -- 해당 방에 누가 접속했는지
+			webSocket.onmessage = fMessage; // 써버에서 메쎄징 오면  짜똥 실행할 함수(fMessage) 
+		}
+		//채팅 글 넣고 전송누르면 
+		c_send.onclick = ()=>{
+				chatsend(roomId);
+		};
+		
+		// 연결 끊깅
+		c_exit.onclick = function() {
+		 		disconnect(roomId);
+		 };
+} // end of connect
+
+function fOpen(roomId) {
+		var roomData = {roomId : roomId, myName : myName, myId : myId};
+		console.log("fOpen안의 roomData :",roomData);
+		console.log('chatSend에서 보냅니다~');
+		webSocket.send(JSON.stringify(roomData));
+} //end of fOpen
+
+function chatsend(roomId) {  // 써버로 메쎄찡 떤쏭하는 함수
+	let msg = c_message.value;
+	var roomData = {roomId : roomId, myName : myName, myId : myId, msg : msg};
+	console.log(roomData);
+	console.log('chatSend에서 보냅니다~');
+	webSocket.send(JSON.stringify(roomData));	
+	c_message.value = "";
+} //end of send 
+
+function fMessage() {
+		let data = event.data;
+		console.log("서버에서 온 데이터 : ", data);
+		c_chatWin.innerHTML = c_chatWin.innerHTML + "<br/>" + data;
+} //end of fMessage()
+
+function disconnect(roomId) { //써버와 인연 끊는 함쑹
+		console.log(roomId, myName);
+		var roomData = {roomId : roomId, myName: myName, myId : myId, msg: "", connect : "end"};
+		console.log('disconnect에서 보냅니다~');
+		webSocket.send(JSON.stringify(roomData));
+		webSocket.close();
+} //end of disconnect()
+
+function openRoom(roomId){
+	console.log("roomId in openRoom :", roomId);
+	console.log("beforeRoomId in openRoom :", beforeRoomId );
+	console.log("beforeRoomId != undefined? ", beforeRoomId != undefined);
+	if(beforeRoomId != undefined && roomId != beforeRoomId || beforeRoomId != undefined && roomId == beforeRoomId){
+		disconnect(beforeRoomId);
+	}
+
+	connect(roomId);	
+} //end of openRoon
+</script>

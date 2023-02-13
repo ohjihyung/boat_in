@@ -1,0 +1,10 @@
+package kr.or.ddit.controller.member.service;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IMypageService {
+
+	public MemberVO selectMember(String memberId);
+
+	
+}

@@ -1,0 +1,201 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard | Codefox - Responsive Admin Dashboard Template</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+<meta content="Coderthemes" name="author" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- App favicon -->
+<link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+<!-- App css -->
+<link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+<link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+
+<!-- icons -->
+<link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Switchery -->
+<link href="/assets/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css" />
+ <!-- third party css -->
+<link href="/assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+<!-- third party css end -->
+<!-- font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&display=swap" rel="stylesheet">
+<!-- Quill -->
+<link href="/assets/libs/quill/quill.core.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/quill/quill.bubble.css" rel="stylesheet" type="text/css" />
+<link href="/assets/libs/quill/quill.snow.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/dracula.min.css">
+<!-- 간트 -->
+<script src="/assets/libs/AUIGantt/AUIGantt.js"></script>
+<script src="/assets/libs/AUIGantt/AUIGanttLicense.js"></script>
+<script src="/assets/libs/AUIGantt/resources/AUIGantt.resources.kr.js"></script>
+<link href="/assets/libs/AUIGantt/AUIGantt_style.css" rel="stylesheet" type="text/css" />
+
+<!-- t grid -->
+<link href="https://unpkg.com/tabulator-tables@5.4.3/dist/css/tabulator_modern.min.css" rel="stylesheet">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans KR', sans-serif !important;
+}
+
+.jinoFont {
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+}
+</style>
+<!-------- 외부css 모음   --------->
+<!--ag-grid  -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css" />
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+<!-- 토스트 UI에디터 -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" /> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" /> 
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css" />
+<!-- 캘린더 CSS-->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css" />
+<!-- 티피 -->
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+<!-- 피커 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+
+
+<!------외부스크립트 모음 ---------->	
+
+<!-- jquery.cdn -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<!-- axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>	
+<!-- AG Grid -->
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<!-- 토스트 UI에디터 -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/2.0.0/toastui-editor-all.min.js"></script>
+<!-- 드래그 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<!-- ApexChart -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- 캘린더 -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js"></script>
+<!-- fullcalendar 언어 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js"></script>
+<!-- 풀캘린더 데이트 포맷 -->
+<script class="cssdesk" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js" type="text/javascript"></script>    
+<!-- Kakao 로그아웃을위해 -->
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMQ9S6F1ZW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HMQ9S6F1ZW');
+</script>
+
+
+</head>
+<body class="loading" data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "dark"}, "showRightSidebarOnPageLoad": false}'>
+	<!-- Begin page -->
+	<div id="wrapper">
+		<tiles:insertAttribute name="topbar" />
+		<tiles:insertAttribute name="leftSidebar" />
+		<div id = "indexContent">
+		<tiles:insertAttribute name="content" />
+		</div>
+		<tiles:insertAttribute name="footer" />
+	</div>
+	<!-- END wrapper -->
+	<tiles:insertAttribute name="rightSidebar" />
+
+	<div class="rightbar-overlay"></div>
+	
+	<tiles:insertAttribute name="chatting" />
+	
+	
+
+	<!------- 템플릿 스크립트 모음  ------>
+<!-- Vendor js -->
+<script src="/assets/js/vendor.min.js"></script>
+<!-- App js-->
+<script src="/assets/js/app.min.js"></script>
+<!-- Sweet Alerts js -->
+<script src="/assets/libs/sweetalert2/sweetalert2.all.min.js"></script>
+<!-- Plugins js-->
+<script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+<!-- Inbox init -->
+<script src="/assets/js/pages/inbox.js"></script>
+<!-- third party js -->
+<script src="/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+<script src="/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/assets/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+<script src="/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/assets/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+<script src="/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/assets/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/assets/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/assets/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+<script src="/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<!-- third party js ends -->
+<!-- Datatables init -->
+<script src="/assets/js/pages/datatables.init.js"></script>
+<!-- Dashboar 1 init js-->
+<script src="/assets/js/pages/dashboard-1.init.js"></script>
+<!--switchery  -->
+<script src="/assets/libs/selectize/js/standalone/selectize.min.js"></script>
+<script src="/assets/libs/mohithg-switchery/switchery.min.js"></script>
+<script src="/assets/libs/multiselect/js/jquery.multi-select.js"></script>
+<script src="/assets/libs/select2/js/select2.min.js"></script>
+<!-- <script src="/assets/libs/jquery-mockjax/jquery.mockjax.min.js"></script> -->
+<script src="/assets/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+<script src="/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+<script src="/assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+
+
+
+<!-- Quill.js -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.7.0/highlightjs-line-numbers.min.js"></script>	
+
+<!-- t grid -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.4.3/dist/js/tabulator.min.js"></script>
+
+<!-- Plugins js -->
+<script src="/assets/libs/quill/quill.min.js"></script>
+
+<!-- Init js-->
+<script src="/assets/js/pages/form-quilljs.init.js"></script>
+<script src="/assets/js/pages/form-advanced.init.js"></script>
+
+</body>
+
+<script type="text/javascript">
+
+</script>
+</html>

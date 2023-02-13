@@ -1,0 +1,22 @@
+// 
+// widgets.scss
+//
+.user-position {
+    position: absolute;
+    top: 0;
+    border-left: 1px solid $gray-300;
+    bottom: 0;
+    width: 44px;
+    font-size: 16px;
+    text-align: center;
+    right: 0;
+    left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  
+    span {
+      transform: rotate(90deg);
+    }
+}

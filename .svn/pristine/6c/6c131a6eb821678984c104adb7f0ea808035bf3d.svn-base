@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MypageMapper">
+
+<select id="selectMember" parameterType="string"  resultType="memberVO">
+	SELECT * FROM MEMBER
+	WHERE MEMBER_ID = #{memberId}
+</select>
+
+<update id="updateMember" parameterType="memberVO">
+	UPDATE MEMBER
+	SET
+		MEMBER_NAME = #{memberName},
+		MEMBER_BIRTH = TO_CHAR(TO_DATE(#{memberBirth}, 'YYYY/MM/DD'),'YYYY/MM/DD'),
+		MEMBER_PHONE = SUBSTR(#{memberPhone},0,3) || '-' || SUBSTR(#{memberPhone},4, 4) || '-' || SUBSTR(#{memberPhone},8, 4),
+		MEMBER_PIC = #{memberPic}
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateMemberInfo" parameterType="memberVO">
+  	UPDATE MEMBER
+	SET
+		MEMBER_INFO = #{memberInfo}
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateMemberStateOfTime" parameterType="string">
+	UPDATE MEMBER
+	SET
+		MEMBER_STATE = 3
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateMemberStateOfTimeEnd" parameterType="string">
+	UPDATE MEMBER
+	SET
+		MEMBER_STATE = 2
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<select id="selectMyProjetInMypage"  parameterType="string" resultType="projectVO">
+	SELECT A.PRO_NO
+		     , A.PRO_NAME
+		     , B.MEMBER_ID
+	 FROM PROJECT A
+      LEFT JOIN PROJECT_JOIN_STATE B
+		        ON A.PRO_NO = B.PRO_NO
+  WHERE B.MEMBER_ID = #{memberId}
+      AND B.PRO_JOINSTATE = 1
+  GROUP BY A.PRO_NO, A.PRO_NAME, B.MEMBER_ID
+  ORDER BY A.PRO_NO DESC
+</select>
+
+<select id="selectMyQnAList" parameterType="string" resultType="qnAVO">
+   SELECT * FROM QNA
+   WHERE MEMBER_ID = #{memberId}
+    ORDER BY QNA_DATE DESC
+</select>
+
+<select id="selectMyDevInList" parameterType="string" resultType="devinVO">
+	SELECT * FROM DEVIN
+    WHERE MEMBER_ID = #{memberId}
+    ORDER BY DVI_DATE DESC
+</select>
+
+<delete id="deleteMyQna" parameterType="string">
+	DELETE FROM QNA
+	WHERE QNA_NO = #{qnaNo}
+</delete>
+</mapper>

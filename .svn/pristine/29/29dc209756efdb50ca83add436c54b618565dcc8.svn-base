@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FAQMapper">
+
+	<select id="getFaqList" resultType="fAQVO">
+		SELECT *
+  		  FROM FAQ
+	</select>
+	
+	<insert id="insertFaqRow" parameterType="faqVO">
+		 INSERT INTO FAQ
+	            (FAQ_NO, FAQ_TITLE, FAQ_CONTENT)
+	     VALUES (SEQ_FAQ.NEXTVAL, #{faqTitle}, #{faqContent})
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

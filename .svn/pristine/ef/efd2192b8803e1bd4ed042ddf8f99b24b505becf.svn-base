@@ -1,0 +1,150 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="content-page">
+	<div class="content">
+
+		<div class="row mt-3">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="header-title mb-4">문의내용</h4>
+						<div>
+							<h1 style="font-weight:bold; text-align:center;">QNA</h1>
+						</div>	
+							<ul class="nav nav-tabs nav-bordered nav-justified">
+							<li class="nav-item"><a href="javaScript:showUnread()" data-bs-toggle="tab" aria-expanded="true" class="nav-link active"> 답변 대기중인 글</a></li>
+							<li class="nav-item"><a href="javaScript:showread()" data-bs-toggle="tab" aria-expanded="false" class="nav-link "> 답변 완료된 글 </a></li>						
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="showUnread">
+								  <div class="col-12">
+								   <div class="card" >
+								   	<div class="card-body">								   
+								   		<div class="table-responsive2">
+								   			<div class="inbox-widget2" data-simplebar style="max-height: 700px;">
+								   				<table id="qna_dataTable"  class="table dt-responsive nowrap w-100 ">
+								   					<thead>
+								   						<tr>
+								   							<th>NO.</th>
+								   							<th>질문종류</th>
+								   							<th>제목</th>
+								   							<th>작성자</th>
+								   							<th>작성일</th>
+								   							<th>상태</th>
+								   						</tr>
+								   					</thead>								   					
+								   					<tbody id="tbody_O">								   										   															   				
+    												</tbody>
+    											</table>
+    									 	 </div>	
+    										</div>    	
+    									</div>
+    								</div>
+    							</div>	
+							</div>
+							
+							<div class="tab-pane " id="profile-b2">
+								     <div class="col-12">
+								   <div class="card" >
+								   	<div class="card-body">								   
+								   		<div class="table-responsive2">
+								   			<div class="inbox-widget2" data-simplebar style="max-height: 700px;">
+								   				<table id="qna_dataTable"  class="table dt-responsive nowrap w-100 ">
+								   					<thead>
+								   						<tr>
+								   							<th>NO</th>
+								   							<th>질문종류</th>
+								   							<th>제목</th>
+								   							<th>작성자</th>
+								   							<th>작성일</th>
+								   							<th>상태</th>
+								   						</tr>
+								   					</thead>								   					
+								   					<tbody id="tbody_O2">								   										   															   				
+    												</tbody>
+    											</table>
+    									 	 </div>	
+    										</div>    	
+    									</div>
+    								</div>
+    							</div>		
+							</div>							
+						</div>																	          					                   					                   					                         				                            				      			                              					                         				                     				            				                     				       							
+					</div>
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+var datainput = document.querySelector("#tbody_O");
+
+$(document).ready(function(){
+	showUncomment();
+
+});
+
+//관리자가 작성하지 않은 글 보여주기
+function showUncomment(){
+	var str  = "";
+	var state ="";
+	var qtype= "";
+	var xhr = new XMLHttpRequest();
+	xhr.open("post",'/oneoone/uncomment',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data = JSON.parse(xhr.responseText);
+		     console.log(data);
+		     for(i in data){
+		    	 if(data[i].qnaState=='0'){
+		    		 state="답변대기";
+		    	 }else{
+		    		 state="답변완료";
+		    	 }
+				str += `<tr>
+					     <td>\${data[i].qnaNo}</td>
+						 <td>\${data[i].qnaType}</td>
+						 <td><a href="showqnaDetail(\${data[i].qnaNo})">\${data[i].qnaTitle}</a></td>
+						 <td>\${data[i].memberId}</td>
+						 <td>\${data[i].qnaDate}</td>
+						 <td>\${state}</td>
+						</tr>`;		   		    	 
+		     }
+		     datainput.innerHTML= str;
+		     tableShow();
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send();
+
+}
+
+
+function tableShow(){
+	var table = $('#qna_dataTable').DataTable({
+		responsive:true,
+		 retrieve: true,
+		scrollCollapse:true,
+		language: {
+	      emptyTable: "올라온 질문이 없습니다",
+	      lengthMenu: "_MENU_ 개씩 보기",
+	      info: "현재 _START_ - _END_ / _TOTAL_건",
+	      infoEmpty: "데이터 없음",
+	      infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+	      search: "",
+	      zeroRecords: "일치하는 데이터가 없습니다.",
+	      loadingRecords: "로딩중...",
+	      processing: "잠시만 기다려 주세요.",
+	      paginate: {
+	        next: "다음",
+	        previous: "이전",
+	      },
+	    },
+	      order: [ [ 0, "desc" ] ],
+	});	
+}
+
+</script>

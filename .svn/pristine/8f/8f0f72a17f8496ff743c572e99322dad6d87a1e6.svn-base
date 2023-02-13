@@ -1,0 +1,128 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<body>
+<!-- Start Content-->
+<div class="content">
+	<!-- Start container -->
+	<div class="container-fluid">
+
+		<!-- Start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">PROJECT NOTICE</h4>
+					<div>
+						<ol class="breadcrumb m-0">
+							<li class="breadcrumb-item"><a href="javascript: void(0);">BOAT-IN</a></li>
+							<li class="breadcrumb-item active">PROJECT NOTICE</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End page title -->
+
+		<!-- Start list-target -->
+		<div class="row" id="list-target">
+			<!--여기 위의 타겟에 계속 바뀌어서 내용 그려주기 -->
+		</div>
+		<!--End list-target -->
+
+	</div>
+	<!-- End container -->
+</div>
+<!-- End Content-->
+
+</body>
+
+<script type="text/javascript">
+
+$(function(){ renderPronoticeList_C(); }) // 데브인리스트 그려주기 처음 시작 바로
+
+function drawDataTable(){  }	// 데이터 데이블 그려주기
+
+// 리스트 그리기 시작
+function renderPronoticeList_C() {
+  
+  axios
+    .get("/projectNotice/projectNoticeList")
+    .then((res) => {//ajax일때는 success 안에 쓸 것.
+    	console.log("게시물", res.data);
+    	const json = res.data;
+    	
+    	let text = ``;
+    	text += `<div class="col-12">`;
+    	text += `	<div class="card" >`;
+    	text += `		<div class="card-body">`;
+    	text += `			<h5 class="mt-0">프로젝트 공지사항</h5> <br>`;
+    	text += `			<div class="table-responsive">`;
+    	text += `				<div class="inbox-widget" data-simplebar style="max-height: 700px;">`;
+    	text += `					<table id="pronoticeList_dataTable"  class="table dt-responsive nowrap w-100 ">`;
+    	text += `						<thead>`;
+    	text += `							<tr>`;
+    	text += `								<th>#</th>`;
+    	text += `								<th>제목</th>`;
+    	text += `								<th>작성자</th>`;
+    	text += `								<th>작성일</th>`;
+    	text += `								<th>조회수</th>`;
+    	text += `							</tr>`;
+    	text += `						</thead>`;
+    	text += `						`;
+    	text += `						<tbody id="tbody_C">`;
+    				    	
+    	text += `						</tbody>`;
+    	text += `						`;
+    	text += `					</table>`;
+    	text += `				</div>	`;
+    	text += `			</div>`;
+    	text += `		</div>`;
+    	text += `	</div>`;
+    	text += `	<button type="button" class="btn btn-primary" id="newBtn" onclick="renderPronoticeInsert_C()">등록</button>`;
+    	text += `</div>`;
+    	
+    	document.querySelector("#list-target").innerHTML = text;
+    	 
+    	var table = $('#pronoticeList_dataTable').DataTable({
+    		responsive:true,
+    		retrieve: true,
+    		scrollCollapse:true,
+    		language: {
+    	      emptyTable: "텅~",
+    	      lengthMenu: "_MENU_ 개씩 보기",
+    	      info: "현재 _START_ - _END_ / _TOTAL_건",
+    	      infoEmpty: "데이터 없음",
+    	      infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+    	      search: "",
+    	      zeroRecords: "일치하는 데이터가 없습니다.",
+    	      loadingRecords: "로딩중...",
+    	      processing: "잠시만 기다려 주세요.",
+    	      paginate: {
+    	        next: "다음",
+    	        previous: "이전",
+    	      },
+    	    },
+    	      order: [ [ 0, "desc" ] ],
+    	})
+     	table.clear().draw();// 테이블 지우고 다시그려주기 아래!    
+     	
+    	for (item of json) { //아작스의 success
+    		
+			table.row.add([
+			`<td> \${item.dviNo} </td> `,
+			`<td><a href="javascript:PronoticeDetail('\${item.dviNo}');">\${item.dviTitle} </a> </td>`,
+			`<td> \${item.memberName} </td>`,
+			`<td> \${item.dviDate} </td>`,
+			`<td> \${item.dviHit} </td>`,
+				]).draw(false);
+    	
+		}		
+		//console.log("리스트 뿌리는 테이블 그리기 :::::: ",text);
+    });
+  
+}
+// 리스트 그리기 끝
+</script>
+
+
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.QnaMapper">
+	<insert id="insertQna" parameterType="QnaVO">
+		INSERT INTO QNA
+		(QNA_NO, MEMBER_ID,QNA_CONTENT, QNA_TITLE, QNA_TYPE ,QNA_STATE)
+		VALUES(SEQ_QNA.NEXTVAL, #{memberId}, #{qnaContent}, #{qnaTitle}, #{qnaType}, '0')
+		
+	</insert>
+	
+	<select id="selectAllQna" resultType="QnaVO">
+			SELECT * FROM QNA  
+   			 ORDER BY QNA_NO DESC
+	</select>
+</mapper>

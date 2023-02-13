@@ -1,0 +1,91 @@
+package kr.or.ddit.controller.project;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.controller.member.service.MailSendService;
+import kr.or.ddit.controller.project.service.IProjectJoinService;
+import kr.or.ddit.controller.project.service.IProjectService;
+import kr.or.ddit.vo.ProjectJoinStateVO;
+import kr.or.ddit.vo.ProjectVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/projoin")
+public class ProjectJoinController {
+	
+	@Inject
+	private IProjectJoinService joinService;
+	@Inject
+	private IProjectService projectService;
+	@Inject
+	private MailSendService mss;
+
+	@PostMapping(value = "/inviteProMem", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String inviteProMem(@RequestBody ProjectJoinStateVO projsVO) throws Exception {
+		log.debug("프로젝트맴버초대 객체 : {} ", projsVO);
+		// 처음에는 미인증 0디폴트 컨펌에서 상태바꿔주기
+		//프로젝트 정보 가져와서 초대 
+		ProjectVO proVO = projectService.selectOne(projsVO.getProNo());
+
+		//참가상태 중복 체크 
+		List<ProjectJoinStateVO>  check=  joinService.selectProJoin(projsVO);
+		log.debug("중복체크 select리스트 반환값 : {} " ,check);
+		log.debug(" 리스트 사이즈   :{}" ,check.size());
+		
+		
+		if (check.size() !=  0 ) {
+			return "already";
+		}else if(check.size() == 0 ){
+			int res = joinService.insertProJoin(projsVO);
+			log.debug("인서트 반환값 : {} ",res);
+			//초기 기본값 멤버로 초대
+			if (res <1) {
+				log.debug("joinservice 실패");
+				return "NO";
+			}
+			
+		}
+
+		// 초대이메일보내기, 프로젝트 이름 내용에표시해주고 , 프로젝트 번호를 QueryString에 넣어준다.
+		String mailRes = mss.invitePorject(projsVO.getMemberId(), proVO);
+		log.debug("메일 송신결과 : {} " , mailRes);
+
+		return "OK";
+	}
+	
+	/**
+	 * 인증메일안에 링크를 누르면  해당프로젝트번호의 참가상태코드가 1 로 바뀐다. 
+	 * @param email 이메일링크가 보내진 이메일, 회원아이디, 
+	 * @param proNo 해당프로젝트이름 
+	 * @return 프로젝트 홈으로 
+	 */
+	@GetMapping(value = "/inviteConrfirmPro")
+	public String inviteConrfirmPro(@RequestParam String email, String proNo) throws Exception {
+		log.debug("프로젝트맴버초대 이메일 : {} , 해당 프로젝트 번호 : {} ", email ,proNo);
+		ProjectJoinStateVO projsVO = new ProjectJoinStateVO();
+		projsVO.setMemberId(email);
+		projsVO.setProNo(proNo);
+		projsVO.setProJoinState("1");
+		int res = joinService.updateProJoinState(projsVO);
+		log.debug("참가상태 변환값 : {} ", res);
+		if (res <1) {
+			return "NO";
+		}
+		
+		return "content/projectHome";
+	}
+
+}

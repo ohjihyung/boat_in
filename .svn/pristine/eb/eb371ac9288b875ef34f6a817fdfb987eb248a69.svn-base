@@ -1,0 +1,190 @@
+package kr.or.ddit.controller.member;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import kr.or.ddit.controller.member.service.IMemberService;
+import kr.or.ddit.controller.member.service.MailSendService;
+import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/member")
+public class MemberController {
+
+	@Inject
+	private IMemberService service;
+	@Inject
+	private MailSendService mss;
+
+	/**
+	 * 
+	 * @return
+	 */
+	@GetMapping("/register")
+	public String memberRegisterForm(MemberVO memberVO) {
+		log.debug("회원가입폼 :: ");
+		return "commons/register";
+	}
+
+	/**
+	 * 회원가입 페이지
+	 * 
+	 * @param memberVO 회원가입 form에서 name 속성 값, 이름,이메일,비밀번호
+	 * @return 회원 등록 후 로그인 페이지 (메인페이지 생기면 자동 로그인 후 메인페이지로 이동예정)
+	 */
+	@PostMapping("/register")
+	public ModelAndView memberRegister( MemberVO memberVO) {
+		log.debug("회원가입 등록 페이지  들어온정보 : {} ",memberVO);
+		ModelAndView mav = new ModelAndView();
+		String memberId = memberVO.getMemberId();
+		String memberName = memberVO.getMemberName();
+		String memberPw = memberVO.getMemberPw();
+		String memberToken= memberVO.getMemberToken();
+		
+		String authKey = memberToken;
+		if (memberPw ==null ) {
+			memberPw = "";
+		}else if( memberToken ==null || memberToken =="" ){
+			authKey = mss.sendAuthMail(memberId);
+			log.debug("이메일인증키 {} ", authKey);
+			memberVO.setMemberToken(authKey);
+		}
+		
+		
+		log.debug("memberId : {} \n Name : {} \n", memberId, memberName);
+		log.debug("memberPw : {} memberToken  : {} ", memberPw,memberToken);
+			
+		service.memberRegister(memberVO);
+		log.debug("회원가입 완료 아이디: {}  , 토큰: {} ", memberId, authKey);
+		mav.addObject("msg", "회원가입완료");
+		mav.setViewName("redirect:/login");
+
+		return mav;
+	}
+	
+	
+	//,produces = "application/json; charset=utf-8 "
+//	@PostMapping(value = "/regiCheck" ,produces = "application/json; charset=utf-8 ")
+	@GetMapping(value = "/regiCheck" ,produces = "application/json; charset=utf-8 ")
+	@ResponseBody
+	public String regiCheck(MemberVO memberVO) {
+		log.debug("회원가입체크 : {} " ,memberVO);
+		String memberId = memberVO.getMemberId();
+		String memberName = memberVO.getMemberName();
+		String memberPw = memberVO.getMemberPw();
+		String memberToken= memberVO.getMemberToken();
+		if (service.selectOne(memberId)!=null) {
+			MemberVO member = service.selectOne(memberId);
+			if (memberId.equals(member.getMemberId())) {
+				return "NO";
+			}
+		}
+		
+		return "OK";
+	}
+	
+	@PostMapping(value = "/soscialRegiCheck" ,produces = "application/json; charset=utf-8 ")
+	@ResponseBody
+	public String soscialRegiCheck(@RequestBody MemberVO memberVO) {
+		log.debug("소셜회원가입체크 : {} " ,memberVO);
+		String memberId = memberVO.getMemberId();
+		String memberName = memberVO.getMemberName();
+		String memberPw = memberVO.getMemberPw();
+		String memberToken= memberVO.getMemberToken();
+		
+
+		if (service.selectOne(memberId)!=null) {
+			MemberVO member = service.selectOne(memberId);
+			if (memberId.equals(member.getMemberId())) {
+				return "NO";
+			}
+		}else if (memberPw == null || memberPw =="") {
+			return "setPw";
+		}
+		
+		return "OK";
+	}
+
+	/**
+	 * 인증메일에 쿼리스트링을 보낸후 쿼리스트링에서 memberId 와 Token을 가져옴 가져온 정보로 state컬럼을 업데이트 시켜줌 인증메일
+	 * 쿼리스트링 >> /member/signUpConfirm?email={memberId}&authKey={memberToken}
+	 * 
+	 * @param email   memberId
+	 * @param authKey memberToken 컬럼활용
+	 * @return 미구상 ModelAndView "msg" 인증성공메시지, setViewName은 어디로 리턴할지 안정함
+	 */
+	@GetMapping("/signUpConfirm")
+	public ModelAndView memberRegComfirm(@RequestParam String email, String authKey) {
+		ModelAndView mav = new ModelAndView();
+		log.debug(" url memberId :: {} ", email);
+
+		// email 로 meberid 받은후 select 쿼리 한명의 정보 불러옴.
+		// memberVO객체 생성후 넣어줌
+		MemberVO memberVO = service.selectOne(email);
+
+		// token 과 authkey 비교
+		log.debug("aukey ::{} , memberToken ::{} ", authKey, memberVO.getMemberToken());
+		if (authKey.equals(memberVO.getMemberToken())) {
+			// 조건문 걸어서 같으면 membervo 객체의 상태값 바꿔줘서 update 쿼리실행
+			mav.addObject("msg", "인증에 성공했습니다.<br> 로그인을 해주세요");
+			// 상태값 미인증 0 인증회원1 탈퇴 9
+			String memberState = memberVO.getMemberState();
+			log.debug("memberState ::  {} ", memberState);
+			// member 상태가 이미 인증상태이거나 다른상태일때만 업데이트
+			if (!memberState.equals("1")) {
+				memberVO.setMemberState("1");
+				service.updateState(memberVO);
+			} else {
+				mav.addObject("msg", "이미 인증하였거나, 탈퇴회원입니다. ");
+			}
+			mav.setViewName("commons/login");
+			return mav;
+		} else {
+			mav.addObject("msg", "인증번호가 맞지않습니다.<br> 다시 시도해 주십시오. ");
+		}
+
+		mav.addObject("memberId", email);
+		// setviewname
+		mav.setViewName("commons/login");
+		return mav;
+	}
+	
+	@PostMapping(value = "socailRegi", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String socailRegister(@RequestBody MemberVO vo) {
+		
+		return "";
+	}
+	
+	
+	
+	
+	/**
+	 * 김진호
+	 * 게시물 상세보기의 비동기 작업자 체크
+	 * @param vo(id를 담고있음)
+	 * @return 조회한 멤버vo
+	 */
+	@PostMapping(value = "/selectMember", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public MemberVO selectMember(@RequestBody MemberVO vo) throws Exception {
+	    MemberVO memberVO = service.selectMember(vo);
+	    
+	    return memberVO;
+	}
+
+
+}

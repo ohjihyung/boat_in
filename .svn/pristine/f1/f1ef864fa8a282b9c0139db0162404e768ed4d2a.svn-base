@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.MyhomeVO;
+
+public interface MyHomeMapper {
+
+	public MemberVO selectMemberInfo(MemberVO memberVO);
+
+	public int updateMyHomeColor(MyhomeVO myhomeVO);
+
+
+}

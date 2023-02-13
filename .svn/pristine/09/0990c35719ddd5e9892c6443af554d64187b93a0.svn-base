@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FileMapper">
+    <insert id="insertFile" parameterType="fileVO">
+        INSERT INTO BFILE(
+            FILE_L_NO,
+            FILE_L_NO2,
+            FILE_REAL_NAME,
+            FILE_SIZE,
+            FILE_ISIMAGE,
+            FILE_UUID,
+            FILE_NAME,
+            FILE_PATH,
+            FILE_COMENT_NO,
+            FILE_WORK_NO
+            
+        ) VALUES (
+            #{fileLNo},
+            SEQ_FILE_L_NO2.NEXTVAL,
+            #{fileRealName},
+            #{fileSize},
+            #{image},
+            #{uuid},
+            #{fileName},
+            #{filePath},
+            #{fileComentNo},
+            #{fileWorkNo}
+        )
+    </insert>
+    
+    <select id="getCategoryFiles" parameterType="string" resultType="fileVO">
+     select * from bfile a, (select * from topwork where tw_category_no = #{tw_category_no}) b
+     
+     where a.file_l_no = b.TOPWORK_FILE
+                                            
+    </select>
+    
+    <update id="changeFilePath" parameterType="fileVO">
+        UPDATE BFILE 
+        SET FILE_PATH = #{filePath}
+        WHERE FILE_NAME = #{fileName}
+    </update>
+    
+    <update id="setFileisDel" parameterType="int">
+        update  bfile 
+        set file_isdeleted = 'T'
+        where file_l_no  = #{fileLNo}
+    </update>
+    
+    <select id="getFilePath" parameterType="int" resultType="fileVO">
+        SELECT FILE_PATH, FILE_NAME
+        FROM BFILE
+        WHERE FILE_L_NO = #{topWorkFile}
+    </select>
+    
+    <update id="updateFilePath" parameterType="fileVO">
+        UPDATE BFILE
+        SET FILE_PATH = #{filePath}
+        WHERE FILE_NAME = #{fileName}
+    </update>
+    
+    <select id="getFilePathWP" parameterType="string" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+          WHERE FILE_PATH LIKE #{proNo}||'%' AND FILE_ISDELETED = 'F'
+    </select>
+    
+    <select id="getProName" parameterType="string" resultType="string">
+        SELECT PRO_NAME
+          FROM PROJECT
+         WHERE PRO_NO = #{proNo}
+    </select>
+
+    <select id="getCategoryName" parameterType="string" resultType="string">
+        SELECT TW_CATEGORY_NAME
+          FROM TOPWORK_CATEGORY
+         WHERE PRO_NO = #{proNo}
+    </select>
+    
+
+    <select id="selectFile" parameterType="topWorkVO" resultType="fileVO">
+       SELECT *
+         FROM BFILE
+        WHERE FILE_WORK_NO = #{topWorkNo}
+          AND FILE_ISDELETED = 'F'
+       <!--  SELECT A.*, B.FILE_UPLOAD_DATE
+          FROM BFILE A
+          LEFT JOIN FILE_LOCATION B
+            ON A.FILE_L_NO = B.FILE_L_NO
+         WHERE A.FILE_L_NO = #{topWorkFile}
+           AND A.FILE_ISDELETED = 'F'
+         ORDER BY B.FILE_UPLOAD_DATE DESC -->
+    </select>
+    
+    <select id="selectFileSubWork" parameterType="subWorkVO" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+         WHERE FILE_WORK_NO = #{subWorkNo}
+           AND FILE_ISDELETED = 'F'
+    </select>
+    
+    <insert id="insertRow" parameterType="fileVO">
+        INSERT INTO FILE_TREE
+                    (PRO_NO, FILE_ID, PARENT_ID, DEPTH, FILE_NAME)
+              VALUES
+                    (#{proNo}, #{fileId}, #{parentId}, #{depth}, #{fileName})
+    </insert>
+    
+    <select id="getRealName" parameterType="hashMap" resultType="fileVO">
+        SELECT A.FILE_REAL_NAME, A.FILE_PATH, A.FILE_ISIMAGE AS image
+        FROM BFILE A,
+            (SELECT * FROM TOPWORK WHERE PRO_NO = #{proNo} AND TOPWORK_TITLE = #{fileName}) B,
+            (SELECT * FROM FILE_LOCATION WHERE FILE_ISDELETED = 'F') C
+        WHERE A.FILE_L_NO = B.TOPWORK_FILE AND B.TOPWORK_FILE = C.FILE_L_NO
+    </select>
+    
+    <select id="getMyRealName" parameterType="hashMap" resultType="fileVO">
+    	SELECT FILE_REAL_NAME, FILE_PATH, FILE_ISIMAGE AS image
+		  FROM BFILE
+		 WHERE FILE_PATH LIKE #{proNo}||'%' AND FILE_ISDELETED = 'F'
+    </select>
+    
+    <select id="searchFile" parameterType="String" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+         WHERE FILE_COMENT_NO = #{comentNo}
+           AND FILE_ISDELETED = 'F'
+    </select>
+    
+    <select id="searchComentFile" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+         WHERE FILE_COMENT_NO != '0'
+           AND FILE_ISDELETED = 'F'
+         ORDER BY FILE_L_NO2 ASC
+    </select>
+    
+    <update id="fileDelete" parameterType="fileVO">
+        UPDATE BFILE
+           SET FILE_ISDELETED = 'T'
+         WHERE FILE_L_NO2 = #{fileLNo2}
+    </update>
+    
+    <select id="fileListOnlyTopWork" parameterType="topWorkVO" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+         WHERE FILE_WORK_NO = #{topWorkNo}
+           AND FILE_COMENT_NO = '0'
+           AND FILE_ISDELETED = 'F'
+    </select>
+    
+    <select id="fileListOnlySubWork" parameterType="subWorkVO" resultType="fileVO">
+        SELECT *
+          FROM BFILE
+         WHERE FILE_WORK_NO = #{subWorkNo}
+           AND FILE_COMENT_NO = '0'
+           AND FILE_ISDELETED = 'F'
+    </select>
+</mapper>

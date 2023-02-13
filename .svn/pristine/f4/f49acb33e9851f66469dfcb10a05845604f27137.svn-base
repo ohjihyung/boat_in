@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.FileTreeMapper">
+
+
+	<select id="dataList" parameterType="string" resultType="HashMap">
+		SELECT *
+  	 	  FROM FILE_TREE
+ 	 	 WHERE PRO_NO = #{proNo}
+	</select>
+	
+	<delete id="delData" parameterType="string">
+		DELETE
+		  FROM FILE_TREE
+		 WHERE PRO_NO = #{proNo}
+	</delete>
+
+	<select id="finalDataList" parameterType="string" resultType="hashMap">
+		SELECT A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+	      FROM FILE_TREE A, FILE_TREE B 
+		 WHERE A.PRO_NO = #{proNo}
+		   AND A.PRO_NO = B.PRO_NO 
+		   AND A.FILE_NAME = B.FILE_NAME
+		   AND A.DEPTH = B.DEPTH
+		   AND A.FILE_ID = B.FILE_ID
+		   AND A.PARENT_ID = B.PARENT_ID
+	  GROUP BY A.PRO_NO, A.FILE_NAME, A.DEPTH, A.FILE_ID, A.PARENT_ID
+	</select>
+	
+</mapper>

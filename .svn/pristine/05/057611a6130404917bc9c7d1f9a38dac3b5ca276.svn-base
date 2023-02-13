@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.DevinMapper">
+
+  	<insert id="insert" parameterType="devinVO" >
+  	   <selectKey resultType="string" keyProperty="dviNo" order="BEFORE">
+        SELECT SEQ_DEVIN.NEXTVAL FROM dual      
+      </selectKey>  
+		INSERT INTO DEVIN(
+            DVI_NO, MEMBER_ID, DVI_TITLE, DVI_CONTENT, DVI_HIT, DVI_DATE, DVI_LIKE
+        ) VALUES (
+            #{dviNo}, #{memberId}, #{dviTitle}, #{dviContent}, 0, SYSDATE, 0
+        )
+	</insert>
+	
+	<select id="selectList" resultType="devinVO">
+		SELECT 
+			DVI_NO, MEMBER_ID, DVI_TITLE, DVI_CONTENT, DVI_HIT, DVI_DATE, DVI_LIKE
+		FROM DEVIN
+		WHERE DVI_NO > 0 
+		ORDER BY DVI_NO DESC, DVI_DATE DESC
+	</select>
+	
+	<select id="select" resultType="devinVO" parameterType="String">
+    	SELECT * 
+    	FROM DEVIN
+    	WHERE DVI_NO = #{dviNo}
+    </select>
+    
+    <update id="update" parameterType="devinVO">
+		UPDATE DEVIN 
+		SET
+			DVI_TITLE = #{dviTitle},
+			DVI_CONTENT = #{dviContent}
+		WHERE DVI_NO = #{dviNo}
+	</update>
+	
+	<delete id="deleteDevIn" parameterType="devinVO">
+		DELETE FROM DEVIN WHERE DVI_NO = #{dviNo}
+	</delete>
+    
+    <update id="incrementHit" parameterType="String">
+    	UPDATE DEVIN 
+		SET
+			DVI_HIT = DVI_HIT + 1
+		WHERE DVI_NO = #{dviNo} 
+    </update>
+    
+</mapper>

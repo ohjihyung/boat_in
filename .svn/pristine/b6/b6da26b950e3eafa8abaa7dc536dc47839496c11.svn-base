@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MyHomeMapper">
+
+<select id="selectMemberInfo" parameterType="memberVO" resultType="memberVO">
+	
+	SELECT *
+	FROM MEMBER A, MYHOME B
+	WHERE A.MEMBER_ID = B.MEMBER_ID
+	AND A.MEMBER_ID = #{memberId}	
+	
+</select>
+
+<update id="updateMyHomeColor" parameterType="myhomeVO">
+	UPDATE MYHOME
+	SET 
+	MYHOME_COLOR = #{myhomeColor}
+	WHERE MEMBER_ID = #{memberId}
+</update>
+
+<select id="selectMyhome" parameterType="memberVO" resultType="myhomeVO">
+	SELECT * FROM MYHOME
+	WHERE MEMBER_ID = #{memberId}
+</select>
+
+<insert id="insertMyhomeMemberId" parameterType="memberVO">
+	INSERT INTO MYHOME
+	(MYHOME_NO, MEMBER_ID, MYHOME_COLOR)
+	VALUES (SEQ_MYHOME.NEXTVAL, #{memberId}, 0)
+</insert>
+
+<select id="selectMyAllAlarm" parameterType="memberVO" resultType="AlarmVO">
+	SELECT * FROM ALARM WHERE MEMBER_ID = #{memberId} ORDER BY ALARM_DATE DESC
+</select>
+
+<select id="outOfdeadlineWorkList" parameterType="memberVO" resultType="topWorkVO">
+	 <![CDATA[
+	SELECT A.TOPWORK_NO
+                 , A.PRO_NO
+                 , A.TW_CATEGORY_NO
+                 , A.TOPWORK_CONTENT
+                ,TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_START,0,10)),'YYYY/MM/DD') AS TOPWORK_START
+                ,TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_END,0,10)),'YYYY/MM/DD') AS TOPWORK_END
+                 , A.TOPWORK_STATE
+                 , A.TOPWORK_IMPORTANCE
+                 , A.TOPWORK_PROGRESS
+                 , A.TOPWORK_LIKE
+                 , A.TOPWORK_FILE
+                 , A.TOPWORK_TITLE
+                 , B.TW_CATEGORY_COLOR
+              FROM TOPWORK A
+              LEFT JOIN TOPWORK_CATEGORY B
+                   ON A.TW_CATEGORY_NO = B.TW_CATEGORY_NO
+              LEFT JOIN TOPWORK_RELATION C
+                   ON A.TOPWORK_NO = C.TOPWORK_NO
+             WHERE A.TOPWORK_NO > 0
+             AND C.MEMBER_ID = #{memberId}
+               AND A.TOPWORK_DELETE = 'F'
+              AND ROUND(TO_DATE(SUBSTR(TOPWORK_END,0,10))- SYSDATE) < 0 
+              and not a.TOPWORK_STATE = 4
+             ORDER BY a.TOPWORK_end ASC
+    ]]>
+</select>
+
+<select id="before3daysWorkList" parameterType="memberVO" resultType="topWorkVO">
+	<![CDATA[
+	 SELECT A.TOPWORK_NO
+                 , A.PRO_NO
+                 , A.TW_CATEGORY_NO
+                 , A.TOPWORK_CONTENT
+                ,TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_START,0,10)),'YYYY/MM/DD') AS TOPWORK_START
+                ,TO_CHAR(TO_DATE(SUBSTR(A.TOPWORK_END,0,10)),'YYYY/MM/DD') AS TOPWORK_END
+                 , A.TOPWORK_STATE
+                 , A.TOPWORK_IMPORTANCE
+                 , A.TOPWORK_PROGRESS
+                 , A.TOPWORK_LIKE
+                 , A.TOPWORK_FILE
+                 , A.TOPWORK_TITLE
+                 , B.TW_CATEGORY_COLOR
+              FROM TOPWORK A
+              LEFT JOIN TOPWORK_CATEGORY B
+                   ON A.TW_CATEGORY_NO = B.TW_CATEGORY_NO
+              LEFT JOIN TOPWORK_RELATION C
+                   ON A.TOPWORK_NO = C.TOPWORK_NO
+             WHERE A.TOPWORK_NO > 0
+             AND C.MEMBER_ID = #{memberId}
+               AND A.TOPWORK_DELETE = 'F'
+              AND ROUND(TO_DATE(SUBSTR(TOPWORK_END,0,10))-SYSDATE)  <= 3
+              AND ROUND(TO_DATE(SUBSTR(TOPWORK_END,0,10))-SYSDATE)  > 0
+              and not a.TOPWORK_STATE = 4
+             ORDER BY a.TOPWORK_end ASC
+       ]]>
+</select>
+
+</mapper>

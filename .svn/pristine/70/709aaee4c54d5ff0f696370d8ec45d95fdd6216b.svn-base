@@ -1,0 +1,446 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<body>
+<!-- Start Content-->
+<div class="content">
+	<!-- Start container -->
+	<div class="container-fluid">
+
+		<!-- Start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">PROJECT NOTICE</h4>
+					<div>
+						<ol class="breadcrumb m-0">
+							<li class="breadcrumb-item"><a href="javascript: void(0);">BOAT-IN</a></li>
+							<li class="breadcrumb-item active">PROJECT NOTICE</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End page title -->
+
+		<!-- Start list-target -->
+		<div class="row" id="list-target">
+			<!--여기 위의 타겟에 계속 바뀌어서 내용 그려주기 -->
+		</div>
+		<!--End list-target -->
+
+	</div>
+	<!-- End container -->
+</div>
+<!-- End Content-->
+
+</body>
+
+<script type="text/javascript">
+console.log("proNo : ", proNo);
+var globalProNo = proNo;
+console.log("globalProNo : ", globalProNo) // 해당 프로젝트 번호 전역변수 선언
+var globalProNoticeNo;
+
+$(function(){ renderPronoticeList_C(); }) // 데브인리스트 그려주기 처음 시작 바로
+
+function drawDataTable(){  }	// 데이터 데이블 그려주기
+
+// 리스트 그리기 시작
+function renderPronoticeList_C() {
+  str = "/projectNotice/projectNoticeList?proNo="+proNo
+		  
+  axios
+    .get(str)
+    .then((res) => {//ajax일때는 success 안에 쓸 것.
+    	console.log("게시물(프젝공지사항List) ::", res.data);
+    	const json = res.data;
+    	
+    	let text = ``;
+    	text += `<div class="col-12">`;
+    	text += `	<div class="card" >`;
+    	text += `		<div class="card-body" style="padding-right: 3rem; padding-left: 3rem;">`;
+    	text += `			<h5 class="mt-0">프로젝트 공지사항</h5> <br>`;
+    	text += `			<div class="table-responsive">`;
+    	text += `				<div class="inbox-widget" data-simplebar style="max-height: 700px;">`;
+    	text += `					<table id="pronoticeList_dataTable"  class="table dt-responsive nowrap w-100 ">`;
+    	text += `						<thead>`;
+    	text += `							<tr>`;
+//     	text += `								<th>#</th>`;
+    	text += `								<th style="width: 50%;">제목</th>`;
+    	text += `								<th>작성자</th>`;
+    	text += `								<th>작성일</th>`;
+    	text += `							</tr>`;
+    	text += `						</thead>`;
+    	text += `						`;
+    	text += `						<tbody id="tbody_C">`;
+    				    	
+    	text += `						</tbody>`;
+    	text += `						`;
+    	text += `					</table>`;
+    	text += `				</div>	`;
+    	text += `			</div>`;
+    	text += `			<div style="padding-top: 2em">`;
+    	text += `			<button type="button" class="btn btn-primary" id="newBtn" onclick="renderPronoticeInsert_C()">등록</button>`;
+    	text += `			</div>`;
+    	text += `		</div>`;
+    	text += `	</div>`;
+    	text += `</div>`;
+    	
+    	document.querySelector("#list-target").innerHTML = text;
+    	 
+    	var table = $('#pronoticeList_dataTable').DataTable({
+    		responsive:true,
+    		retrieve: true,
+    		scrollCollapse:true,
+    		language: {
+    	      emptyTable: "텅~",
+    	      lengthMenu: "_MENU_ 개씩 보기",
+    	      info: "현재 _START_ - _END_ / _TOTAL_건",
+    	      infoEmpty: "데이터 없음",
+    	      infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+    	      search: "",
+    	      zeroRecords: "일치하는 데이터가 없습니다.",
+    	      loadingRecords: "로딩중...",
+    	      processing: "잠시만 기다려 주세요.",
+    	      paginate: {
+    	        next: "다음",
+    	        previous: "이전",
+    	      },
+    	    },
+    	      order: [ [ 2, "desc" ] ],
+    	})
+     	table.clear().draw();// 테이블 지우고 다시그려주기 아래!    
+     	
+    	for (item of json) { //아작스의 success
+    		
+			table.row.add([
+// 			`<td> \${item.proNoticeNo} </td> `,
+			`<td><a href="javascript:pronoticeDetail_C('\${item.proNoticeNo}');">\${item.proNoticeTitle} </a> </td>`,
+			`<td> \${item.memberName} </td>`,
+			`<td> \${item.proNoticeDate} </td>`,
+				]).draw(false);
+    	
+		}		
+		//console.log("리스트 뿌리는 테이블 그리기 :::::: ",text);
+    });
+  
+}
+// 리스트 그리기 끝
+
+// 인서트그리기 시작
+function renderPronoticeInsert_C() {
+	globalProNo; // 해당 프로젝트번호의 전역변수 불러오기
+	
+	let text = ``;
+	
+		text += `<div class="col-lg-12">`;
+		text += `	<div class="card h-80">`;
+		text += `		<form>`;
+		text += `		<input type="hidden" name="proNoticeNo" /><input type="hidden" name="proNo" id="proNo" value=""/> <input type="hidden" name="memberId" id="memberId" value="" />`;
+		text += `		<div class="card-body">`;
+		text += `			<div class="form-group">`;
+		text += `				<label for="inputName">제목</label> <input type="text" id="proNoticeTitle" name="proNoticeTitle" value="" class="form-control" placeholder="제목을 입력해주세요"><br>`;
+		text += `			</div>`;
+		text += `			<div class="form-group">`;
+		text += `				<label for="inputName">내용</label>`;
+		text += `				<div id="editor" class="form-control" style="height:400px;"></div>`;
+		text += `				<br>`;
+		text += `				<div id="contents"></div>`;
+		text += `				<input type="hidden" name="proNoticeContent" id="concon" value="">`;
+		text += `			</div>`;
+		text += `
+							
+							<div class="mb-3">
+				            <label class="form-label">File</label>
+				            <input
+				              class="form-control"
+				              id="event-file"
+				              type="file"
+				              multiple
+				            />
+				          </div>
+				
+				`;
+		text += `			<div class="row">`;
+		text += `				<div class="col-12">`;
+		text += `					<input type="button" value="목록" id="listBtn" class="btn btn-success waves-effect waves-light" onclick="renderPronoticeList_C()">`; 
+		text += `					<input type="button" value="등록" id="formBtn" class="btn btn-primary waves-effect waves-light" >`;
+		text += `				</div>`;
+		text += `			</div>`;
+		text += `		</div>`;
+		text += `		</form>`;
+		text += `	</div>`;
+		text += `</div>`;
+		
+		document.querySelector("#list-target").innerHTML = text;
+	
+	const Editor = toastui.Editor;
+	
+	const editor = new Editor({
+		  el: document.querySelector('#editor'),
+		  height: '400px',
+		  initialEditType: 'markdown',
+		  previewStyle: 'vertical'
+	});
+	//console.log(document.querySelector("#insert-target"));
+	//console.log("인서트 할 객체(#insert-target)",text);
+	
+	
+	
+	var memberId = localStorage.getItem("id")
+	//console.log("memberId : ", memberId)
+	$("#memberId").val(memberId)
+
+	var formBtn = $("#formBtn");
+	
+	formBtn.on("click", function(){
+		
+		if($('#proNoticeTitle').val() == null || $("#proNoticeTitle").val() == ""){
+			alert("제목을 입력해주세요.");
+			$("#proNoticeTitle").focus();
+			return false;
+		}
+ 		//alert(editor.getHTML()); // 글쓰기시 토스트ui내용 가져오기 알럿창
+ 		const proNoticeTitle = document.getElementById('proNoticeTitle').value;
+        //console.log("proNoticeTitle",proNoticeTitle) //콘솔에 제목 안에 text 찍힘
+ 		
+        let sendData = {
+        	// 키 : 값 이런 느낌이야! 키의 내용이 붙어서 나오지요~
+        	memberId: memberId,
+        	proNo: globalProNo,
+        	proNoticeTitle: proNoticeTitle,
+        	proNoticeContent : editor.getHTML().replaceAll('"',"'")
+        };
+        console.log("sendData : ", sendData)
+        
+        
+        //파일 전송시에는  formdata 에다가 담아서 보내줘야한다 
+        // ??? 그러면 내가 따로 담아주고 싶은 데이터는?  formdata에 append 해주면 됩니다.
+        // 파일 업로드 하는 ajax 구조 는 
+        
+        
+        $.ajax({
+        	type:"post",
+        	url:"/projectNotice/insert",
+        	data:JSON.stringify(sendData),
+        	contentType:"application/json;charset=utf-8",
+        	dataType:"json",
+        	success:function(rslt){
+        		console.log("항상확인:",rslt);
+        		console.log("원하는값:",rslt.proNoticeNo);
+         		pronoticeDetail_C(rslt.proNoticeNo);
+        	}
+        })
+        
+ 		//console.log("editor.getHTML()", editor.getHTML());
+ 		cont = editor.getHTML();
+ 		conte = cont.replaceAll('"',"'")
+ 		//console.log("아작스용",sendData);
+ 		
+// 		conte = cont.replace("<p>","")
+// 		conten = conte.replace("</p>","")
+// 		content = conten.replace("<br>","")
+		
+		$("#concon").val(conte);
+	})
+	
+}
+// 인서트그리기 끝
+	//renderPronoticeList_C(); // 인서트 하고 우선 냅다 리스트 뿌리기.... 나중에 디테일 하면 디테일 보이도록 바꾸기 20230120
+
+// 리스트에서 그 해당 글번호 해서 그 내용 한줄 가져오기 시작
+function pronoticeDetail_C(proNoticeNo) {
+	//console.log("조회할 글 번호", dviNo);
+	const proNoticeNoVO = {
+		proNoticeNo,
+	};
+	console.log("보낼 객체(선택 공지사항 글번호) : ", proNoticeNoVO);
+
+	axios
+		.post("/projectNotice/select", proNoticeNoVO)
+		.then((res) => {
+ 			console.log("data=====>", res.data);
+			const data = res.data;
+			
+			renderDetail_C(data); // 디테일 화면그리기
+// 			alert("불리남?");			
+//			getMemberDetail_C();	// 댓글 이미지 넣어주기
+			
+			globalProNoticeNo = proNoticeNo;// 전역에 공지사항 글번호 담아준다  결국 디테일 볼때 무조건 이걸 거치니까!
+		})
+}; 
+// 리스트에서 그 해당 글번호 선택해서 그 내용 한줄 가져오기 끝	
+
+// 디테일 화면 그리기
+var detailMemberId; // 그 해당 게시글 쓴 사람 찾는거	
+function renderDetail_C(data) {
+	// 글 관련 버튼
+	detailMemberId = data.memberId;
+	let localMemberId = localStorage.getItem("id");
+	console.log("로그인한 그 해당 게시글 아이디",detailMemberId)
+	console.log("로컬스토리지 아이디", localMemberId)
+		
+ 	console.log("디테일 화면 그릴 때 받은 데이터1 data : ", data);
+	console.log("디테일 화면 그릴 때 받은 데이터2 data.proNoticeNo : ", data.proNoticeNo);
+	console.log("디테일 화면 그릴 때 받은 데이터3 data.proNo : ", data.proNo);
+	
+	let text = ``;
+	text += `<div class="col-lg-12">`;
+	text += `	<div class="card h-100">`;
+	text += `   	<div class="card-header">`;
+	text += `       	<h2 class="card-title"> \${data.proNoticeTitle }</h2>`;
+	text += `       	<br>`;
+	text += `       	<div class="card-tools">`; 
+	text += `           	<i class="fe-user"></i> &nbsp; \${data.memberName } &nbsp;&nbsp;`;
+	text += `           	<i class="fe-calendar"></i>&nbsp; \${data.proNoticeDate } </div>`;
+	text += `        	<div class="card-tools">`;
+	text += `           	<i class="fe-list"></i>&nbsp; <span id=proNoticeNo>\${data.proNoticeNo }</span> &nbsp;&nbsp;`;
+// 	text += `           	<i class="fe-eye"></i>&nbsp; \${devinMap.devinVO.dviHit }`;
+	text += `        	</div>`;
+	text += `    	</div>`;
+	text += `    	<div class="card-body">`;
+	text += `       	<div class="inbox-widget" id="viewer" data-simplebar style="max-height: 600px;">\${data.proNoticeContent }</div>`;
+	text += `    	</div>`;
+	text += `    	<div class="card-body">`;
+	text += `    		<div class="row">`;
+	text += `    	    	<div class="col-md-12">`;
+	text += `    	        	<button type="button" class="btn btn-success waves-effect waves-light" id="listBtn" onclick="renderPronoticeList_C()">목록</button>`;
+	text += `    	        	<button type="button" class="btn btn-primary waves-effect waves-light" id="modBtn" style="display: none;" onclick="renderProNoticeUpdate_C('\${data.proNoticeNo}')">수정</button>`;
+	text += `    	        	<button type="button" class="btn btn-danger waves-effect waves-light" id="delBtn" style="display: none;" onclick="proNoticeDelete_C('\${data.proNoticeNo}')">삭제</button>`;
+	text += `    	    	</div>`;
+    text += `    		</div>`;
+	text += `    	</div>`;
+	text += `	</div>`;
+	text += `</div></hr>`;
+	
+	document.querySelector("#list-target").innerHTML = text;
+	    
+	// 디테일에도 에디터가 필요하고
+	const Editor = toastui.Editor;
+	// 뷰어도 필요햏!!!
+	const viewer = Editor.factory({
+	  el: document.querySelector('#viewer'),
+	  viewer: true,
+	  height: '500px',
+	  initialValue: '${data.proNoticeContent }'
+	});
+	
+	// 해당게시글의 수정 삭제 버튼...열고닫기
+	if(detailMemberId == localMemberId){
+		var modBtn = document.querySelector("#modBtn");
+		var delBtn = document.querySelector("#delBtn");
+		modBtn.style.display = 'inline';
+		delBtn.style.display = 'inline';
+	}
+
+}
+
+// 디테일 화면 그리기 끝	
+
+//업데이트 그리기 시작
+function renderProNoticeUpdate_C(proNoticeNo) {
+	// 여기서 기존의 화면을 보여주고 그부분을 다시 지워줘야하는데 타켓부분
+
+	console.log("수정할 게시글 번호 proNoticeNo : ", proNoticeNo);
+	const proNoticeNoVO = {
+		proNoticeNo
+	};
+	
+	axios
+	  .post("/projectNotice/select", proNoticeNoVO)
+	  .then((res) => {
+		 console.log("수정할 대상 res.data=====>", res.data);
+// 		 console.log("수정할 대상 res.data : ", res.data);
+// 		 console.log("수정할 대상 찐찐찐res.data.devinVO : ", res.data.devinVO);
+		 const item = res.data;
+		 let text = ``;
+		 
+		 text += `<div class="col-lg-12">`;
+		 text += `	<div class="card h-100">`;
+		 text += `			<input type="hidden" name="proNoticeNo" /> <input type="hidden" name="memberId" id="memberId" value="" />`;
+		 text += `			<div class="card-body">`;
+		 text += `				<div class="form-group">`;
+		 text += `					<label for="inputName">제목</label> <input type="text" id="proNoticeTitle" name="proNoticeTitle" value="\${item.proNoticeTitle}" class="form-control" placeholder="제목을 입력해주세요"><br>`;
+		 text += `				</div>`;
+		 text += `				<div class="form-group">`;
+		 text += `					<label for="inputName">내용</label>`;
+		 text += `					<div id="editor" class="form-control" style="height:550px;"></div>`;
+		 text += `					<br>`;
+		 text += `					<div id="contents"></div>`;
+		 text += `					<input type="hidden" name="proNoticeContent" id="concon" value="\${item.proNoticeContent}">`;
+		 text += `				</div>`;
+		 text += `				<div class="row">`;
+		 text += `					<div class="col-12">`;
+		 text += `						<input type="button" value="목록" id="listBtn" class="btn btn-success waves-effect waves-light" onclick="renderPronoticeList_C()">`; 
+		 text += `						<button type="button" id="updateBtn" class="btn btn-primary waves-effect waves-light" >수정</button>`;
+		 text += `					</div>`;
+		 text += `				</div>`;
+		 text += `			</div>`;
+		 text += `	</div>`;
+		 text += `</div>`;
+		 
+		 document.querySelector("#list-target").innerHTML = text;
+		 
+		 const Editor = toastui.Editor;
+			
+		 const editor = new Editor({
+		 	  el: document.querySelector('#editor'),
+		 	  height: '550px',
+		 	  initialEditType: 'markdown',
+		 	  previewStyle: 'vertical'
+		 });
+		 
+		 const concon = editor.setHTML(item.proNoticeContent);
+		 
+		 var updateBtn = $("#updateBtn");
+		 
+		 //업데이트 전송
+		 updateBtn.on("click", () => {
+			//console.log("ddddd"); 
+			//console.log(editor.getHTML());
+			const proNoticeTitle = document.querySelector("#proNoticeTitle").value;
+			const proNoticeContent = editor.getHTML().replaceAll('"', "'");
+			
+			const vo = {
+// 				proNo,
+				proNoticeNo,
+				proNoticeTitle,
+				proNoticeContent,
+			};
+			
+			console.log("그려주고 수정할거vo(proNo, proNoticeNo, proNoticeTitle, proNoticeContent,) : ", vo);
+		
+			axios
+			  .post("/projectNotice/update", vo)
+			  .then((res) => {
+				  console.log("update :", res);
+				  console.log("update//res.data :", res.data);
+// 				  pronoticeDetail_C(res.data.proNoticeNo); // 이거는 안그려짐 
+				  renderDetail_C(res.data);
+			  });
+		 });
+	  });
+}
+//업데이트 그리기 끝
+
+//게시글 삭제
+function proNoticeDelete_C(proNoticeNo) {
+	const proNoticeNoVO = {
+		proNoticeNo,	
+	};
+	
+	if (!confirm("정말 삭제하시겠습니까?")) {
+		return;
+	}
+	
+	axios
+	  .post("/projectNotice/delete", proNoticeNoVO)
+	  .then((res) => {
+		 //console.log(res);
+		 renderPronoticeList_C();
+	  });
+}
+// 게시글 삭제 끝
+
+
+</script>

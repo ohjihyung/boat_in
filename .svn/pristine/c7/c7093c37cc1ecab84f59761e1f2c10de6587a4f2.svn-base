@@ -1,0 +1,25 @@
+package kr.or.ddit.controller.devin.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.DevinVO;
+
+public interface IDevinService {
+	// 게시글 추가
+	public int insert(DevinVO devinVO) throws Exception;
+	
+	// 게시글 출력
+	public List<DevinVO> selectList() throws Exception;	
+	
+	// 게시글 번호 선택
+	public DevinVO select(String dviNo) throws Exception;	
+	
+	// 게시글 수정
+	public int update(DevinVO devInVO) throws Exception;
+	
+	// 게시글 삭제
+	public int delete(String dviNo) throws Exception;
+	
+	// 게시글 검색 제목
+	public List<DevinVO> search(String dviTitle) throws Exception;
+}

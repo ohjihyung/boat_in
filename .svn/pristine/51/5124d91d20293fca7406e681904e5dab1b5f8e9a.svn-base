@@ -1,0 +1,2814 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<!-- 피커 -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://npmcdn.com/flatpickr/dist/themes/dark.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+
+<!-- 풀캘린더 -->
+<link
+    href="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css"
+    rel="stylesheet" />
+
+<!-- 티피 -->
+<link rel="stylesheet"
+    href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+
+<style>
+  .parent {
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    white-space: nowrap;
+  }
+  .container {
+    min-width: 200px;
+    min-height: 400px;
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    background-color: #b5c1dc57;
+    border-radius: 8px;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .grid-item {
+  
+  }
+  .grid-item1 {
+    grid-row-start: 1;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .grid-item2 {
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
+  .grid-item3 {
+    grid-row-start: 1;
+    grid-row-end: 3;
+  }
+  /* 인풋 테두리 지우기 */
+  .input-K {
+    border: 0px solid black;
+  }
+  .input-update-K {
+    border: 1px solid gray;
+  }
+  .input-K:focus {
+    outline: 0px solid gray;
+  }
+  .input-no-K {
+    border: 0px solid black;
+  }
+  .input-no-K:focus {
+    outline: 0px solid gray;
+  }
+  .twComent {
+    border: 0px solid black;
+  }
+  .twComent:focus {
+    outline: 0px solid gray;
+  }
+  .twComent-update {
+    border: 1px solid gray;
+  }
+</style>
+<!-- content-page div가 있어야 내용이 출력된다. -->
+<div class="content-page">
+  <div class="content">
+    <!-- Start Content-->
+    <div class="container-fluid">
+      <!-- start page title -->
+      <div class="row">
+        <div class="col-12">
+          <div>
+          
+            <ul class="nav nav-tabs nav-bordered nav-justified">
+            
+                <li class="nav-item">
+                    <a href="#home-b2" onclick="pageTap('home')" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                        홈
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#profile-b2" onclick="pageTap('workList')" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                        목록
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('kanban')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        칸반보드
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('calendar')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        캘린더
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('dataRoom')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        자료실
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('gdocs')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        공유문서 작성
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('notice')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        통계자료
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages-b2" onclick="pageTap('notice')" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                        공지사항
+                    </a>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- end page title -->
+      <div id="kanban-menu">
+      <!-- 칸반일 경우 추가 메뉴 들어감.-->
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="insertModalOpen()"
+      >
+        일감 생성하기
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="categoryModalOpen()"
+      >
+        <i class="fas fa-plus"></i> 카테고리 생성하기
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="modeChange('project')"
+      >
+        칸반보드 - 프로젝트
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary width-lg waves-effect waves-light"
+        onclick="modeChange('personal')"
+      >
+        칸반보드 - 개인
+      </button>
+      </div>
+      <!-- 테스트용 디테일 모달 -->
+      <div>
+        <button type="button" class="btn btn-secondary" onclick="detailModalToggle_K()">새로운 상세보기</button>
+     </div>
+      <!-- 테스트용 디테일 모달 end-->
+      <!-- 작업추가 end -->
+      <div class="row justify-content-center spa">
+        <!-- end col-->
+      </div>
+      <!-- end row -->
+      <div>
+      
+      </div>
+    </div>
+    <!-- container -->
+  </div>
+  <!-- content -->
+</div>
+
+<!-- 모달들 -->
+<!-- Add New Event MODAL -->
+<div class="modal fade" id="event-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header py-3 px-4 border-bottom-0 d-block">
+        <button
+          type="button"
+          class="btn-close float-end"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="insertModalClose()"
+        ></button>
+        <h5 class="modal-title" id="modal-title">작업 추가</h5>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-0">
+        <form
+          class="needs-validation"
+          name="event-form"
+          id="form-event"
+          novalidate
+        >
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Work Title</label>
+                <input
+                  class="form-control"
+                  placeholder="작업명을 입력해주세요."
+                  type="text"
+                  name="title"
+                  id="event-title"
+                  required
+                />
+                <div class="invalid-feedback">작업 입력은 필수입니다.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Content</label>
+                <input
+                  class="form-control"
+                  placeholder="내용을 입력해주세요."
+                  type="text"
+                  name="worker"
+                  id="event-content"
+                  required
+                />
+                <div class="invalid-feedback">내용을 입력해주세요.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-select-category"
+                  required
+                >
+                  <option value="active" selected>미설정</option>
+                  <option value="warning">DB</option>
+                  <option value="info">FRONT</option>
+                  <option value="success">BACK</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event category
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Worker</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-worker"
+                  required
+                >
+                  <option value="미배정" selected>미배정</option>
+                  <option value="김진호">김진호</option>
+                  <option value="허나훔">허나훔</option>
+                  <option value="채진영">채진영</option>
+                  <option value="송서영">송서영</option>
+                  <option value="오지형">오지형</option>
+                  <option value="배지영">배지영</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event Worker
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+
+                <div style="display: flex; justify-content: space-around">
+                  <div class="col-6">
+                    <label class="form-label" for="birth">시작일</label>
+                    <input
+                      class="form-control"
+                      id="birth"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{birth2}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="birth2">종료일</label>
+                    <input
+                      class="form-control"
+                      id="birth2"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{birth2}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div class="invalid-feedback">
+                  Please select a valid event day
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">File</label>
+                <input
+                  class="form-control"
+                  id="event-file"
+                  name="uploadFileAjax"
+                  type="file"
+                  multiple
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6 col-4">
+              <button type="button" class="btn btn-danger" id="btn-reset-event">
+                Reset
+              </button>
+            </div>
+            <div class="col-md-6 col-8 text-end">
+              <button
+                type="button"
+                class="btn btn-light me-1"
+                id="btnModalClose"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-success" id="btn-save-event">
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- end modal-content-->
+  </div>
+  <!-- end modal dialog-->
+</div>
+<!-- end modal-->
+
+<!-- Category 추가 모달 -->
+<div
+  id="info-alert-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <i class="dripicons-information h1 text-info"></i>
+          <h4 class="mt-2">Add Category</h4>
+          <p class="mt-3">
+            <input
+              class="form-control"
+              id="category-name"
+              type="text"
+              placeholder="Enter Category Name."
+              required
+            />
+          </p>
+          <!-- 색상 선택 드롭박스 -->
+          <div class="dropdown" style="margin: 10px">
+            <input type="hidden" id="dropBox-colorCode" value="#ECF2F5" />
+            <button
+              class="btn btn-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <font id="dropBox-name">색상</font
+              ><i class="mdi mdi-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="javascript: selectColor('light')"
+                ><font class="text-dark color-light">색상</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('primary')"
+                ><font class="text-primary color-primary">파랑</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('success')"
+                ><font class="text-success color-success">연두</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('info')"
+                ><font class="text-info color-info">하늘</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('warning')"
+                ><font class="text-warning color-warning">주황</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('danger')"
+                ><font class="text-danger color-danger">빨강</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('dark')"
+                ><font class="text-dark color-dark">검정</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('purple')"
+                ><font class="text-purple color-purple">보라</font></a
+              >
+              <a class="dropdown-item" href="javascript: selectColor('pink')"
+                ><font class="text-pink color-pink">분홍</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColor('secondary')"
+                ><font class="text-secondary color-secondary">회색</font></a
+              >
+            </div>
+          </div>
+          <!-- 드롭박스 끝 -->
+          <button
+            id="category-add"
+            onclick="categoryModalInsert()"
+            type="button"
+            class="btn btn-primary waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            추가
+          </button>
+          <button
+            id="category-cancel"
+            onclick="categoryModalClose()"
+            type="button"
+            class="btn btn-danger waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- 카테고리 수정 모달 -->
+<div
+  id="category-update-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <i class="dripicons-information h1 text-info"></i>
+          <h4 class="mt-2">Update Category</h4>
+          <p class="mt-3">
+            <input
+              class="form-control"
+              id="category-name-update"
+              type="text"
+              placeholder="Enter Category Name."
+              required
+            />
+          </p>
+          <!-- 색상 선택 드롭박스 -->
+          <div class="dropdown" style="margin: 10px">
+            <input
+              type="hidden"
+              id="dropBox-colorCode-update"
+              value="#ECF2F5"
+            />
+            <!-- 수정버튼 누르면 여기에 피케이값 저장됨 -->
+            <input type="hidden" id="dropBox-twCategoryNo-update" value="" />
+            <button
+              class="btn btn-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton-update"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <font id="dropBox-name-update">색상</font
+              ><i class="mdi mdi-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('light')"
+                ><font class="text-dark updateColor-light">색상</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('primary')"
+                ><font class="text-primary updateColor-primary">파랑</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('success')"
+                ><font class="text-success updateColor-success">연두</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('info')"
+                ><font class="text-info updateColor-info">하늘</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('warning')"
+                ><font class="text-warning updateColor-warning">주황</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('danger')"
+                ><font class="text-danger updateColor-danger">빨강</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('dark')"
+                ><font class="text-dark updateColor-dark">검정</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('purple')"
+                ><font class="text-purple updateColor-purple">보라</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('pink')"
+                ><font class="text-pink updateColor-pink">분홍</font></a
+              >
+              <a
+                class="dropdown-item"
+                href="javascript: selectColorUpdate('secondary')"
+                ><font class="text-secondary updateColor-secondary"
+                  >회색</font
+                ></a
+              >
+            </div>
+          </div>
+          <!-- 드롭박스 끝 -->
+          <button
+            id="category-update"
+            type="button"
+            onclick="categoryUpdate()"
+            class="btn btn-primary waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            수정
+          </button>
+          <button
+            id="category-update-cancel"
+            onclick="categoryUpdateModalClose()"
+            type="button"
+            class="btn btn-danger waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Detail MODAL -->
+<div class="modal fade" id="detail-modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header py-3 px-4 border-bottom-0 d-block">
+        <button
+          type="button"
+          class="btn-close float-end"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="detailModalClose()"
+        ></button>
+        <h5 class="modal-title" id="modal-title">작업 수정</h5>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-0">
+        <form
+          class="needs-validation"
+          name="event-form"
+          id="form-event"
+          novalidate
+        >
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Work Title</label>
+                <input type="hidden" id="topWorkNo-detail" value=""/>
+                <input
+                  class="form-control"
+                  placeholder="작업명을 입력해주세요."
+                  type="text"
+                  name="title"
+                  id="detail-title"
+                  required
+                />
+                <div class="invalid-feedback">작업 입력은 필수입니다.</div>
+              </div>
+                <label class="form-label">Content</label>
+                <input
+                  class="form-control"
+                  placeholder="내용을 입력해주세요."
+                  type="text"
+                  name="worker"
+                  id="detail-content"
+                  required
+                />
+                <div class="invalid-feedback">내용을 입력해주세요.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="detail-select-category"
+                  required
+                >
+                  <option value="active" selected>미설정</option>
+                  <option value="warning">DB</option>
+                  <option value="info">FRONT</option>
+                  <option value="success">BACK</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event category
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Worker</label>
+                <select
+                  class="form-select"
+                  name="category"
+                  id="event-worker"
+                  required
+                >
+                  <option value="미배정" selected>미배정</option>
+                  <option value="id-1">아이디1</option>
+                  <option value="id-2">아이디2</option>
+                  <option value="id-3">아이디3</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid event Worker
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+
+                <div style="display: flex; justify-content: space-around">
+                  <div class="col-6">
+                    <label class="form-label" for="birth">시작일</label>
+                    <input
+                      class="form-control"
+                      id="topWorkStart-detail"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{topWorkStart-detail}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="birth2">종료일</label>
+                    <input
+                      class="form-control"
+                      id="topWorkEnd-detail"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      placeholder=""
+                      required
+                      th:field="*{topWorkEnd-detail}"
+                      type="text"
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div class="invalid-feedback">
+                  Please select a valid event day
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">File</label>
+                <input
+                  class="form-control"
+                  id="event-file"
+                  type="file"
+                  multiple
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6 col-4">
+              <button type="button" class="btn btn-danger" id="btn-delete-detail" onclick="topWorkDelete()">
+                Delete
+              </button>
+            </div>
+            <div class="col-md-6 col-8 text-end">
+              <button
+                type="button"
+                class="btn btn-light me-1"
+                id="btnModalClose"
+                data-bs-dismiss="modal"
+                onclick="detailModalClose()"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-success" id="btn-save-detail" onclick="topWorkUpdate()">
+                Update
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- end modal-content-->
+  </div>
+  <!-- end modal dialog-->
+</div>
+<!-- end modal-->
+
+<!-- TopWork detail Right modal content -->
+<div id="topWork-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-full-width" role="document" style="width: 60%;"><!-- 백그라운드 컬러 주면 뭔가 이상.. -->
+        <div class="modal-content" style="">
+            <form action="" id="myFrm">
+            <div class="modal-header border-0" style="">
+                <h1 id=""><input type="text" class="input-K" id="detail-WorkTitle" name="workTitle" value="" readonly/></h1>
+                <button type="button" class="btn-close" onclick="detailModalToggle_K()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="detail-modal-body" style="max-height: 700px; overflow: auto;">
+                  <input type="hidden" value="" id="hidden-topWorkNo" name="topWorkNo"/>
+                  <input type="hidden" value="" id="hidden-subWorkNo" name="subWorkNo"/>
+                  <input type="hidden" value="" id="hidden-workMode"/><!-- 상위: TopWrok / 하위: SubWork -->
+                  <input type="hidden" value="" id="hidden-categoryNo"/>
+                  <input type="hidden" value="" id="hidden-categoryName"/>
+                  <div class="mb-3" id=""  style="">
+                    <div class="mb-3" id="subWork-insert">
+                      <!-- 하위일감 생성-->
+                      <button type=button class="btn btn-soft-dark btn-sm waves-effect waves-light" onclick="subWorkInputShow()">
+                        <i class="mdi mdi-tournament mdi-rotate-270"></i> 하위 작업 추가
+                      </button>
+                      <button type=button class="btn btn-soft-dark btn-sm waves-effect waves-light" onclick="btnFileAdd_K()">
+                        <i class="mdi mdi-paperclip mdi-rotate-45"></i> 파일 첨부 
+                      </button>
+                      <!-- 파일 첨부용 인풋 -->
+                      <input type="file" id="fileInput_K" multiple style="display: none;" onchange="fileAdd_K(this)"/>
+                      <button type="button" class="btn btn-soft-dark btn-sm waves-effect waves-light" onclick="updateWork()">
+                        <i class="mdi mdi-wrench"></i> 수정하기
+                      </button>
+                  </div>
+                  <div id="subWorkDetailDiv" style="display: none;">
+                    
+                  </div>
+                  <div id="subWorkInput" style="display: none;">
+	                    <div> 담당자 선택 :
+	                        <select class="form-select"
+	                                id="sub-worker"
+	                                required>
+	                        </select>
+	                    </div>
+	                    <div> 하위 작업 제목 : 
+	                        <input id="subwork-insert-title" class="form-control" type="text"/>
+	                    </div>
+	                    <div> 하위 작업 내용 : 
+	                        <input id="subwork-insert-content" class="form-control" type="text"/>
+	                    </div>
+	                    <div> 시작일 : 
+	                        <input class="form-control" id="subStart" pattern="\d{4}-\d{2}-\d{2}"
+	                          placeholder="" required th:field="*{subStart}" type="text" style="width: 40%" value=""/>
+	                    </div>
+	                    <div> 종료일 : 
+	                        <input class="form-control" id="subEnd" pattern="\d{4}-\d{2}-\d{2}"
+	                          placeholder="" required th:field="*{subEnd}" type="text" style="width: 40%" value=""/>
+	                    </div>
+	                    <div>
+	                      첨부파일
+	                      <input type="file" class="form-control">
+	                    </div>
+	                    <button type=button class="btn btn-secondary btn-sm" onclick="insertSubWork()">추가하기</button>
+                  </div>
+                  <!-- 하위 일감 끝 -->
+                  </div>
+                  <div class="topWorkDiv" style="">
+                  <div class="grid-container">
+                      <div class="grid-item1" style="border-right: 1px solid #F1F1F1; padding-right: 10px;">
+	                      <!-- <div class="form-check form-switch"> 팀장, 리더만 수정가능 나머진 disabled
+	                           <input type="checkbox" class="form-check-input" id="customSwitch1">
+	                           <label class="form-check-label" for="customSwitch1">수정하기</label>
+	                      </div> -->
+	                      <div style="text-align: right;">
+	                        
+	                      </div>
+	                      <div class="mb-3" id="">
+                              <div>프로젝트 : <input type="text" class="input-no-K" id="detail-WorkProject" class="" value="" readonly/></div>
+                          </div>
+                          <div class="mb-3" id="detail-WorkWorker">
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                          
+                          <div class="mb-3" id="detail-WorkDate">
+                                
+                                시작일 : <input type="text" 
+                                                class="input-K" 
+                                                id="detail-WorkStart" 
+                                                name="detail-WorkStart" 
+                                                pattern="\d{4}-\d{2}-\d{2}"
+							                    placeholder=""
+							                    required
+							                    th:field="*{detail-WorkStart}"
+                                                value ="" 
+                                                readonly/>
+                                종료일 : <input type="text" 
+                                                class="input-K" 
+                                                id="detail-WorkEnd" 
+                                                name="detail-WorkStart" 
+                                                pattern="\d{4}-\d{2}-\d{2}"
+                                                placeholder=""
+                                                required
+                                                th:field="*{detail-WorkEnd}"
+                                                value ="" 
+                                                readonly/>
+                          </div>
+        
+                          <div class="mb-3" id="detail-WorkPosition">
+                              <div>진행도 : 
+                                <div style="width: 70%;">
+                                   <tc-range-slider
+                                        value="50"
+                                        step="1"
+                                        slider-bg-fill="blue" 
+                                        animate-onclick="1s" 
+                                        generate-labels="true"
+                                        generate-labels-units="%"
+                                        slider-width="100%"
+                                        id="slider-1">
+                                    </tc-range-slider>
+                                </div>
+                              </div>
+                          </div>
+                          
+                          <div id="importance-update" style="display: none;">
+                          중요도 : 
+                            <select class="form-select" name="topWorkImportance" id="topWorkImportance" aria-label="Floating label select example">
+                              <option value="0" selected>일반</option>
+                              <option value="1">중요</option>
+                              <option value="2">긴급</option>
+                            </select>
+                          </div>
+                          <div class="mb-3" id="twImportance">
+                          중요도 : 
+                              <div id="twImportanceCheckRadio" class="form-check mb-2">
+                                <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="" checked/>
+                                <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">일반</label>
+                              </div>
+                          </div>
+        
+                          <div class="mb-3" id="">
+                              <div>상태 : <input type="text" class="input-K" id="detail-topWorkState" name="topWorkState" class="" value="" readonly/></div>
+                          </div>
+                          
+                          <div class="mb-3" id="quillContainer" style="height: 350px; margin-bottom: 1em; overflow: auto;">
+                              <div id="contentDiv"></div>
+                          </div>
+                          
+                          <div class="mb-3" id="detail-topWork-subWorkList">
+                            <!-- 하위작업 -->
+                            <button type="button" style="width: 100%;"class="btn btn-outline-primary waves-effect waves-light">하위작업들</button>
+                        </div>
+                          
+                        </form>
+                      </div><!-- 그리드 아이템1 끝 -->
+                      <!-- <a href="#" onclick="window.open('https://192.168.144.32', 'pop01', 'top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizable=no')">화상</a> -->
+                      <div class="grid-item" style="border: 0px solid gray;">
+                          <div class="mb-3" id="">
+                              <!-- 작업로그 -->
+                              <table id="topWorkLogTable" class="">
+                                    <thead>
+                                        <tr>
+                                            <th>로그</th>
+                                            <th>날짜</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detail-topWorkLog">
+                                    </tbody>
+                              </table>
+                          </div>
+                      </div>
+                      <div class="grid-item" style="border: 0px solid gray;">
+                          <div class="mb-3" id="detail-topWorkFile">
+                              <!-- 첨부파일 -->
+                              <table id="topWorkFileTable" class="">
+                                    <thead>
+                                        <tr>
+                                            <th>파일명</th>
+                                            <th>타입</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detail-topWorkLog">
+                                    </tbody>
+                              </table>
+                          </div>
+                      </div>
+                      <div class="grid-item" style="border: 0px solid gray;">
+                        <div id="selectChart" style="height:100%; width:100%">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                      </div>
+                      <div class="grid-item2" style="border: 0px solid gray;">
+                          <div class="mb-3" id="detail-topWorkComent-insert">
+                              <!-- 댓글 작성-->
+                             댓글 작성 : 
+                             <form action="" id="frm-topWorkComent" style="">
+	                             <input type="text" class="form-control" id="twComentContent"/>
+	                             <input type="file" class="form-control" id="twComentFile" multiple/>
+	                             <button type="submit" class="btn btn-primary btn-sm">작성</button>
+                             </form>
+                          </div>
+                      </div>
+                      <div class="grid-item2" style="border-top: 1px solid #F1F1F1;">
+                      <!-- 댓글 리스트 -->
+                          <div class="mb-3" id="detail-topWorkComent">
+                              <!-- 댓글 리스트-->
+                              <div class="spinner-border text-blue m-2" role="status"></div>
+                          </div>
+                      </div>
+                  </div>
+                  </div><!-- topWorkInput end -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<button type="button" id="btnTopWorkModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#topWork-detail-modal" style="display: none;">topWorkModal</button>
+<button type="button" id="btnSubWorkModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subWork-detail-modal" style="display: none;">subWorkModal</button>
+<!-- 구글 -->
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+<!-- 드래그 -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+<!-- axios -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> index로 이동함.-->
+
+<!-- 차트js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<!-- calendar.jsp 관련 -->
+<!-- 풀캘린더 -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js"></script>
+<!-- fullcalendar 언어 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js"></script>
+<!-- 풀캘린더 데이트 포맷 -->
+<script class="cssdesk" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.0/moment.min.js" type="text/javascript"></script> 
+
+<script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/plugins/tcrs-generated-labels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/plugins/tcrs-binding-labels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/toolcool-range-slider.min.js"></script>
+<!-- 스크롤리 -->
+<script src="https://cdn.jsdelivr.net/npm/seamless-scroll-polyfill@latest/lib/bundle.min.js"></script>
+<script>
+//테스트용
+/* 
+const busungArray = [];
+let busungObj1 = { name: "부성이-1" };
+let busungObj2 = { name: "부성이-5" };
+let busungObj3 = { name: "부성이-3" };
+let busungObj4 = { name: "부성이-4" };
+let busungObj5 = { name: "부성이-7" };
+let busungObj6 = { name: "부성이-8" };
+let busungObj7 = { name: "부성이-2" };
+
+busungArray.push(busungObj1);
+busungArray.push(busungObj2);
+busungArray.push(busungObj3);
+busungArray.push(busungObj4);
+busungArray.push(busungObj5);
+busungArray.push(busungObj6);
+busungArray.push(busungObj7);
+
+console.log(busungArray);
+
+console.log(JSON.stringify(busungArray));
+
+$.ajax({
+    url : '/busung',
+    contentType: "application/json",
+    data : JSON.stringify(busungArray),
+    type : 'POST',
+    dataType : 'json',
+    success : function(result){
+    	console.log(result);
+    }
+});
+*/
+
+const URLSearch = new URLSearchParams(location.search);
+var proNo = "";
+var currentTap_PH_K = "";
+
+changeTitle(); //여기서 프로젝트 번호 들어감
+pageTap('home');
+
+var mode = "";
+
+function pageTap(arg) {
+    //칸반 관련 메뉴는 칸반 들어가야만 보이도록 설정
+    const kanbanMenu_K = document.querySelector("#kanban-menu");
+    kanbanMenu_K.style.display = "none";
+    //console.log(arg);
+    if (arg == "kanban") {
+        currentTap_PH_K = "kanban";
+        kanbanMenu_K.style.display = "block";
+        $(".spa").load("/project/kanban_spa");
+    }
+    
+    if (arg == "home") {
+        currentTap_PH_K = "home";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/home_spa");
+    }
+    
+    if (arg == "calendar") {
+        currentTap_PH_K = "calendar";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/calendar_spa"); //spa 클래스에 jsp를 로드해준다!
+    }
+    
+    if (arg == "dataRoom") {
+        currentTap_PH_K = "dataRoom";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/dataRoom_spa"); //spa 클래스에 jsp를 로드해준다!
+    }
+    
+    if (arg == "gdocs") {
+        currentTap_PH_K = "gdocs";
+        kanbanMenu_K.style.display = "none";
+        $(".spa").load("/project/gdocs_spa"); 
+    }
+    
+    if (arg == "workList") {
+        //안쓰니까 일단 비우게
+        document.querySelector(".spa").innerHTML = "";
+    }
+}
+
+//김진호
+//파일 추가 버튼 클릭시
+function btnFileAdd_K() {
+	//버튼 클릭하면 인풋 열기
+	document.querySelector("#fileInput_K").click();
+}
+//김진호
+//파일 선택시
+//상위에서 파일추가 후 하위 이동해서 다시 파일추가 -> 함수 실행안됨
+function fileAdd_K(fileData, state, comentNo) {
+	console.log("fileData : ", fileData);
+	console.log("state : ", state);
+	console.log("comentNo : ", comentNo);
+	
+	//console.log(fileData);
+	//console.log(fileData.files);
+	//필요한 데이터 = proNo, topWorkNo, subWorkNo, 카테고리
+    let mode = document.querySelector("#hidden-workMode").value;
+	let twCategoryNo = document.querySelector("#hidden-categoryNo").value;
+	let twCategoryName = document.querySelector("#hidden-categoryName").value;
+    let topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+    let topWorkTitle = document.querySelector("#detail-WorkTitle").value;
+    
+    const workVO = {
+      proNo,
+      twCategoryNo,
+      twCategoryName,
+      topWorkNo,
+      topWorkTitle,
+    };
+    
+	if (state == "TopWorkComent" && comentNo != null) {
+		console.log("코멘트맞음");
+		mode = state;
+	}
+    if (mode == "SubWork") {
+        workVO.subWorkNo = document.querySelector("#hidden-subWorkNo").value;
+    }
+    
+    console.log("최종 mode : ", mode);
+    console.log("파일에 필요한 정보 : ", workVO);
+    
+    //console.dir(fileData.files[0]);
+    //추가된 파일 배열
+    const fileList = fileData.files;
+    const formData_K = new FormData();
+    
+    for(var i = 0; i < fileList.length; i++){
+        formData_K.append("uploadFile", fileList[i]);   
+     }
+    
+    let jsonData = JSON.stringify({ projectId: proNo, 
+                                    categoryName :twCategoryName,
+                                    topWorkTitle : topWorkTitle,
+                                    twCategoryNo : twCategoryNo,
+                                    topWorkNo : topWorkNo,
+                                    mode: mode,
+                                    comentNo: comentNo
+                                });
+    //console.log("jsonData :", jsonData);
+    formData_K.append("jsonData", jsonData);
+
+    $.ajax({
+        url : '/uploadAjaxAction',
+        processData : false,
+        contentType : false,
+        data : formData_K,
+        type : 'POST',
+        dataType : 'json',
+        success : function(result){
+            //console.log("origin result",result);
+            //인풋 비워주기
+        	fileData.value = "";
+        	detailTopWork_K(topWorkNo);
+        }
+    }); // end of ajax 
+    
+}
+//김진호
+//상위작업 댓글 입력
+var frmTopWorkComent = document.querySelector("#frm-topWorkComent");
+frmTopWorkComent.addEventListener("submit", (event) => {
+	event.preventDefault();
+	const twComentContent = document.querySelector("#twComentContent").value;
+	const topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+	const topWorkComentVO = {
+      twComentContent,
+      memberId,
+      topWorkNo,
+	};
+	//console.log(topWorkComentVO);
+	axios
+	  .post("/kanban/topWorkComentInsert", topWorkComentVO)
+	  .then((res) => {
+		 //console.log("댓글 작성 후 ", res.data);
+		 twComentNo = res.data;
+		 document.querySelector("#twComentContent").value = "";
+		 console.log("댓글작성시 인풋파일길이 : ", document.querySelector("#twComentFile").files.length);
+		 let inputFile = document.querySelector("#twComentFile");
+		 if (inputFile.files.length > 0) {
+			 console.log("inputFile", inputFile);
+			 console.dir(inputFile);
+			 let state = "TopWorkComent";
+			 //파일 업로드 전송
+			 fileAdd_K(inputFile, state, twComentNo);
+			 //초기화
+			 document.querySelector("#twComentFile").value = "";
+		 }
+		 detailTopWork_K(topWorkNo);
+	  });
+});
+//김진호
+//상위작업 댓글 삭제 (상태값 변경)
+function twComentDelete(twComentNo, topWorkNo) {
+	//console.log(twComentNo);
+	const twComentVO = {
+	  twComentNo,
+	};
+	
+	axios
+	  .post("/kanban/topWorkComentDelete", twComentVO)
+	  .then((res) => {
+		//console.log(res);
+		detailTopWork_K(topWorkNo);
+	  });
+}
+//김진호
+//상위작업 댓글 수정
+function twComentUpdate(twComentNo, topWorkNo) {
+	const twComentInput = document.querySelector("#twComentInput-" + twComentNo);
+	console.log(twComentInput);
+	if (twComentInput.readOnly) {
+		twComentInput.className = "twComent-update";
+		twComentInput.readOnly = false;
+	} else {
+		//여기서 컨트롤러 보내야함
+		twComentInput.className = "twComent";
+		twComentInput.readOnly = true;
+		const twComentContent = twComentInput.value;
+		const twComentVO = {
+		  twComentNo,
+		  topWorkNo,
+		  twComentContent,
+		};
+		
+		console.log(twComentVO);
+		axios
+		  .post("/kanban/topWorkComentUpdate", twComentVO)
+		  .then((res) => {
+			 console.log(res); 
+		  });
+		  
+	}
+	
+}
+//김진호
+//상위작업 댓글 펼치기(페이징)
+function twComentAddList(topWorkNo) {
+	const topWorkVO = {
+	  topWorkNo,
+	};
+	//상위작업번호로 일치하는 댓글 조회
+	axios
+	  .post("/kanban/topWorkComentList", topWorkVO)
+	  .then((res) => {
+		 const topWorkComentDiv = document.querySelector("#detail-topWorkComent");
+		 const twComentList = res.data;
+		 let twComentText = ``;
+		 
+		 for (twComent of twComentList) {
+			 <!-- Story Box-->
+             twComentText += `<div class="border border-0 p-2 mb-3">`;
+             twComentText += `    <div class="d-flex align-items-start">`;
+             twComentText += `        <img class="me-2 avatar-sm rounded-circle" src="${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png" alt="Generic placeholder image">`;
+             twComentText += `        <div class="w-100">`;
+             twComentText += `            <h5 class="m-0">\${twComent.memberId}</h5>`;
+             twComentText += `            <p class="text-muted"><small>\${twComent.twComentDate}</small></p>`;
+             twComentText += `        </div>`;
+             twComentText += `    </div>`;
+             twComentText += `    <p><input type="text" class="twComent" id="twComentInput-\${twComent.twComentNo}" value="\${twComent.twComentContent}" readonly/></p>`;
+             twComentText += `    <div class="mt-2">`;
+             twComentText += `        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-heart-outline"></i> Like</a>`;
+             twComentText += `        <a href="javascript: twComentUpdate('\${twComent.twComentNo}','\${twComent.topWorkNo}');" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-file-document-edit"></i> 편집</a>`;
+             twComentText += `        <a href="javascript: twComentDelete('\${twComent.twComentNo}', '\${twComent.topWorkNo}');" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-delete"></i> 삭제</a>`;
+             twComentText += `    </div>`;
+             twComentText += `</div>`;
+		 }
+             twComentText += `<div>`;
+             twComentText += `<button type="button"`;
+             twComentText += `onclick="detailTopWork_K('\${topWorkNo}')"`;
+             twComentText += ` class="btn btn-primary btn-sm">댓글 접기</button>`;
+             twComentText += `</div>`;
+		 
+		 topWorkComentDiv.innerHTML = twComentText;
+	  });
+}
+//김진호
+//모달-업데이트
+//수정버튼 클릭시 인풋 리드온리 해제
+//다시 클릭시 저장
+//토글스위치로 수정하기
+/* 
+var customSwitch1 = document.querySelector("#customSwitch1");
+customSwitch1.addEventListener("change", () => {
+    updateTopWork();
+});
+ */
+function updateWork() {
+	let updateMode = document.querySelector("#hidden-workMode").value;
+	//console.log("업데이트모드 : ", updateMode);
+    let arrs = document.querySelectorAll(".input-K");
+    //console.log("arrs", arrs);
+    
+   	//중요도 활성화 (탑워크만)
+   	if (updateMode == "TopWork") {
+	    document.querySelector("#twImportance").style.display = "none";
+	    document.querySelector("#importance-update").style.display = "block";
+   	}
+   	//하위작업, 상위작업 리스트 숨기기(에디터가 선넘음) & 오버플로우 없애기 (이중 스크롤 문제)
+   	document.querySelector("#detail-topWork-subWorkList").style.display = "none";
+   	document.querySelector("#quillContainer").style.overflow = "";
+   
+   	
+   	//에디터
+   	hljs.configure({   // optionally configure hljs
+	  languages: ['javascript', 'html']
+	});
+   	
+   	var toolbarOptions = [
+        ['bold', 'underline'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        //[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        //[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+        //[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        //[{ 'font': [] }],
+        [{ 'align': [] }],
+
+        ['clean']                                         // remove formatting button
+      ];
+   	
+   	var quill = new Quill("#contentDiv", {
+   		theme: 'snow',
+   		modules: {
+   		  toolbar: toolbarOptions,
+   		  syntax: true,
+   		},
+   		placeholder: '내용을 입력하세요..',
+   	});
+   	
+   	$("#toolbar").append($(".ql-toolbar"));
+   	//원래 내용 가져오기
+   	let contentURL;
+   	const workVO = {};
+   	
+   	if (updateMode == "TopWork") {
+   		contentURL = "/kanban/topWorkDetail";
+   		workVO.topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+   	} else {
+   		contentURL = "/subWork/subWorkDetail";
+   		workVO.subWorkNo = document.querySelector("#hidden-subWorkNo").value;
+   	}
+   	
+   	axios
+   	  .post(contentURL, workVO)
+   	  .then((res) => {
+   		  //console.log("객체 조회", res.data);
+   		  const vo = res.data;
+   		  originWorkContent = (updateMode == "TopWork") ? vo.topWorkContent : vo.subWorkContent;
+   		  //에디터에 삽입
+   		  const value = quill.clipboard.convert(originWorkContent);
+   		  quill.setContents(value, 'silent');
+   	  });
+   	
+    if (arrs.length < 1) {
+    	//여기가 수정완료시
+    	//수정시엔 quill.setText('Hello\n');
+    	const quillContent = document.querySelector(".ql-editor").innerHTML;
+    	console.log("이래도 나오나", quill.getContents());
+    	//퀼즈 에디터 관련 초기화
+    	document.querySelector("#quillContainer").innerHTML = `<div id="contentDiv"></div>`;
+    	document.querySelector("#quillContainer").style.overflow = "auto";
+    	document.querySelector("#detail-topWork-subWorkList").style.display = "block";
+    	
+    	
+    	arrs = document.querySelectorAll(".input-update-K");
+    	arrs.forEach(arr => {
+            arr.readOnly = true;
+            arr.className = "input-K";
+            
+    		if (arr.id == "detail-WorkContent") {
+                arr.className = "input-K form-control";
+            }
+        });
+    	
+    	const workVO = {};
+    	const $slider = document.getElementById('slider-1');
+    	
+    	if (updateMode == "TopWork") {
+	    	workVO.topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+	    	workVO.topWorkTitle = document.querySelector("#detail-WorkTitle").value;
+	    	workVO.topWorkStart = document.querySelector("#detail-WorkStart").value.replace(" ", "T");
+	    	workVO.topWorkEnd = document.querySelector("#detail-WorkEnd").value.replace(" ", "T");
+	    	workVO.topWorkImportance = document.querySelector("#topWorkImportance").value;
+	    	workVO.topWorkContent = quillContent;
+	        console.log("상위 저장된 진행률 : ", $slider.value);
+	    	workVO.topWorkProgress = $slider.value;
+	        
+	        const state = document.querySelector("#detail-topWorkState").value;
+	        if (state == "작업 대기") workVO.topWorkState = 0;
+	        if (state == "진행 중") workVO.topWorkState = 1;
+	        if (state == "승인 대기") workVO.topWorkState = 2;
+	        if (state == "수정 요청") workVO.topWorkState = 3;
+	        if (state == "작업 완료") workVO.topWorkState = 4;
+	        
+    	} else {
+	    	workVO.subWorkNo = document.querySelector("#hidden-subWorkNo").value;
+	    	workVO.topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+	    	workVO.subWorkTitle = document.querySelector("#detail-WorkTitle").value;
+	    	workVO.subWorkStart = document.querySelector("#detail-WorkStart").value.replace(" ", "T");
+	    	workVO.subWorkEnd = document.querySelector("#detail-WorkEnd").value.replace(" ", "T");
+	    	workVO.subWorkImportance = document.querySelector("#topWorkImportance").value;
+	    	workVO.subWorkContent = quillContent;
+	    	//console.log("저장된 진행률 : ", $slider.value);
+	    	workVO.subWorkProgress = $slider.value;
+	    	workVO.subWorkState = document.querySelector("#detail-topWorkImportance").value;
+    	}
+	   	//*********************************************************
+	   	//로그 - 진행률 기록하기 -> 서버에서 하기
+	   	//*********************************************************
+    	let originProgress = 0;
+	   	
+	   	if (updateMode == "TopWork") {
+	   		originProgress = document.querySelector("#hidden-topWorkNo").value;
+    	} else {
+	   		originProgress = document.querySelector("#hidden-subWorkNo").value;
+    	}
+	   	
+    	console.log("새로운 업데이트 객체 : ", workVO);
+    	let updateURL = (updateMode == "TopWork") ? "/kanban/topWorkUpdate_K" : "/subWork/subWorkUpdate_K";
+    			
+    	axios
+    	  .post(updateURL, workVO)
+    	  .then((res) => {
+    		  console.log(res);
+    		  //업데이트하면 렌더링 다시 해줘야 할 듯.
+    		  if (updateMode == "TopWork") {
+	    		detailTopWork_K(workVO.topWorkNo);
+    		  } else {
+	    		detailTopWork_K(workVO.topWorkNo, workVO.subWorkNo);
+    		  }
+    		  
+    	  });
+    	
+    	return;
+    }
+    //입력을 위해 리드온리 풀어주는 곳
+    arrs.forEach(arr => {
+    	arr.readOnly = false;
+    	arr.className = "input-update-K";
+    	
+    	if (arr.id == "detail-WorkContent") {
+	    	arr.className = "input-update-K form-control";
+    	}
+    });
+   	//originalName_O = document.querySelector("#detail-topWorkProject").value;
+   	//console.log("원래 이름 : ", originalName_O);
+}
+
+//김진호
+//모달-디테일
+//디테일에서 수정하기 누르면 -> 모달 닫히면 안되고 내용만 다시 그려져야함
+//개인 칸반부터 바꾸자
+function detailModalToggle_K() {
+	//$("#topWorkLogTable").DataTable().clear();
+	document.querySelector("#btnTopWorkModal").click();
+}
+
+function subModalToggle_K() {
+	document.querySelector("#btnSubWorkModal").click();
+}
+
+
+function subWorkInputShow() {
+    //버튼 클릭시 담당자만 클릭할 수 있다는 예외처리 필요.
+    document.querySelector(".topWorkDiv").style.display = "none"; //우선 
+    const view = document.querySelector("#subWorkInput").style.display;
+    
+    if (view == "block") { //두번클릭시 닫힘
+      document.querySelector("#subWorkInput").style.display = "none";
+      document.querySelector(".topWorkDiv").style.display = "";
+      return;
+    }
+    
+    document.querySelector("#subWorkInput").style.display = "block";
+    document.querySelector("#subwork-insert-title").focus();
+}
+
+function insertSubWork() {
+    const topWorkNo = document.querySelector("#hidden-topWorkNo").value;
+    const topWorkRNo = document.querySelector("#sub-worker").value;
+    const subWorkContent = document.querySelector("#subwork-insert-content").value;
+    const subWorkTitle = document.querySelector("#subwork-insert-title").value;
+    const subWorkStart = document.querySelector("#subStart").value.replace(" ", "T");
+    const subWorkEnd = document.querySelector("#subEnd").value.replace(" ", "T");
+    //const subWorkFile = ""; 지형이 쓸 것
+    const subWorkVO = {
+      topWorkNo,
+      topWorkRNo,
+      subWorkContent,
+      subWorkTitle,
+      subWorkStart,
+      subWorkEnd
+    };
+    //console.log(subWorkVO);
+    if (subWorkContent == "" || subWorkContent == null) {
+        alert("내용을 입력하세요");
+        return;
+    }
+    
+    axios
+      .post("/subWork/subWorkInsert", subWorkVO)
+      .then((res) => {
+         console.log(res);
+         document.querySelector(".topWorkDiv").style.display = "";
+         document.querySelector("#subWorkInput").style.display = "none";
+         detailTopWork_K(topWorkNo);
+      });
+    
+}
+
+function subWorkSave(topWorkNo) {
+    //console.log("save : ", topWorkNo);
+}
+
+//멤버 프로필용
+function memberStateOverlay_K(state){
+    if (state == "1" || state == "0") {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;" class="mdi mdi-circle h3 text-success" title="접속"></i>`;
+    } else if (state == "2" ) {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;color:#ffd400" class="mdi mdi-circle h3 text" title="부재중"></i>`;
+    }else if (state == "3" ) {
+        return `<i style="position:absolute; top:45%;left:12%;right:0%;bottom:0%;" class="mdi mdi-circle h3 text-secondary" title="비접속"></i>`;
+    } 
+}
+
+//김진호
+//모달-디테일 새로운모달
+function detailTopWork_K(topWorkNo, subWorkNo) {
+	//디테일시 스크롤바 올려주기
+	document.querySelector("#detail-modal-body").scroll({
+		top:0,
+		left:0,
+		behavior: 'smooth'
+	});
+	//레인지바
+	const $slider = document.getElementById('slider-1');
+
+	//레인지바 움직일때
+	$slider.addEventListener('change', (evt) => {
+	  //console.log("진행률 : ", evt.detail.value);
+	});
+
+	// change value
+	//$slider.value = 70;
+	// or 
+	// $slider.setAttribute('value', '50');
+
+	// get value
+	//console.log($slider.value);
+	
+	let detailMode = "TopWork";
+	
+	if (subWorkNo != null) {
+		console.log("새로운 로직 : ", topWorkNo, subWorkNo);
+		detailMode = "SubWork";
+	}
+	
+	console.log("디테일 모드 : ", detailMode);
+	
+	//히든인풋에 현재 보고있는게 상위인지 하위인지 구분해주기
+	document.querySelector("#hidden-workMode").value = detailMode;
+	
+	//중요도 비활성화
+	document.querySelector("#twImportance").style.display = "block";
+    document.querySelector("#importance-update").style.display = "none";
+    
+    //퀼즈 에디터 초기화
+    document.querySelector("#quillContainer").innerHTML = `<div id="contentDiv"></div>`;
+    
+    //console.log("새로운 디테일 눌렸다. topWorkNo : ", topWorkNo);
+    const titleInput = document.querySelector("#detail-WorkTitle");
+    const workerDiv = document.querySelector("#detail-WorkWorker");
+    const projectInput = document.querySelector("#detail-WorkProject");
+    const dateStart = document.querySelector("#detail-WorkStart");
+    const dateEnd = document.querySelector("#detail-WorkEnd");
+    const stateInput = document.querySelector("#detail-topWorkState");
+    const importanceInput = document.querySelector("#detail-topWorkImportance");
+    const contentDiv = document.querySelector("#contentDiv");
+    const logTbody = document.querySelector("#detail-topWorkLog");
+    const fileDiv = document.querySelector("#detail-topWorkFile");
+    const fileTable = document.querySelector("#topWorkFileTable");
+    const subWorkDiv = document.querySelector("#subWork-insert");
+    const categoryNoHidden = document.querySelector("#hidden-categoryNo");
+    const categoryNameHidden = document.querySelector("#hidden-categoryName");
+    
+    
+    
+    //종속관계 추가해야함
+    //중요도 추가해야함
+    const vo = {
+      topWorkNo,
+    };
+    let detailURL = "/kanban/topWorkDetail";
+    
+    // * 하위작업일 경우 pk 추가 및 URL 변경
+    if (detailMode == "SubWork") {
+    	vo.subWorkNo = subWorkNo;
+    	detailURL = "/subWork/subWorkDetail";
+    }
+    //모달 열기 전 채워주기
+    //1. pk로 데이터 가져오기
+    axios
+      .post(detailURL, vo)
+      .then((res) => {
+          console.log("디테일의데이터: ", res.data); //기존 vo + 프로젝트명까지 나옴. + 관계번호까지 추가 (멤버아이디는 여러명이면 에러. 삭제.)
+          const workVO = res.data;//디테일할 topWorkVO 혹은 subWorkVO
+          //중요도, 상태값은 무조건 있어야함
+          let topWorkImportance = ``;
+          let topWorkState = ``;
+          let importanceText = ``;
+          
+          if (detailMode == "TopWork") {
+	          document.querySelector("#hidden-topWorkNo").value = workVO.topWorkNo;
+	          titleInput.value = workVO.topWorkTitle;
+	          projectInput.value = workVO.proName;
+	          dateStart.value = workVO.topWorkStart.replace("T", " ");
+	          dateEnd.value = workVO.topWorkEnd.replace("T", " ");
+	          contentDiv.innerHTML = workVO.topWorkContent;
+	          topWorkImportance = workVO.topWorkImportance;
+	          topWorkState = workVO.topWorkState;
+	          $slider.value = workVO.topWorkProgress;
+	          categoryNoHidden.value = workVO.twCategoryNo;
+	          
+	          //카테고리 정보 가져와서 히든에 넣어놓기 (여기에 카테고리 정보 다 있음.)
+	          //타이틀 색상변경도 여기서 할 것
+	          axios
+	            .post("/kanban/categorySelect", workVO)
+	            .then((res) => {
+	            	console.log("카테고리 정보 : ", res.data);
+	            	categoryNameHidden.value = res.data.twCategoryName;
+	            });
+	          
+	          //중요도
+	          importanceText = `중요도 : `;
+	          
+	          if (topWorkImportance == "0") {
+	              importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-primary">`;
+	              importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="0" checked/>`;
+	              importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">일반</label>`;
+	          }
+	          if (topWorkImportance == "1") {
+	              importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-danger">`;
+	              importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="1" checked/>`;
+	              importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">중요</label>`;
+	          }
+	          if (topWorkImportance == "2") {
+	              importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-warning">`;
+	              importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="2" checked/>`;
+	              importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">긴급</label>`;
+	          }
+	          
+	          importanceText += `</div>`;
+	          document.querySelector("#twImportance").innerHTML = importanceText;
+	          
+          } else {
+	          document.querySelector("#hidden-topWorkNo").value = workVO.topWorkNo;
+	          document.querySelector("#hidden-subWorkNo").value = workVO.subWorkNo;
+        	  titleInput.value = workVO.subWorkTitle;
+              dateStart.value = workVO.subWorkStart.replace("T", " ");
+              dateEnd.value = workVO.subWorkEnd.replace("T", " ");
+              contentDiv.innerHTML = workVO.subWorkContent;
+              //console.log("workVO.subWorkContent", workVO.subWorkContent);
+              
+              $slider.value = workVO.subWorkProgress;
+              //projectInput.value = item.proName; 하위작업일경우엔 프로젝트 이름 따로 가져와야할듯..
+              //하위작업에 없는 정보 -> proName, importance, state -> 어차피 입력되어있을거지만 만들어놔야할듯
+              axios //하위지만 상위에서 가져올 데이터들
+                .post("/kanban/topWorkDetail", workVO)
+                .then((res) => {
+                	projectInput.value = res.data.proName;
+                	topWorkImportance = res.data.topWorkImportance;
+                	topWorkState = res.data.topWorkState;
+                	
+                	console.log("서브 res.data : ", res.data);
+                	
+                	//중요도
+                    importanceText = `중요도 : `;
+                	
+                    if (topWorkImportance == "0") {
+                        importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-primary">`;
+                        importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="0" checked/>`;
+                        importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">일반</label>`;
+                    }
+                    if (topWorkImportance == "1") {
+                        importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-danger">`;
+                        importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="1" checked/>`;
+                        importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">중요</label>`;
+                    }
+                    if (topWorkImportance == "2") {
+                        importanceText += `<div id="twImportanceCheckRadio" class="form-check mb-2 form-check-warning">`;
+                        importanceText += `  <input type="radio" class="form-check-input" id="detail-topWorkImportance" name="" value="2" checked/>`;
+                        importanceText += `  <label id="twImportanceLabel" class="form-check-label" for="detail-topWorkImportance">긴급</label>`;
+                    }
+                    
+                    importanceText += `</div>`;
+                    document.querySelector("#twImportance").innerHTML = importanceText;
+                });
+              
+          }
+          
+          //작업 상태 topWorkState
+          if (topWorkState == "0") stateInput.value = "작업 대기";
+          if (topWorkState == "1") stateInput.value = "진행 중";
+          if (topWorkState == "2") stateInput.value = "승인 대기";
+          if (topWorkState == "3") stateInput.value = "수정 요청";
+          if (topWorkState == "4") stateInput.value = "작업 완료";
+          
+          //모달 토글(조건문없으면 댓글 접을때 닫혀버림)
+          if (document.querySelector("#topWork-detail-modal").className == "modal fade") {
+	          detailModalToggle_K();
+          }
+          
+          //스피너를 보여주고 싶으니깐 의도적으로 모달쇼 밑에서 다시 처리해주자
+          //순서 : 0. 담당자 1. 로그 2. 첨부파일 3. 댓글
+          //0. 담당자 -> 프로필 이미지로 표시해줌.
+          let memberListURL = (detailMode == "TopWork") ? "/kanban/selectMemberList" : "/subWork/selectMemberListSubWork";
+          
+          axios
+            .post(memberListURL, workVO)
+            .then((res) => {
+                console.log("멤버 : ", res);
+                const memberList = res.data;
+                let txt = `작업자 : <div class="list-group list-group-horizontal" id="teamMemberPrint">`;
+                let selectText = ``;
+                //여기서 하위 작업자 셀렉트박스도 채우기
+                
+                //하위작업(멤버가 한명일 경우)
+                if (detailMode == "SubWork") {
+                	txt += `<a href='#' class='list-group-item list-group-item-action' style="border: none;"><div class='d-flex align-items-center pb-1' id='tooltips-container' style="position:relative!important">`;
+                	
+                    if (memberList.memberPic == null) {
+                        txt += `<img src="${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+                    } else {
+                        txt += `<img src="${pageContext.request.contextPath }\${memberList.memberPic}" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+                    }
+                    
+                    txt += memberStateOverlay_K(memberList.memberState);
+                    txt += `<div class="w-100 ms-2">`;
+                    txt += `    <h5 class="mb-1">\${memberList.memberName}</h5>`;
+                    txt += `</div>`;
+                    txt += `</div>`;0
+                    txt += `</a>`;
+                    workerDiv.innerHTML = txt;
+                    
+                } else {
+	                for (member of memberList) {
+	                  //참가한 멤버리스트로 멤버 조회하기(프로필 사진을 위해..)
+	                  axios
+	                    .post("/member/selectMember", member)
+	                    .then((rs) => {
+	                      const memberVO = rs.data;
+	                      //console.log("프로필멤버 : ", memberVO);
+	                      txt += `<a href='#' class='list-group-item list-group-item-action' style="border: none;"><div class='d-flex align-items-center pb-1' id='tooltips-container' style="position:relative!important">`;
+	                      
+	                      if (memberVO.memberPic == null) {
+	                          txt += `<img src="${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+	                      } else {
+	                          txt += `<img src="${pageContext.request.contextPath }\${memberVO.memberPic}" class="rounded-circle img-fluid avatar-md img-thumbnail bg-transparent" alt="">`;
+	                      }
+	                      
+	                      txt += memberStateOverlay_K(memberVO.memberState);
+	                      txt += `<div class="w-100 ms-2">`;
+	                      txt += `    <h5 class="mb-1">\${memberVO.memberName}</h5>`;
+	                      txt += `</div>`;
+	                      txt += `</div>`;
+	                      txt += `</a>`;
+	                      workerDiv.innerHTML = txt;
+	                    });
+	                  //상위작업일시 하위작업 멤버셀렉트박스 만들어주기
+	                  selectText += `<option value="\${member.topWorkRNo}">\${member.memberId}</option>`; //value는 관계번호
+	                }
+	                
+	                document.querySelector("#sub-worker").innerHTML = selectText;
+                }
+            });
+          //1. 로그
+          let logURL = (detailMode == "TopWork") ? "/kanban/logList" : "/subWork/subWorkLogList";
+          
+          axios
+            .post(logURL, workVO)
+            .then((res) => {
+                //console.log(res.data); log 객체 리스트
+                const logList = res.data;
+                $("#topWorkLogTable").DataTable().destroy();
+                const logTable = $('#topWorkLogTable').removeAttr("width").DataTable({
+                	order: [[1, 'asc']],
+                	ordering: true,
+                    responsive:false,
+                    retrieve: true,
+                    scrollX: true,
+                    scrollCollapse:true,
+                    searching: false,
+                    //paging: true,
+                    destroy: true,
+                    pageLength: 7,
+                    lengthMenu: [5, 7, 10],
+                    columnDefs: [
+                    	{width: 200, targets: 0}
+                    ],
+                    data: logList,
+                    columns: [
+                    	{ data: "proLogContent" },
+                    	{ data: "proLogDate" },
+                    ],
+                    language: {
+                        emptyTable: "로그 내역이 없습니다.",
+                        lengthMenu: "_MENU_ 개씩 보기",
+                        info: "총 _TOTAL_건",
+                        infoEmpty: "데이터 없음",
+                        infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+                        search: "",
+                        zeroRecords: "일치하는 데이터가 없습니다.",
+                        loadingRecords: "로딩중...",
+                        processing: "잠시만 기다려 주세요.",
+                        paginate: {
+                          next: "다음",
+                          previous: "이전",
+                        },
+                      },
+                    
+                });
+                
+            });
+          
+          
+          //2. 첨부파일 -> 우선 상위든 하위든 관련 자료 다 나오게. -> 팀원들과 협의 필요
+          //<a href="resources/upload/filepath" download="리얼네임(확장자빼고)">
+          let selectFileURL = (detailMode == "TopWork") ? "/selectFile" : "/selectFileSubWork";
+          
+          axios
+            .post(selectFileURL, workVO)
+            .then((res) => {
+                //여기서 파일목록 조회
+                console.log("서브워큰데 탑워크랑 같은 목록 : ", res);
+                const fileTableArr = [];
+                const fileList = res.data;
+                
+                for (fileVO of fileList) {
+                	fileVO.type = fileVO.fileRealName.split('.')[1];
+                	fileVO.fileRealName = `<a href="/resources/upload/\${fileVO.filePath}" download="\${fileVO.fileRealName.split('.')[0]}">\${fileVO.fileRealName}</a>`;
+                }
+                
+                console.log("fileTableArr", fileList);
+                
+                $("#topWorkFileTable").DataTable().destroy();
+                const fileTable = $('#topWorkFileTable').removeAttr("width").DataTable({
+                    responsive:false,
+                    retrieve: true,
+                    scrollX: true,
+                    scrollCollapse:true,
+                    searching: false,
+                    autoWidth: false,
+                    //paging: true,
+                    pageLength: 7,
+                    lengthMenu: [5, 7, 10],
+                    columnDefs: [
+                        {
+                        	width: 200,
+                        	targets: 0,
+                        	},
+                        
+                    ],
+                    data: fileList,
+                    columns: [
+	                    {
+	                      data: "fileRealName"
+	                    },
+	                    {
+	                      data: "type",
+	                    },
+                    ],
+                    language: {
+                        emptyTable: "첨부된 파일이 없습니다.",
+                        lengthMenu: "_MENU_ 개씩 보기",
+                        info: "총 _TOTAL_건",
+                        infoEmpty: "데이터 없음",
+                        infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+                        search: "",
+                        zeroRecords: "일치하는 데이터가 없습니다.",
+                        loadingRecords: "로딩중...",
+                        processing: "잠시만 기다려 주세요.",
+                        paginate: {
+                          next: "다음",
+                          previous: "이전",
+                        },
+                      },
+                    
+                });
+                
+            });
+          //3. 관련 하위작업 (하위작업일땐 관련 상위 작업)
+          let subWorkListURL = (detailMode == "TopWork") ? "/subWork/subWorkList" : "/kanban/topWorkDetail";
+          
+          axios
+            .post(subWorkListURL, workVO)//item은 디테일 할 topWorkVo 혹은 subWorkVO
+            .then((res) => {
+                //console.log("하위작업", res);
+                const detailWorkList = document.querySelector("#detail-topWork-subWorkList");
+                const workList = res.data;
+                let subText = `관련된 하위 작업`;
+                
+                if (detailMode == "SubWork") {
+                	subText = `관련된 상위 작업`;
+                	subText += `<button type="button" onclick="detailTopWork_K('\${topWorkNo}')" style="width: 100%; text-align: left;"class="btn btn-outline-primary waves-effect waves-light">\${workList.topWorkTitle}</button>`
+
+                } else { //상위작업일 경우
+	                if (workList < 1) {
+	                    //하위작업이 없을 경우
+	                    subText += ` - 하위 작업이 없습니다.`;
+	                } else {
+	                    //하위작업이 있을 경우
+	                    for (subWork of workList) {
+	                        subText += `<button type="button" onclick="detailTopWork_K('\${topWorkNo}', '\${subWork.subWorkNo}')" style="width: 100%; text-align: left;"class="btn btn-outline-primary waves-effect waves-light">\${subWork.subWorkTitle}</button>`;
+	                    }
+	                }
+                	
+                }
+                
+                detailWorkList.innerHTML = subText;
+            });
+          //4. 댓글
+          axios
+            .post("/kanban/topWorkComentList", workVO)
+            .then((res) => {
+            	//console.log(res);
+            	const topWorkComentList = document.querySelector("#detail-topWorkComent");
+            	const twComentList = res.data;
+            	
+            	//첨부파일 가져오기
+            	console.log("댓글정보 : ", res.data); //twComentNo
+            	//
+            	const comentMap = {};
+            	
+            	if (detailMode == "TopWork") {
+            		comentMap.key = "T"
+	            	comentMap.comentNo = twComentNo;
+            	} else {
+            		comentMap.key = "S"
+	            	comentMap.comentNo = swComentNo;
+            	}
+            	
+            	axios
+            	  .post("/searchFile", comentMap)
+            	  .then((res) => {
+            		  console.log("댓글자료들 목록 : ", res.data);
+            	  });
+            	
+            	let twComentText = ``;
+            	if (twComentList.length < 1) {
+            		twComentText = '작성된 댓글이 없습니다.';
+            	} else {
+            	    for (let i = 0; i < twComentList.length; i++) { 
+            	    	//4개정도 보여주기
+            	    	if (i == 4) {
+            	    		break;
+            	    	}
+            	    
+            	    	let twComent = twComentList[i];
+		            	console.log("코멘트 멤버 : ", twComent);
+            	    	<!-- Story Box-->
+                        twComentText += `<div class="border border-0 p-2 mb-3">`;
+                        twComentText += `    <div class="d-flex align-items-start">`;
+                        twComentText += `        <img class="me-2 avatar-sm rounded-circle" src="${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png" alt="Generic placeholder image">`;
+                        twComentText += `        <div class="w-100">`;
+                        twComentText += `            <h5 class="m-0">\${twComent.memberId}</h5>`;
+                        twComentText += `            <p class="text-muted"><small>\${twComent.twComentDate}</small></p>`;
+                        twComentText += `        </div>`;
+                        twComentText += `    </div>`;
+                        twComentText += `    <p><input type="text" class="twComent" id="twComentInput-\${twComent.twComentNo}" value="\${twComent.twComentContent}" readonly/></p>`;
+                        twComentText += `    <div class="mt-2">`;
+                        twComentText += `        <a href="javascript: void(0);" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-heart-outline"></i> Like</a>`;
+                        twComentText += `        <a href="javascript: twComentUpdate('\${twComent.twComentNo}','\${twComent.topWorkNo}');" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-file-document-edit"></i> 편집</a>`;
+                        twComentText += `        <a href="javascript: twComentDelete('\${twComent.twComentNo}', '\${twComent.topWorkNo}');" class="btn btn-sm btn-link text-muted"><i class="mdi mdi-delete"></i> 삭제</a>`;
+                        twComentText += `    </div>`;
+                        twComentText += `</div>`;
+            	    }
+            	    	twComentText += `<div>`;
+            	    	twComentText += `<button type="button" class="btn btn-primary btn-sm" onclick="twComentAddList('\${workVO.topWorkNo}')">남은 댓글 \${twComentList.length - 4}개 보기</button>`;
+            	    	twComentText += `</div>`;
+            	}
+            	
+            	topWorkComentList.innerHTML = twComentText;
+            });
+            
+          //차트그리기
+          //차트 초기화 ㅋㅋ
+          document.querySelector("#selectChart").innerHTML = `<canvas id="myChart"></canvas>`;
+          
+          //차트에 들어갈 데이터
+          //라벨은 데이터 건수
+          let chartURL = (detailMode == "TopWork") ? "/kanban/logList" : "/subWork/subWorkLogList";
+          axios
+            .post(chartURL, workVO)
+            .then((res) => {
+            	//차트에 쓸 데이터
+            	console.log("차트에쓰는 로그데이터", res.data);
+            	const chartLogList = res.data;
+            	const chartData = [];
+            	const dayList = [];
+            	
+            	if (chartLogList.length > 7) {
+            		for (let i = (chartLogList.length - 7); i < chartLogList.length; i++) {
+	            		dayList.push(chartLogList[i].proLogDate);
+	            		chartData.push(chartLogList[i].proLogProgressNew);
+            		}
+            		
+            	} else{
+	            	for (logItem of chartLogList) {
+	            		dayList.push(logItem.proLogDate);
+	            		chartData.push(logItem.proLogProgressNew);
+	            		//console.log("라벨즈로 쓸거 : ", dayList);
+	            		//console.log("데이터로 쓸거 : ", chartData);
+	            	}
+            	}
+            	
+            	let datasetsArr = [];
+            	
+           		let datasets = {};
+           		datasets.label = "진행률(%)";
+           		datasets.data = chartData;
+           		datasets.borderColor = "skyblue";
+           		datasets.backgroundColor = "blue";
+           		datasets.fill = false;
+           		datasets.tension = 0.5;
+           		datasets.pointStyle = 'circle';
+           		datasets.pointRadius = "4";
+           		datasets.pointHoverRadius = "7";
+           		datasets.pointHoverBackgroundColor = "#FC96FA";
+           		
+           		datasetsArr.push(datasets);
+           		
+           		const totalData = {
+           		  labels: dayList,
+           		  datasets: datasetsArr,
+           		}
+            	
+	          var context = document.getElementById('myChart').getContext('2d');
+	          var myChart = new Chart(context, {
+	        	 type: 'line',
+	        	 data: totalData,
+	        	 options: {
+	        		 maintainAspectRatio: false,
+        			 title: {
+        				 display: true,
+        				 text: "최근 7일 진행률",
+        			 },
+        			 scales: {
+        				 yAxes: [{
+        					 ticks: {
+	        					 display: true,
+	        					 min: 0,
+	        					 max: 100,
+        						 stepSize: 20,
+        					 },
+        				 }],
+        			 },
+        			 legend: {
+        				display: false 
+        			 },
+        			 tooltips: {
+        				 callbacks: {
+        					 labe: function(tooltipItem, data) {
+        						 return tooltipItem.yLabel.toString() + "%"; 
+        					 }
+        				 }
+        			 },
+	        		 animation: {
+	        			
+	        		 },
+	        	 }
+	          });
+	          
+	          //데이터가 바뀌면 myChart.update()
+            });
+          
+      });
+    
+}//디테일 함수 끝
+
+//지형이가 파일 다운로드 할 때 쓸 함수
+function fileDown_O(realName, path) {
+    console.log("realName", realName);
+    console.log("path", path);
+}
+
+
+//김진호
+//Worker를 멤버리스트로 진짜로 받기
+//1. 전체 멤버리스트로 받기 -> 2. 초대 완성되면 해당 프로젝트 참가인원만 받기
+//일단 아이디로 표시해주기
+renderWorkerList_K();
+
+function renderWorkerList_K() {
+    const workerList = document.querySelector("#event-worker");
+    //console.log("워커리스트 : ", workerList);
+    axios
+      .post("/project/memberList")
+      .then((res) => {
+         const memberList = res.data;
+         console.log("멤버리스트 : ", memberList);
+         let text = "";
+         
+         text += `<option value="미배정" selected>미배정</option>`;
+         for (item of memberList) {
+             text += `<option value="\${item.memberId}">\${item.memberId}</option>`;
+         }
+         
+         workerList.innerHTML = text;
+      });
+}
+var beforeCategory = "";
+
+
+//칸반에서 프로젝트 or 개인 선택시 실행되는 함수
+function modeChange(arg) {
+    mode = arg;
+    kanbanRender(arg);
+}
+
+var COLORS = {};
+COLORS.LIGHT = "#ECF2F5";
+COLORS.PRIMARY = "#338CD4";
+COLORS.SUCCESS = "#78C350";
+COLORS.INFO = "#45BBE0";
+COLORS.WARNING = "#FF9800";
+COLORS.DANGER = "#F7531E";
+COLORS.DARK = "#333A46";
+COLORS.PURPLE = "#8892D6";
+COLORS.PINK = "#F06292";
+COLORS.SECONDARY = "#6C757D";
+
+updateSelectBar();
+function updateSelectBar() {
+    const selectBar = document.querySelector("#event-select-category");
+    const selectBarDetail = document.querySelector("#detail-select-category");
+    //proNo를 받아와야하는데..일단 전체 불러오기로 하자
+    axios
+      .post("/kanban/categoryList?proNo=" + proNo)
+      .then((res) => {
+            const selectOptions = res.data;
+            //console.log(selectOptions);
+            let text = "";
+            let count = 1;
+            for (item of selectOptions) {
+                
+                if (count == 1) {
+                    text += `<option value="\${item.twCategoryNo}" selected>\${item.twCategoryName}</option>`;
+                } else {
+                    text += `<option value="\${item.twCategoryNo}">\${item.twCategoryName}</option>`;
+                }
+                
+                count ++;
+            }
+            
+            selectBar.innerHTML = text;
+            selectBarDetail.innerHTML = text;
+      });
+}
+
+
+function detailOpen(topWorkNo) {
+    //console.log("탑워크 피케이 : ", topWorkNo);
+    const obj = {
+      topWorkNo,
+    }
+    
+    axios
+      .post("/kanban/topWorkDetail", obj)
+      .then((res) => {
+            //console.log(res.data);
+            detailModalOpen(res.data);
+      });
+}
+function topWorkUpdate() {
+    const obj = {};
+    obj.proNo = proNo;
+    obj.topWorkNo = document.querySelector("#topWorkNo-detail").value;
+    obj.topWorkTitle = document.querySelector("#detail-title").value;
+    obj.topWorkContent = document.querySelector("#detail-content").value;
+    obj.topWorkStart = document.querySelector("#topWorkStart-detail").value.replace(" ", "T");
+    obj.topWorkEnd = document.querySelector("#topWorkEnd-detail").value.replace(" ", "T");
+    obj.twCategoryNo = document.querySelector("#detail-select-category").value;
+    
+    // ojh 오지형  상위작업 변경시 해당 파일 추가나, 상위작업 이름변경  0106
+    //console.log("업데이트 오지형 데이터 :",obj);
+ 
+    axios
+      .post("/kanban/topWorkUpdate", obj)
+      .then((res) => {
+          //console.log(res);
+          //디테일에서 업데이트 성공 -> 모달 닫고 렌더링
+          detailModalClose();
+          kanbanRender();
+          topworkUpdate_O(obj); //ojh 수정할시 진짜 폴더랑 이름 수정 
+      });
+}
+
+//OJH  상위작업 변경시 해당 파일 추가나, 상위작업 이름변경  0106
+function topworkUpdate_O(obj){
+	console.log("topworkUpdate_O", obj);
+	console.log("topWorkNo : ", obj.topWorkNo);
+	console.log("topWorkTitle", obj.topWorkTitle);
+	console.log("twCategoryNo", obj.twCategoryNo);
+	
+	$.ajax({
+		url : '/topworkUpdate_O',
+		method : 'POST',
+    	dataType : 'text',
+    	contentType: "application/json; charset=UTF-8",
+    	data : JSON.stringify(obj),
+    	success : function(res){
+    		console.log(res);
+    	}
+	});
+}                              
+
+
+function topWorkDelete() {
+    const obj = {};
+    obj.topWorkNo = document.querySelector("#topWorkNo-detail").value;
+    
+    if (!confirm("정말 삭제하시겠습니까?")) {
+        return;
+    }
+    
+        console.log(obj);
+        //OJH 상위작업 삭제시 해당하는 파일 삭제여부 설정하기 
+        $.ajax({
+            url : '/topWorkDelFile',
+            method : 'POST',
+            data : {topWorkNo : obj.topWorkNo},
+            dataType : 'text',
+            success : function(result){
+                console.log(result);
+            }
+        });
+    
+    axios
+      .post("/kanban/topWorkDelete", obj)
+      .then((res) => {
+          //console.log(res);
+          //디테일에서 삭제 성공 -> 모달 닫고 렌더링
+          detailModalClose();
+          //kanbanRender();
+          pageTap(currentTap_PH_K);
+      });
+    
+}
+
+function detailModalOpen(topWorkVO) {
+  //console.log(topWorkVO);
+  //파라미터로 받은 객체로 값 채우기
+  document.querySelector("#topWorkNo-detail").value = topWorkVO.topWorkNo;
+  document.querySelector("#detail-title").value = topWorkVO.topWorkTitle;
+  document.querySelector("#detail-content").value = topWorkVO.topWorkContent;
+  document.querySelector("#topWorkStart-detail").value = topWorkVO.topWorkStart.replace("T", " ");
+  document.querySelector("#topWorkEnd-detail").value = topWorkVO.topWorkEnd.replace("T", " ");
+  document.querySelector("#detail-select-category").value = topWorkVO.twCategoryNo;
+  
+  
+  document.querySelector("#detail-modal").classList.add("show");
+  document.querySelector("#detail-modal").style.display = "block";
+}
+
+function detailModalClose() {
+  //디테일모달같은 경우엔 굳이 값을 비워줄 필요가 없다.
+  document.querySelector("#detail-modal").classList.remove("show");
+  document.querySelector("#detail-modal").style.display = "none";
+}
+function selectColor(color) {
+  //console.log(color);
+  document.querySelector(
+    "#dropdownMenuButton"
+  ).className = `btn btn-\${color} dropdown-toggle`;
+  const selected = `.color-\${color}`;
+  const fontColor = document.querySelector(selected).innerText;
+  document.querySelector("#dropBox-name").innerText = fontColor;
+
+  //카테고리 추가시 색상코드 같이 보내기주기위한 색상값 저장
+  //console.log(color.toUpperCase());
+  let saveColor = "";
+  if (color.toUpperCase() == "LIGHT") saveColor = COLORS.LIGHT;
+  if (color.toUpperCase() == "PRIMARY") saveColor = COLORS.PRIMARY;
+  if (color.toUpperCase() == "SUCCESS") saveColor = COLORS.SUCCESS;
+  if (color.toUpperCase() == "INFO") saveColor = COLORS.INFO;
+  if (color.toUpperCase() == "WARNING") saveColor = COLORS.WARNING;
+  if (color.toUpperCase() == "DANGER") saveColor = COLORS.DANGER;
+  if (color.toUpperCase() == "DARK") saveColor = COLORS.DARK;
+  if (color.toUpperCase() == "PURPLE") saveColor = COLORS.PURPLE;
+  if (color.toUpperCase() == "PINK") saveColor = COLORS.PINK;
+  if (color.toUpperCase() == "SECONDARY") saveColor = COLORS.SECONDARY;
+
+  document.querySelector("#dropBox-colorCode").value = saveColor;
+  //console.log(document.querySelector("#dropBox-colorCode"));
+}
+
+function selectColorUpdate(color) {
+  //console.log(color);
+  document.querySelector(
+    "#dropdownMenuButton-update"
+  ).className = `btn btn-\${color} dropdown-toggle`;
+  const selected = `.updateColor-\${color}`;
+  const fontColor = document.querySelector(selected).innerText;
+  document.querySelector("#dropBox-name-update").innerText = fontColor;
+
+  //카테고리 추가시 색상코드 같이 보내기주기위한 색상값 저장
+  //console.log(color.toUpperCase());
+  let saveColor = "";
+  if (color.toUpperCase() == "LIGHT") saveColor = COLORS.LIGHT;
+  if (color.toUpperCase() == "PRIMARY") saveColor = COLORS.PRIMARY;
+  if (color.toUpperCase() == "SUCCESS") saveColor = COLORS.SUCCESS;
+  if (color.toUpperCase() == "INFO") saveColor = COLORS.INFO;
+  if (color.toUpperCase() == "WARNING") saveColor = COLORS.WARNING;
+  if (color.toUpperCase() == "DANGER") saveColor = COLORS.DANGER;
+  if (color.toUpperCase() == "DARK") saveColor = COLORS.DARK;
+  if (color.toUpperCase() == "PURPLE") saveColor = COLORS.PURPLE;
+  if (color.toUpperCase() == "PINK") saveColor = COLORS.PINK;
+  if (color.toUpperCase() == "SECONDARY") saveColor = COLORS.SECONDARY;
+
+  document.querySelector("#dropBox-colorCode-update").value = saveColor;
+  //console.log(document.querySelector("#dropBox-colorCode"));
+}
+
+function categoryUpdatePK(twCategoryNo) {
+  //수정버튼 클릭시 인풋히든에 pk 세팅
+  //console.log("피케이", twCategoryNo);
+  document.querySelector("#dropBox-twCategoryNo-update").value = twCategoryNo;
+  
+}
+
+function categoryUpdate() {
+    
+  //수정하기 버튼 클릭시 세팅 및 전송
+  const twCategoryName = document.querySelector(
+    "#category-name-update"
+  ).value;
+  console.log("twCategoryName",twCategoryName);
+  const twCategoryColor = document.querySelector(
+    "#dropBox-colorCode-update"
+  ).value;
+  const twCategoryNo = document.querySelector(
+    "#dropBox-twCategoryNo-update"
+  ).value;
+  //업데이트 객체 세팅
+  const obj = {
+    twCategoryName,
+    twCategoryColor,
+    twCategoryNo,
+    proNo,
+  };
+  
+  // 오지형  카테고리 이름 수정시 폴더 이름 변경 
+  console.log("카테고리 이전이름 :", beforeCategory);
+  console.log("카테고리 수정이름 :", twCategoryName);
+  console.log("프로젝트 번호 : ", proNo);
+  const fileobj_O = {
+          "beforeCategory" : beforeCategory,
+          "updateCategory" : twCategoryName,
+          "proNo" : proNo,
+          'twCategoryNo' : twCategoryNo
+  } 
+  
+ /*  $.ajax({
+      url : "/updateCategoryFileLocation",
+      type : "POST",
+      data : fileobj_O,
+      success : function(result){
+          //console.log(result);
+      }
+  }); // end of ajax */
+  
+  //console.log(obj);
+  //업데이트 전송
+  axios.post("/kanban/categoryUpdate", obj).then((res) => {
+    //console.log("카테고리 업데이트 성공");
+    kanbanRender();
+    categoryUpdateModalClose();
+  });
+}
+
+//우선 비동기로 목록을 불러와서 각각의 영역에 넣어줘야함
+//DB 연동해서 만든 후에 카테고리를 추가하는 기능을 만들어야함
+
+//피커
+var fp = flatpickr(document.getElementById("birth"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp2 = flatpickr(document.getElementById("birth2"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp3 = flatpickr(document.getElementById("topWorkStart-detail"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var fp4 = flatpickr(document.getElementById("topWorkEnd-detail"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var topStart = flatpickr(document.getElementById("detail-WorkStart"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var topEnd = flatpickr(document.getElementById("detail-WorkEnd"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var subStart = flatpickr(document.getElementById("subStart"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+var subEnd = flatpickr(document.getElementById("subEnd"), {
+//'monthSelectorType' : 'static',
+locale: "ko",
+enableTime: "true",
+onValueUpdate: () => {
+  //console.log("업데이트");
+},
+onDayCreate: () => {
+  //console.log("크리에이트");
+},
+});
+//인서트용 모달
+var btnInsertModalClose = document.querySelector("#btnModalClose");
+var btnInsertModalReset = document.querySelector("#btn-reset-event");
+var btnInsertModalSave = document.querySelector("#btn-save-event");
+
+var insertModalOpen = (from, data) => {
+//console.log(from, data);
+if (from == "캘린더") {
+    const defaultTime = "T10:00";
+    
+    const topWorkStart = data.startStr + defaultTime;
+    const topWorkEnd = data.endStr + defaultTime;
+    //console.log(topWorkStart, topWorkEnd);
+    
+    document.querySelector("#birth").value = topWorkStart.replace("T", " ");
+    document.querySelector("#birth2").value = topWorkEnd.replace("T", " ");
+}
+//console.log("클래스리슽트?", document.querySelector("#event-modal"));
+document.querySelector("#event-modal").classList.add("show");
+document.querySelector("#event-modal").style.display = "block";
+};
+
+var insertModalClose = () => {
+//닫기 전 값 초기화해주기 필요
+document.querySelector("#event-modal").classList.remove("show");
+document.querySelector("#event-modal").style.display = "none";
+//닫을때 입력된 데이터 날려버리기
+insertModalReset();
+};
+
+var insertModalReset = () => {
+document.querySelector("#event-title").value = "";
+document.querySelector("#event-content").value = "";
+//document.querySelector("#event-select-category").value = "";
+document.querySelector("#birth").value = "";
+document.querySelector("#birth2").value = "";
+document.querySelector("#event-worker").value = "미배정";
+document.querySelector("#event-file").value = "";
+};
+
+btnInsertModalReset.addEventListener("click", () => {
+insertModalReset();
+});
+
+btnInsertModalClose.addEventListener("click", () => {
+insertModalClose();
+});
+
+btnInsertModalSave.addEventListener("click", (event) => {
+
+function insertFile(e){
+    // 일감생성하기 시 처리되는 파일  01/02 오지형
+    var formData_O = new FormData();
+    //const inputFile = document.querySelector("#event-file");
+    var inputFile = $("input[name='uploadFileAjax']");
+    //console.log("inputFile : ", inputFile); // <input type="file"> tag
+    var files = inputFile[0].files;
+
+    var tokworkNo_O = document.querySelector("#topWorkNo-detail").value;  // topworkNo 가 필요함 
+    console.log("tokworkNo_O",tokworkNo_O);
+    //console.log("files : ",files);
+    for(var i = 0; i < files.length; i++){
+        formData_O.append("uploadFile",files[i]);   
+     }
+    var twCategoryName = $("#event-select-category option:selected").text();
+    var topWorkTitle_O = document.querySelector("#event-title").value;
+    var twCategoryNo_O = document.querySelector("#event-select-category").value;
+    //console.log("twCategoryName",twCategoryName);
+    var userEmail_O = localStorage.getItem("id");
+    var mode = document.querySelector("#hidden-topWorkNo").value;
+    let jsonData = JSON.stringify({ projectId: proNo, 
+                                    fileLocation :twCategoryName,
+                                    topWorkTitle : topWorkTitle_O,
+                                    twCategoryNo : twCategoryNo_O,
+                                    topWorkNo : e,
+                                    mode: mode,
+                                    userEmail_O : userEmail_O
+                                });
+    console.log("jsonData :", jsonData);
+    formData_O.append("jsonData", jsonData);    
+
+    $.ajax({
+        url : '/uploadAjaxAction',
+        processData : false,
+        contentType : false,
+        data : formData_O,
+        type : 'POST',
+        dataType : 'json',
+        success : function(result){
+            //console.log("origin result",result);
+        }
+    }); // end of ajax 
+    console.log("원하는데이터 :", e);
+}
+
+
+const topWorkTitle = document.querySelector("#event-title").value;
+const topWorkContent = document.querySelector("#event-content").value;
+const twCategoryNo = document.querySelector("#event-select-category").value;
+const topWorkStart = document
+  .querySelector("#birth")
+  .value.replace(" ", "T");
+const topWorkEnd = document
+  .querySelector("#birth2")
+  .value.replace(" ", "T");
+const memberId = document.querySelector("#event-worker").value;
+//console.log("워커 : " + memId); 
+const obj = {
+  topWorkTitle,
+  topWorkContent,
+  twCategoryNo,
+  topWorkStart,
+  topWorkEnd,
+  proNo,
+  //topWorkState는 기본 0 -> 카테고리 이동시?
+  //topWorkLike도 기본값 0
+  //topWorkFile도 기본값 null인데 마이바티스에서 에러나니깐 서비스단에서 '0'으로 넣어줌.
+  //topWorkProgress도 기본값 0
+};
+//console.log("작업인서트될놈: ", obj);
+//axios는 제이슨 직렬화 하지않고 그냥 보내야함.
+//헤더 설정은 별도로 필요 없다.
+//const json = JSON.stringify(obj);
+//const config = {"Content-Type" : "application/json"};
+//console.log(obj);
+
+let topWorkNo = "";
+axios.post("/kanban/insert", obj)
+.then((response) => {
+  //console.log("new topWorkNo : ", response.data);
+  topWorkNo = response.data;
+  console.log("인서트시 넘버 : ", topWorkNo);
+  insertFile(topWorkNo);
+  //kanbanRender();
+  pageTap(currentTap_PH_K); //탭을 다시 불러오는 식으로 리렌더링..
+  insertModalClose();
+})
+.then((res) => { //인서트 됐으면 관계테이블에 인서트
+    if (memberId == "미배정") {
+        return;
+    }
+    
+    const topWorkRelationVO = {};
+    topWorkRelationVO.memberId = memberId;
+    topWorkRelationVO.topWorkNo = topWorkNo;
+    
+    axios
+      .post("/kanban/topWorkRelationInsert", topWorkRelationVO)
+      .then((res) => {
+        //성공!!! 근데 무조건 추가할게 아니라 조건문으로 담당자 배정 했을때만 인서트해야함
+          //console.log(res); 
+      });
+    
+});
+}); //endof modalOpen
+
+//카테고리 모달(인서트)
+var btnCategoryModalCansel = document.querySelector("#category-cancel");
+
+var categoryModalOpen = () => {
+document.querySelector("#info-alert-modal").classList.add("show");
+document.querySelector("#info-alert-modal").style.display = "block";
+};
+
+var categoryModalClose = () => {
+document.querySelector("#info-alert-modal").classList.remove("show");
+document.querySelector("#info-alert-modal").style.display = "none";
+};
+//카테고리 모달(업데이트)
+var categoryUpdateModalOpen = (evnet) => {
+//console.dir(event.target.previousSibling);
+document.querySelector("#category-name-update").value =
+  event.target.previousSibling.data;
+console.log("현제 카테고리 이름 : ",event.target.previousSibling.data); // 현제 값 찍기
+beforeCategory = event.target.previousSibling.data; // 수정전 카테고리 저장 
+document.querySelector("#category-update-modal").classList.add("show");
+document.querySelector("#category-update-modal").style.display = "block";
+};
+var categoryUpdateModalClose = () => {
+document.querySelector("#category-name-update").value = "";
+document.querySelector("#category-update-modal").classList.remove("show");
+document.querySelector("#category-update-modal").style.display = "none";
+};
+
+var categoryModalInsert = () => {
+      const twCategoryName = document.querySelector("#category-name").value;
+      const twCategoryColor = document.querySelector("#dropBox-colorCode").value;
+      //console.log(twCategoryName);
+      //console.log("인서트시 컬러", twCategoryColor);
+
+      const obj = {
+        twCategoryName,
+        twCategoryColor,
+        proNo,
+      };
+
+      axios.post("/kanban/categoryInsert", obj).then((response) => {
+        //console.log(response);
+        kanbanRender();
+        categoryModalClose();
+        updateSelectBar();
+      });
+    };
+
+
+function changeTitle() {
+    const SearchProNo = URLSearch.get("proNo");
+    
+    if ( SearchProNo == null) {
+        return;
+    } 
+    
+    proNo = SearchProNo;
+    document.title = "프로젝트 " + proNo;
+}
+
+
+
+function logInsert(map) {
+      axios.post("/kanban/logInsert", map).then((res) => {
+        //console.log(res);
+      });
+    }
+
+
+
+//==================== 구글관련시작 ================================
+var CLIENT_ID = '616281354554-lpmgnp2gmkaalfk8th0kbj77p0m720jg.apps.googleusercontent.com'; 
+var API_KEY = 'AIzaSyABuxJp6UPLwsSvSlF9lLHChKCB40EyRK0';
+var DISCOVERY_DOC = 'https://docs.googleapis.com/$discovery/rest?version=v1';
+var DISCOVERY_SHHET = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+var SCOPES = 'https://www.googleapis.com/auth/documents';
+var SCOPES2 = 'https://www.googleapis.com/auth/spreadsheets';
+
+var tokenClient;
+var gapiInited = false;
+var gisInited = false;
+
+
+      /**
+       * Callback after api.js is loaded.
+       */
+      function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+      }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC,DISCOVERY_SHHET],
+        });
+        gapiInited = true;
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,SCOPES2,
+          callback: '', // defined later
+        });
+        gisInited = true;
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function googleAuthLogin_H() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw (resp);
+          }
+          
+          var title = $('#proName_H').val()
+          console.log("어스안 : "+ title)
+          creatSheet(title);
+          createDoc(title);
+          await alertTimer();
+          console.log("-------타이머끝 ")
+          setTimeout(() => {
+              updateDocs(); 
+              console.log("업데이트 ")
+              gdocsCheck();
+           }, 3000);
+          await removeAuthBtn_H();
+        };
+
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({prompt: 'consent'});
+        } else {
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({prompt: ''});
+        }
+      }
+
+        // gdocu 생성 함수
+       function createDoc(title) {
+            gapi.client.docs.documents.create({
+                resource: {title: title}
+              }).then(function (response) {
+                  var docId= response.result.documentId
+                  $('#docuId').val(docId)
+              })
+          }
+        // gsheet 생성
+      function creatSheet (title){
+      gapi.client.sheets.spreadsheets.create({
+          properties: {
+            title: title,
+          },
+        }).then(function(response){
+            var sheetId = response.result.spreadsheetId
+            $('#sheetId').val(sheetId)
+        })
+          
+      }
+    function removeAuthBtn_H(){
+        $('#authBtn').attr('type','hidden')
+    }
+
+    
+    //값 확인용 왓다갓다힘들어 
+    function checkValue_H(){
+         alertTimer()
+        
+    }
+//==================== 구글 끝 ================================
+
+</script>

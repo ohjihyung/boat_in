@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.MemberMapper">
+	<!-- 외부 조인을 사용하여 얻은 검색 결과에 대한 매핑을 정의한다. -->
+	<!-- <resultMap type="memberVO" id="memberMap"> <id property="memberId" 
+		column="member_id"/> 기본키 <id property="userNo" column="user_no"/> 기본키 <result 
+		property="memberId" column="MEMBER_ID"/> <result property="memberPw" column="MEMBER_PW"/> 
+		<result property="memberName" column="MEMBER_NAME"/> <result property="memberToken" 
+		column="MEMBER_TOKEN"/> <result property="memberBirth" column="MEMBER_BIRTH"/> 
+		<result property="memberPic" column="MEMBER_PIC"/> <result property="memberRegdate" 
+		column="MEMBER_REGDATE"/> <result property="memberState" column="MEMBER_STATE"/> 
+		<collection property="authList" resultMap="authMap"/> </resultMap> -->
+
+	<!-- <resultMap type="memberAuthVO" id="authMap"> <result property="userNo" 
+		column="user_no"/> <result property="auth" column="auth"/> </resultMap> -->
+
+	<select id="selectOne" parameterType="String"
+		resultType="memberVO">
+		SELECT * FROM MEMBER WHERE MEMBER_ID =#{memberId}
+	</select>
+
+	<!-- <select id="detail" resultMap="memDeatilMap" parameterType="String"> 
+		SELECT A.USER_ID, A.USER_PW, A.USER_NAME, A.REG_DATE, A.UPD_DATE, A.ENABLED, 
+		B.AUTH FROM MEM A, MEM_AUTH B WHERE A.USER_ID = B.USER_ID AND A.USER_ID = 
+		#{username} </select> -->
+
+	<insert id="insert" parameterType="memberVO">
+		INSERT INTO MEMBER(
+		MEMBER_ID
+		, MEMBER_PW
+		, MEMBER_NAME
+		, MEMBER_TOKEN
+		, MEMBER_REGDATE
+		, MEMBER_PIC
+		)
+		VALUES (
+		#{memberId}
+		, #{memberPw}
+		, #{memberName}
+		, #{memberToken}
+		, TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI')
+		, #{memberPic}
+		)
+	</insert>
+
+	<update id="updateState" parameterType="memberVO">
+		UPDATE MEMBER SET MEMBER_STATE = #{memberState}
+		WHERE MEMBER_ID = #{memberId}
+
+	</update>
+
+	<select id="selectMember" parameterType="memberVO"
+		resultType="memberVO">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+
+	<select id="getAllMember" resultType="memberVO">
+	<![CDATA[
+		SELECT *
+		  FROM MEMBER
+		 WHERE MEMBER_ID <> 'admin'
+		 ORDER BY MEMBER_ID ASC
+		 ]]>
+	</select>
+
+	<select id="getUserNameById" resultType="string"
+		parameterType="string">
+		select member_name from member
+		where member_id = #{memberId}
+	</select>
+
+	<update id="updateMemberName" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEMBER_NAME = #{memberName}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+	<update id="updateMemberPhone" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEMBER_PHONE = #{memberPhone}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+	<update id="updateMemberBirth" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEMBER_BIRTH = #{memberBirth}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+	<update id="updateMemberRegdate" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEMBER_REGDATE = #{memberRegdate}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+	<select id="memoList" parameterType="memberVO"
+		resultType="memoVO">
+		SELECT *
+		FROM MEMO
+		WHERE MEMBER_ID = #{memberId}
+		AND MEMO_DELETE = 0
+	</select>
+
+	<insert id="insertMemo" parameterType="memoVO">
+		INSERT INTO MEMO (
+		MEMO_NO
+		, MEMBER_ID
+		, MEMO_CONTENT
+		, MEMO_DATE
+		) VALUES (
+		SEQ_MEMO.NEXTVAL
+		, #{memberId}
+		, #{memoContent}
+		, SYSDATE
+		)
+	</insert>
+
+	<select id="selectMemo" parameterType="memoVO"
+		resultType="memoVO">
+		SELECT *
+		FROM MEMO
+		WHERE MEMO_NO = #{memoNo}
+	</select>
+
+	<update id="updateMemo" parameterType="memoVO">
+		UPDATE MEMO
+		SET MEMO_CONTENT = #{memoContent}
+		WHERE MEMO_NO = #{memoNo}
+	</update>
+	<update id="deleteMemo" parameterType="memoVO">
+		UPDATE MEMO
+		SET MEMO_DELETE = 1
+		WHERE MEMO_NO = #{memoNo}
+	</update>
+
+	<select id="my7Chart" parameterType="memberVO" resultType="Map">
+		SELECT A.TOPWORK_NO
+		, A.TOPWORK_TITLE
+		, A.PRO_NO
+		, B.PRO_NAME
+		, A.TOPWORK_PROGRESS
+		, C.MEMBER_ID
+		, SUBSTR(A.TOPWORK_START, 1, 10) AS TOPWORK_START
+		, SUBSTR(A.TOPWORK_END, 1, 10) AS TOPWORK_END
+		FROM TOPWORK A
+		LEFT JOIN PROJECT B
+		ON A.PRO_NO = B.PRO_NO
+		LEFT JOIN PROJECT_JOIN_STATE C
+		ON B.PRO_NO = C.PRO_NO
+		WHERE C.MEMBER_ID = #{memberId}
+		AND B.PRO_DELETE = '0'
+		AND A.TOPWORK_DELETE = 'F'
+		AND TO_DATE(SUBSTR(A.TOPWORK_END, 1, 10), 'YYYY-MM-DD') BETWEEN SYSDATE -
+		3 AND SYSDATE + 7
+		GROUP BY A.TOPWORK_NO, A.TOPWORK_TITLE, A.PRO_NO, B.PRO_NAME,
+		A.TOPWORK_PROGRESS, C.MEMBER_ID, A.TOPWORK_START, A.TOPWORK_END
+		ORDER BY TOPWORK_END ASC
+	</select>
+
+	<update id="updateMemberInfo_admin" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEMBER_INFO = #{memberInfo}
+		WHERE MEMBER_ID = #{memberId}
+	</update>
+
+</mapper>

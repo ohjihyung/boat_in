@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ProjectNoticeMapper">
+
+	<insert id="insert" parameterType="projectNoticeVO">
+		<selectKey resultType="string" keyProperty="proNoticeNo" order="BEFORE">
+			SELECT 'PNN' || LPAD(SEQ_PROJECT_NOTICE.NEXTVAL, 3, '0') FROM dual
+		</selectKey>
+		INSERT INTO PROJECT_NOTICE(
+		  PRO_NOTICE_NO
+          , PRO_NO
+          , PRO_NOTICE_TITLE
+          , PRO_NOTICE_CONTENT
+          , PRO_NOTICE_DATE
+      
+		) VALUES (
+		#{proNoticeNo}, #{proNo}, #{proNoticeTitle}, #{proNoticeContent}, SYSDATE
+		)
+	</insert>
+
+	<select id="selectList" resultType="projectNoticeVO" parameterType="String">
+		SELECT A.*, B.MEMBER_ID ,B.MEMBER_NAME, B.MEMBER_PIC
+	    FROM PROJECT_NOTICE A, MEMBER B, PROJECT C
+	    WHERE B.MEMBER_ID = C.MEMBER_ID
+	    AND A.PRO_NO = C.PRO_NO 
+	    AND C.PRO_NO = #{proNo}
+	    ORDER BY PRO_NOTICE_DATE DESC
+	
+<!-- 		AND SUBSTR(A.DVI_NO,3) > 0 -->
+<!-- 		ORDER BY SUBSTR(A.DVI_NO,3), DVI_DATE DESC  -->
+	</select>
+
+	<select id="select" resultType="projectNoticeVO" parameterType="String">
+		SELECT A.*, B.MEMBER_ID ,B.MEMBER_NAME, B.MEMBER_PIC
+	    FROM PROJECT_NOTICE A, MEMBER B, PROJECT C
+	    WHERE B.MEMBER_ID = C.MEMBER_ID
+	    AND A.PRO_NO = C.PRO_NO
+	    AND A.PRO_NOTICE_NO = #{proNoticeNo}
+		
+	</select>
+
+	<update id="update" parameterType="projectNoticeVO">
+		UPDATE PROJECT_NOTICE
+		SET PRO_NOTICE_TITLE = #{proNoticeTitle},
+			PRO_NOTICE_CONTENT = #{proNoticeContent}
+		WHERE PRO_NOTICE_NO = #{proNoticeNo}
+	</update>
+
+	<delete id="deleteProjectNotice" parameterType="projectNoticeVO">
+		DELETE FROM PROJECT_NOTICE 
+		WHERE PRO_NOTICE_NO = #{proNoticeNo}
+	</delete>
+	
+	<select id="selectJoinMemberList" resultType="projectNoticeVO" parameterType="String">
+		SELECT *
+	    FROM PROJECT_JOIN_STATE
+	    WHERE PRO_NO = #{proNo}
+	    AND PRO_JOINSTATE = '1'
+	</select>
+	
+
+<!-- 	<update id="incrementHit" parameterType="String"> -->
+<!-- 		UPDATE PROJECT_NOTICE -->
+<!-- 		SET DVI_HIT = DVI_HIT + 1 -->
+<!-- 		WHERE DVI_NO = #{dviNo} -->
+<!-- 	</update> -->
+
+</mapper>

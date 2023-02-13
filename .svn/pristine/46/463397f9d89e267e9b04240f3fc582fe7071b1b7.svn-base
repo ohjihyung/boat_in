@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+
+
+<div class="content-page">
+	<div class="content">
+
+		<!-- Start Content-->
+		<div class="container-fluid">
+
+			<!-- start page title -->
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box">
+						<h4 class="page-title">FAQ</h4>
+					</div>
+				</div>
+			</div>
+			<!-- end page title -->
+
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="row mt-3">
+								<div class="col-12">
+									<div class="text-center">
+										<i class="h1 dripicons-message"></i>
+<!-- 										<i class="h1 mdi mdi-comment-multiple-outline text-muted"></i> -->
+										
+										<h4 class="m-3 mb-5 fw-bold"> 자주 묻는 질문들입니다. </h4>
+										<hr style="width: 80%; margin-left: auto; margin-right: auto;">
+<!-- 										<button type="button" onclick="faqInsert()" class="btn btn-soft-primary waves-effect waves-light">입력하기</button> -->
+<!-- 										<button type="button" onclick="faqUpdateList()" class="btn btn-soft-danger waves-effect waves-light">수정하기</button> -->
+									</div>
+								</div>	<!-- end col -->
+							</div>	<!-- end row -->
+
+							<div class="row pt-4 justify-content-center" id="listBox">
+							
+							</div>
+						</div>	<!-- end card-body -->
+					</div>	<!-- end card -->
+				</div>
+			</div>
+		</div>	<!-- container -->
+	</div>	<!-- content -->
+</div>
+
+
+
+<script>
+
+$(document).ready(function() {
+	faqList();
+})
+
+
+function faqList() {
+	
+	$.ajax({
+		type : 'POST',
+		url : '/faq/faqList',
+		dataType : 'json',
+		success : function(data) {
+// 			console.log("faqList - success");
+// 			console.log("faqList - data : ", data);			
+			
+			$.each(data, function(i, item) {
+				
+				let txt = "";
+				
+// 				console.log("i : ", i);
+// 				console.log("faqTitle : ", item.faqTitle);
+// 				console.log("faqContent : ", item.faqContent);
+				
+				txt += `
+					      <div class="card mb-0">
+					        <div class="card-header" id="heading\${i}">
+						        <h4 class="m-0 position-relative fw-bold">
+						            <a class="custom-accordion-title text-reset d-block collapsed" data-bs-toggle="collapse" href="#collapse\${i}" aria-expanded="false" aria-controls="collapse\${i}">
+						          		\${item.faqTitle}
+						                <i class="mdi mdi-chevron-down accordion-arrow"></i>
+						            </a>
+						        </h4>
+					        </div>
+					        <div id="collapse\${i}" class="collapse" aria-labelledby="heading\${i}" data-bs-parent="#custom-accordion-one" style="">
+						        <div class="card-body">
+						        	\${item.faqContent}
+						        </div>
+							</div>
+					      </div>
+						`;
+				
+				let listBox = document.querySelector("#listBox");
+				let col = document.createElement("div");
+				col.className = "accordion custom-accordion col-xl-8 " + i;
+			 	col.id = "custom-accordion-one";
+				col.style.cssText = "margin: 3px;"
+				listBox.append(col);
+				col.innerHTML = txt;
+				
+			});
+		},
+		error : function() {
+			contsole.log("faqList - error");
+		}
+	});
+}
+
+
+</script>
+
+
+
+
+

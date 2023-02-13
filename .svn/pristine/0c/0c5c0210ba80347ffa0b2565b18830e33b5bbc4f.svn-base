@@ -1,0 +1,102 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<!-- ============================================================== -->
+<!-- Start Page Content here -->
+<!-- ============================================================== -->
+
+<div class="content-page">
+	<div class="content">
+
+		<!-- Start Content-->
+		<div class="container-fluid">
+
+			<!-- start page title -->
+			<div class="row">
+				<div class="col-10">
+					<div class="page-title-box">
+						<h4 class="page-title">쪽지함</h4>
+					</div>
+				</div>
+			</div>
+			<!-- end page title -->
+
+
+			<div class="row">
+
+				<!-- Right Sidebar -->
+				<div class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<!-- Left sidebar -->
+							<div class="inbox-leftbar" style ="width:180px;">
+
+								<a href="javascript: void(0);" onclick="pageTap('compose')" class="btn btn-danger w-100 waves-effect waves-light">작성하기</a>
+
+								<div class="mail-list mt-4">
+									<a href="javascript: void(0);" onclick="pageTap('inbox')" class="text-danger font-14 fw-bold"><i class="dripicons-inbox me-2"></i>받은 쪽지함<span class="badge badge-soft-danger float-end ms-2">7</span></a> 
+									<a href="javascript: void(0);" class="font-14"><i class="dripicons-exit me-2"></i>보낸 쪽지함</a> 
+									<a href="javascript: void(0);" class="font-14"><i class="dripicons-star me-2"></i>즐겨찾기</a> 
+									<a href="javascript: void(0);" class="font-14"><i class="dripicons-trash me-2"></i>휴지통</a> 
+									<a href="javascript: void(0);" class="font-14"><i class="dripicons-tag me-2"></i>중요</a> 
+									<a href="javascript: void(0);" class="font-14"><i class="dripicons-warning me-2"></i>스팸</a>
+								</div>
+
+
+
+							</div>
+							<!-- End Left sidebar -->
+
+							<div class="letterbox"></div>
+
+
+
+
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<!-- end card -->
+
+				</div>
+				<!-- end Col -->
+			</div>
+			<!-- End row -->
+
+		</div>
+		<!-- container -->
+
+	</div>
+	<!-- content -->
+
+
+</div>
+
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+
+
+<!-- 스크립트지옥시작 -->
+<script type="text/javascript">
+
+
+
+$(function(){
+	//처음시작 인박스 
+	pageTap("inbox"); 
+})
+	function pageTap(arg) {
+		console.log("페이지텝 실행  파라미터 : " + this)
+		
+		if (arg == "inbox") {
+			$(".letterbox").load("/letter/inbox");
+		}
+		if (arg == "compose") {
+// 			$(".letterbox").css({"display": "none"})
+			$(".letterbox").load("/letter/compose");
+		}
+		if (arg == "detail") {
+// 			$(".letterbox").css({"display": "none"})
+			$(".letterbox").load("/letter/detail");
+		}
+
+	}
+</script>

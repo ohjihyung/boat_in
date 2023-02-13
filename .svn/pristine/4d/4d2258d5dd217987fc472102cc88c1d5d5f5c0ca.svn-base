@@ -1,0 +1,203 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="left-side-menu">
+
+                <div class="h-100" data-simplebar>
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+
+                        <ul id="side-menu">
+
+                            <li class="menu-title">Navigation</li>
+
+                            <li>
+                                <a href="/myhome/home">
+                                    <span class="badge bg-success float-end">7</span>
+                                    <i class="dripicons-home"></i>
+                                    <span> HOME </span>
+                                </a>
+                            </li>
+
+                            <li class="menu-title mt-2">Project</li>
+
+                            <li>
+                                <a href="javascript:newProjectModalOpen()">
+                                    <i class="fe-calendar"></i>
+                                    <span> 프로젝트 생성하기 </span> <!-- 누르면 모달로. -->
+                                </a>
+                            </li>
+                            <!-- 프로젝트 리스트 -->
+                            <li id="projectList"></li>
+                            
+                            <hr>
+                             <li class="menu-title">my apps</li>
+                            <li>
+                                <a href="/data/myDataMain">
+                                    <i class="fe-folder"></i>
+                                    <span> 내 자료실 </span>
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a href="/devin/devinList"> <!-- 나중에 리스트 만들면 뿌려주는 주소로 변경할것  -->
+                                    <i class="fe-linkedin"></i>
+                                    <span> 개발자 지식인 </span> <!-- 누르면 모달로. -->
+                                </a>
+                            </li>
+                             
+                            <li>
+                             	  <a href="/chat/chatMain">
+                             		<i class="fe-message-square"></i>
+                             	 	<span>BOAT_TALK</span>                             	  
+                             	  </a>
+                            </li>
+                            <li>
+                             	  <a href="/letter/home">
+                             		<span  class="badge bg-success float-end chkletterinit"></span>
+                             	  	<i class="fe-mail"></i>
+                             	 	<span>쪽지함</span>                             	  
+                             	  </a>
+                            </li>
+                             <li>
+                             	  <a href="/proquanti/home">
+                             		<span  class="badge bg-success float-end "></span>
+                             	  	<i class="fe-bar-chart-2"></i>
+                             	 	<span>포트폴리오</span>                             	  
+                             	  </a>
+                             </li>
+                             <hr>
+                             
+						 </ul>
+					<div class="container-widget2" style="width: 200px; height: 200px;"></div>
+
+                    </div>
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+.
+            </div>
+            <!-- Left Sidebar End -->
+            
+            
+<!-- 프로젝트 생성 모달 -->
+<!-- Standard modal content -->
+<div id="newProject-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">프로젝트 생성하기</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close" onclick="newProjectModalClose()"></button>
+            </div>
+            <div class="modal-body">
+                <h6>생성할 프로젝트 명을 입력해주세요.</h6>
+                <p>
+                    <input class="form-control" id="proName" placeholder="Enter Project name">
+                </p>
+                <hr>
+                <h6>프로젝트 소개</h6>
+                
+                <p>들어갈 내용</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light"
+                    data-bs-dismiss="modal" onclick="newProjectModalClose()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="projectInsert()">Create New Project</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script>
+projectRender_K();
+
+function newProjectModalOpen() {
+	document.querySelector("#newProject-modal").classList.add("show");
+	document.querySelector("#newProject-modal").style.display = "block";
+}
+ 
+function newProjectModalClose() {
+	document.querySelector("#proName").value = "";
+	document.querySelector("#newProject-modal").classList.remove("show");
+    document.querySelector("#newProject-modal").style.display = "none";
+}
+
+function projectInsert() {
+	const proName = document.querySelector("#proName").value;
+	
+	if (!proName) {
+		alert("프로젝트 이름을 입력해주세요.");
+		
+		return;
+	}
+	
+	const obj = {
+	    proName,
+	    memberId,
+	};
+	
+	axios
+	  .post("/project/insert", obj)
+	  .then((res) => {
+		 console.log(res.data);
+		 //이 후 project home으로 이동
+		 location.href = "/project/home?proNo=" + res.data;
+	  });
+	
+	newProjectModalClose();
+}
+
+function projectRender_K() {
+	const memberVO = {
+	  memberId,
+	};
+    axios
+      .post("/project/list", memberVO)
+      .then((res) => {
+    	 const json = res.data;
+    	 
+		 let text = "";
+    	 
+		 for (item of json) {
+		    text += `<a href="/project/home?proNo=\${item.proNo}">`;
+		    text += `<i class="fe-calendar"></i>`;
+		    text += `<span> 프로젝트 - \${item.proName}</span>`;
+		    text += `</a>`;
+		    text += `</li>`;
+    	 }
+    	 
+		 console.log("프로젝트 리스트", text);
+		 document.querySelector("#projectList").innerHTML = text;
+      });
+}
+
+/* var container2 = document.querySelector(".container-widget");
+new Sortable(container2, {
+    group: {
+        name: "shared", //이게 같은 Sortable 객체들끼리 이동 가능
+      },
+      swapThreshold: 1,
+      animation: 150,
+      ghostClass: "blue-background-class",
+      //sort: false, 이거 false하면 원래 영역 내에서는 안움직임
+      onChoose: function (event) {
+        //클릭한 아이템
+        //선택한 영역 안에 테이블 목록
+        //console.log("시작~~~");
+        //setTimeout(delay, 1000);
+      },
+      filter: ".filtered",
+      onEnd: function (event) {
+        //내려놓았을때!
+        console.log("레프트 사이드 바");
+      },
+}); */
+</script>

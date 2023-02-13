@@ -1,0 +1,157 @@
+package kr.or.ddit.controller.letter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.JsonFactory;
+
+import kr.common.CommonDao;
+import kr.or.ddit.controller.letter.service.ILetterService;
+import kr.or.ddit.vo.LetterVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/letter")
+public class LetterController {
+	
+	@Inject
+	ILetterService service;
+	@Inject
+	CommonDao dao;
+	
+	@GetMapping("/home")
+	public String letterHome () {
+		return "content/letter";
+	}
+	
+	
+	
+	@PostMapping(value = "/insert" ,produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public String sendLetter(@RequestBody LetterVO letterVO) {
+		log.debug("쪽지보내기 들어옴 받은객체 : {}" ,letterVO);
+		int res = service.sendLetter_H(letterVO);
+		
+		if (res >0) {
+			log.debug("인서트 성공 ");
+			
+		}
+		return "OK";
+	}
+	
+	@PostMapping(value = "/mylist",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public List<LetterVO> myLetterList(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("받은쪽지함 들어옴 받은객체 : {}" ,letterVO);
+		List<LetterVO> list = new ArrayList<>();
+		
+		list = dao.selectList("myLetterList",letterVO.getMemberId());
+		
+		log.debug("myLetterList : {}",list);
+		
+		return list;
+	}
+	@PostMapping(value = "/sendlist",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public List<LetterVO> sendLetterList(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("보낸쪽지함 들어옴 받은객체 : {}" ,letterVO);
+		List<LetterVO> list = new ArrayList<>();
+		
+		list = dao.selectList("sendLetterList",letterVO.getMemberId());
+		
+		log.debug(" sendLetterList: {}",list);
+		
+		return list;
+	}
+	@PostMapping(value = "/dellist",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public List<LetterVO> delLetterList(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("휴지통 들어옴 받은객체 : {}" ,letterVO);
+		List<LetterVO> list = new ArrayList<>();
+		
+		list = dao.selectList("delLetterList",letterVO.getMemberId());
+		
+		log.debug(" delLetterList: {}",list);
+		
+		return list;
+	}
+	
+	@PostMapping(value = "/letterdetail",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public LetterVO letterDetail(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("쪽지 상세보기 디테일 : {} ",letterVO);	
+		//해당쪽지번호로 불러오기
+		String letterNo= letterVO.getLetterNo();
+		dao.update("letterCheck", letterVO);
+		LetterVO vo=  dao.select("letterSelectOne", letterNo);
+		
+		return vo;
+	}
+	@PostMapping(value = "/sendletterdetail",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public LetterVO sendLetterDetail(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("보낸 쪽지 상세보기 디테일 : {} ",letterVO);	
+		//해당쪽지번호로 불러오기
+		String letterNo= letterVO.getLetterNo();
+		LetterVO vo=  dao.select("letterSelectOne", letterNo);
+		
+		return vo;
+	}
+	
+	@PostMapping(value = "/letterdelete",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public String letterDelete(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("쪽지 삭제  : {} ",letterVO);	
+		int del = dao.update("letterDel", letterVO);
+		if (del >0) {
+			String delcnt= del+" 개 삭제되었습니다.";
+			return delcnt;
+		}
+		return "NO";
+	}
+	
+	@PostMapping(value = "/realdeleteletter",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public String realDeleteLetter(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("쪽지 영구 삭제  : {} ",letterVO);	
+		int del = dao.delete("realDelLetter", letterVO);
+		if (del >0) {
+			String delcnt= del+" 개 삭제되었습니다.";
+			return delcnt;
+		}
+		return "NO";
+	}
+	@PostMapping(value = "/markletter",produces ="application/json; charset=utf-8" )
+	@ResponseBody
+	public String markletter(@RequestBody LetterVO letterVO) throws Exception {
+		log.debug("즐겨찾기 업데이트  : {} ",letterVO);	
+		LetterVO vo = dao.select("letterSelectOne", letterVO.getLetterNo()); 
+		
+		if (vo.getLetterMark().equals("1")) {
+			letterVO.setLetterMark("0");
+			dao.update("markletter", letterVO);
+			return "0";
+		}else if (vo.getLetterMark().equals("0")) {
+			letterVO.setLetterMark("1");
+			dao.update("markletter", letterVO);
+			return"1";
+		}
+		
+		
+		return "NO";
+	}
+	
+	
+}

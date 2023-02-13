@@ -1,0 +1,9 @@
+package kr.or.ddit.controller.oneoone.service;
+
+import kr.or.ddit.vo.QnAVO;
+
+public interface IQnaService {
+
+	int insertQna(QnAVO qnaVO) throws Exception;
+
+}

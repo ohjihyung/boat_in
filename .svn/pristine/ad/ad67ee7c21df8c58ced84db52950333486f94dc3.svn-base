@@ -1,0 +1,32 @@
+package kr.or.ddit.controller.member.service;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.MypageMapper;
+import kr.or.ddit.vo.MemberVO;
+
+@Service
+public class MypageServiceImpl implements IMypageService {
+
+	@Inject
+	MypageMapper mapper;
+
+	@Override
+	public MemberVO selectMember(String memberId) {
+		return mapper.selectMember(memberId);
+	}
+
+	@Override
+	public int updateMember(MemberVO memberVO) {
+		return mapper.updateMember(memberVO);
+	}
+
+	@Override
+	public int updateMemberInfo(MemberVO memberVO) {
+		return mapper.updateMemberInfo(memberVO);
+	}
+	
+	
+}

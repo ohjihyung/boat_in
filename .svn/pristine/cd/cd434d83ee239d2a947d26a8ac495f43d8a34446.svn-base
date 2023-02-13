@@ -1,0 +1,43 @@
+package kr.or.ddit.controller.subwork.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.SubWorkMapper;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.SubWorkVO;
+import kr.or.ddit.vo.TopWorkVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Controller
+public class SubWorkServiceImpl implements ISubWorkService {
+    @Inject
+    private SubWorkMapper mapper;
+    @Inject
+    private CommonDao dao;
+    
+    @Override
+    public void subWorkInsert(SubWorkVO subWorkVO) throws Exception {
+        mapper.subWorkInsert(subWorkVO);
+    }
+
+    @Override
+    public List<SubWorkVO> subWorkList(TopWorkVO topWorkVO) throws Exception {
+        return mapper.subWorkList(topWorkVO);
+    }
+
+    @Override
+    public SubWorkVO subWorkDetail(SubWorkVO vo) throws Exception {
+        return dao.select("subWorkDetail", vo);
+    }
+
+    @Override
+    public MemberVO selectSubWorkMember(SubWorkVO vo) throws Exception {
+        return dao.select("selectSubWorkMember", vo);
+    }
+
+}

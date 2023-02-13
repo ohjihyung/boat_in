@@ -1,0 +1,393 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="content-page">
+	<div class="content">
+
+		<div class="row mt-3">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="header-title mb-4">문의내용</h4>
+						<div>
+							<h1 style="font-weight:bold; text-align:center;">QNA</h1>
+						</div>	
+							<ul class="nav nav-tabs nav-bordered nav-justified">
+							<li class="nav-item"><a href="#showUncomment" data-bs-toggle="tab" aria-expanded="true" class="nav-link active"> 답변 대기중</a></li>
+							<li class="nav-item"><a href="#showcomment" data-bs-toggle="tab" aria-expanded="false" class="nav-link "> 답변 완료 </a></li>						
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="showUncomment">
+								  <div class="col-12">
+								   <div class="card" >
+								   	<div class="card-body">								   
+								   		<div class="table-responsive2">
+								   			<div class="inbox-widget2" data-simplebar style="max-height:700px;">
+								   				<table id="qna_dataTable"  class="table table-hover mb-0 dt-responsive nowrap w-100 ">
+								   					<thead>
+								   						<tr>
+								   							<th>NO.</th>
+								   							<th>질문종류</th>
+								   							<th>제목</th>
+								   							<th>작성자</th>
+								   							<th>작성일</th>
+								   							<th>상태</th>
+								   						</tr>
+								   					</thead>								   					
+								   					<tbody id="tbody_O">								   										   															   				
+    												</tbody>
+    											</table>
+    									 	 </div>	
+    										</div>    	
+    									</div>
+    								</div>
+    							</div>	
+							</div>
+							
+							<div class="tab-pane " id="showcomment">
+								     <div class="col-12">
+								   <div class="card" >
+								   	<div class="card-body">								   
+								   		<div class="table-responsive2">
+								   			<div class="inbox-widget2" data-simplebar style="max-height: 700px;">
+								   				<table id="qna_dataTable2"  class="table table-hover mb-0 dt-responsive nowrap w-100 ">
+								   					<thead>
+								   						<tr>
+								   							<th>NO</th>
+								   							<th>질문종류</th>
+								   							<th>제목</th>
+								   							<th>작성자</th>
+								   							<th>작성일</th>
+								   							<th>상태</th>
+								   						</tr>
+								   					</thead>								   					
+								   					<tbody id="tbody_O2">								   										   															   				
+    												</tbody>
+    											</table>
+    									 	 </div>	
+    										</div>    	
+    									</div>
+    								</div>
+    							</div>		
+							</div>							
+						</div>																	          					                   					                   					                         				                            				      			                              					                         				                     				            				                     				       							
+					</div>
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+
+	</div>
+	    <!-- Full width modal content -->
+	<div id="full-width-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true"  >
+		<div class="modal-dialog modal-full-width" style="width: 50%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="fullWidthModalLabel" style="font-weight:bold;"></h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+					<input type="hidden" value="" id="qnaNo">
+				<div class="modal-body">
+					<h6 id="qnaWriter">작성자:</h6>
+					<h6 id="qnaDate">작성일:</h6>
+					<h6>Q.질문</h6>
+					<div id="QnaQuestion" style="margin-left:20px; max-width:900px;" >
+					</div>
+					<hr>
+					<h6>A.답변</h6>
+					<div id="QnaAnswer">
+						 <!--여기다가 답변 넣어놓음-->
+					</div>
+				</div> 			
+				<div class="mx-3">
+					<textarea class="form-control" rows="13" cols="160" style="width:100%; resize: none;" id="adminWrite"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="writeQna()">답변 등록</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	
+	<div id="full-width-modal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel2" aria-hidden="true"  >
+		<div class="modal-dialog modal-full-width" style="width: 50%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="fullWidthModalLabel2" style="font-weight:bold;"></h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+					<input type="hidden" value="" id="qnaNo2">
+				<div class="modal-body">
+					<h6 id="qnaWriter2">작성자:</h6>
+					<h6 id="qnaDate2">작성일:</h6>
+					<h6>Q.질문</h6>
+					<div id="QnaQuestion2" style="margin-left:20px; max-width:900px;" >
+					</div>
+					<hr>
+					<h6>A.답변</h6>
+					<div id="QnaAnswer2">
+						 <!--여기다가 답변 넣어놓음-->
+					</div>
+				</div> 			
+				<div class="mx-3">
+					<textarea class="form-control" rows="13" cols="160" style="width:100%; resize: none;" id="adminWrite2"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-danger" onclick="modifyQna()">수정</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+</div>
+
+<script type="text/javascript">
+var datainput = document.querySelector("#tbody_O");
+var datainput2 = document.querySelector("#tbody_O2");
+
+$(document).ready(function(){
+	showUncomment();
+	showcomment();
+});
+
+
+//수정버튼 눌렀을때
+function modifyQna(){
+	console.log("modifyQna 잘들어옴");
+	var qnaNo2 =document.querySelector("#qnaNo2").value;
+	var qnaAnswer2 = document.querySelector("#adminWrite2").value;
+	var xhr = new XMLHttpRequest();
+	var data = {	
+				qnaNo : qnaNo2,
+				qnaAnswer : qnaAnswer2	
+				};
+	xhr.open("post",'/oneoone/adminAnswer',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data =xhr.responseText;
+		     if(data == "success"){
+		    	 Swal.fire({
+		    		  position: 'top-end',
+		    		  icon: 'success',
+		    		  title: '답변 수정 완료',
+		    		  showConfirmButton: false,
+		    		  timer: 1500
+		    		})
+		    	showUncomment();
+		    	showcomment();
+		    	$('#full-width-modal2').modal('hide');
+		     }
+		
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(data));
+}
+
+//관리자가 글쓰고 답변 등록 눌렀을 때
+function writeQna(){
+	console.log("writeQna 잘들어옴");
+	var qnaNo =document.querySelector("#qnaNo").value;
+	var qnaAnswer = document.querySelector("#adminWrite").value;
+	var xhr = new XMLHttpRequest();
+	var data = {	
+				qnaNo : qnaNo,
+				qnaAnswer : qnaAnswer	
+				};
+	xhr.open("post",'/oneoone/adminAnswer',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data =xhr.responseText;
+		     if(data == "success"){
+		    	 Swal.fire({
+		    		  position: 'top-end',
+		    		  icon: 'success',
+		    		  title: '답변 등록 완료',
+		    		  showConfirmButton: false,
+		    		  timer: 1500
+		    		})
+		    	showUncomment();
+		    	showcomment();
+		    	$('#full-width-modal').modal('hide');
+		     }
+		
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(data));
+
+}
+
+//클릭한 글 상세보기 
+function showqnaDetail(no){
+	var title = document.querySelector("#fullWidthModalLabel");
+	var writer = document.querySelector("#qnaWriter");
+	var qnaDate = document.querySelector("#qnaDate");
+	var QnaQuestion = document.querySelector("#QnaQuestion");
+	var qnaNo = document.querySelector("#qnaNo");
+	qnaNo.value = no;
+	console.log("클릭한 글 상세보기 no :",no);
+	var xhr = new XMLHttpRequest();
+	var data = {qnaNo : no};
+	xhr.open("post",'/oneoone/showDetail',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data = JSON.parse(xhr.responseText);
+		     console.log(data);
+		     title.innerHTML = "질문 : " + data.qnaTitle;
+		     writer.innerHTML = "작성자 :  " + data.memberId;
+		     qnaDate.innerHTML = "작성일 : " + data.qnaDate;
+		     QnaQuestion.innerHTML = data.qnaContent;
+			$('#full-width-modal').modal('show');
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(data));
+	
+	
+}
+
+//수정할것 누르면 
+function modifyqnaDetail(no){
+	var title = document.querySelector("#fullWidthModalLabel2");
+	var writer = document.querySelector("#qnaWriter2");
+	var qnaDate = document.querySelector("#qnaDate2");
+	var QnaQuestion = document.querySelector("#QnaQuestion2");
+	var qnaNo = document.querySelector("#qnaNo2");
+	var adminWrite2 = document.querySelector("#adminWrite2");
+	qnaNo.value = no;
+	console.log("클릭한 글 상세보기 no :",no);
+	var xhr = new XMLHttpRequest();
+	var data = {qnaNo : no};
+	xhr.open("post",'/oneoone/showDetail',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data = JSON.parse(xhr.responseText);
+		     console.log(data);
+		     title.innerHTML = "질문 : " + data.qnaTitle;
+		     writer.innerHTML = "작성자 :  " + data.memberId;
+		     qnaDate.innerHTML = "작성일 : " + data.qnaDate;
+		     QnaQuestion.innerHTML = data.qnaContent;
+		     adminWrite2.value = data.qnaAnswer;
+		     showUncomment();
+		     showcomment();
+			$('#full-width-modal2').modal('show');
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(data));
+}
+
+//답변 완료한거 뿌려주는거
+function showcomment(){
+	var str  = "";
+	var state ="답변완료";
+	var qtype= "";
+	var xhr = new XMLHttpRequest();
+	xhr.open("post",'/oneoone/showcomment',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data = JSON.parse(xhr.responseText);
+		     for(i in data){
+				str += `<tr>
+					     <td>\${data[i].qnaNo}</td>
+						 <td>\${data[i].qnaType}</td>
+						 <td><a href="javascript:modifyqnaDetail(\${data[i].qnaNo})">\${data[i].qnaTitle}</a></td>
+						 <td>\${data[i].memberId}</td>
+						 <td>\${data[i].qnaDate}</td>				
+						 <td><span class="badge badge-soft-primary">\${state}</span></td>	
+						</tr>`;		   		    	 
+		     }
+		     datainput2.innerHTML= str;
+		     tableShow2();
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send();
+	
+}
+
+//관리자가 작성하지 않은 글 보여주기
+function showUncomment(){
+	var str  = "";
+	var state ="답변대기";
+	var qtype= "";
+	var xhr = new XMLHttpRequest();
+	xhr.open("post",'/oneoone/showUncomment',true);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+		     var data = JSON.parse(xhr.responseText);
+		     console.log(data);
+		     for(i in data){
+				str += `<tr>
+					     <td>\${data[i].qnaNo}</td>
+						 <td>\${data[i].qnaType}</td>
+						 <td><a href="javascript:showqnaDetail(\${data[i].qnaNo})">\${data[i].qnaTitle}</a></td>
+						 <td>\${data[i].memberId}</td>
+						 <td>\${data[i].qnaDate}</td>			
+						 <td><span class="badge badge-soft-success">\${state}</span></td>			
+						</tr>`;		   		    	 
+		     }
+		     datainput.innerHTML= str;
+		     tableShow();
+		}
+	}
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send();
+
+}
+
+
+function tableShow(){
+	var table = $('#qna_dataTable').DataTable({
+		responsive:true,
+		 retrieve: true,
+		scrollCollapse:true,
+		language: {
+	      emptyTable: "올라온 질문이 없습니다",
+	      lengthMenu: "_MENU_ 개씩 보기",
+	      info: "현재 _START_ - _END_ / _TOTAL_건",
+	      infoEmpty: "데이터 없음",
+	      infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+	      search: "",
+	      zeroRecords: "일치하는 데이터가 없습니다.",
+	      loadingRecords: "로딩중...",
+	      processing: "잠시만 기다려 주세요.",
+	      paginate: {
+	        next: "다음",
+	        previous: "이전",
+	      },
+	    },
+	      order: [ [ 0, "desc" ] ],
+	});	
+}
+function tableShow2(){
+	var table = $('#qna_dataTable2').DataTable({
+		responsive:true,
+		 retrieve: true,
+		scrollCollapse:true,
+		language: {
+	      emptyTable: "올라온 질문이 없습니다",
+	      lengthMenu: "_MENU_ 개씩 보기",
+	      info: "현재 _START_ - _END_ / _TOTAL_건",
+	      infoEmpty: "데이터 없음",
+	      infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+	      search: "",
+	      zeroRecords: "일치하는 데이터가 없습니다.",
+	      loadingRecords: "로딩중...",
+	      processing: "잠시만 기다려 주세요.",
+	      paginate: {
+	        next: "다음",
+	        previous: "이전",
+	      },
+	    },
+	      order: [ [ 0, "desc" ] ],
+	});	
+}
+
+</script>

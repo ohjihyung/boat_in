@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LetterMapper">
+
+	<insert id="sendLetter_H" parameterType="letterVO">
+	   <selectKey resultType="String" keyProperty="letterNo" order="BEFORE">
+            SELECT SEQ_LETTER.NEXTVAL
+              FROM DUAL
+        </selectKey>
+	
+		INSERT INTO 
+		LETTER(
+			LETTER_NO
+			,MEMBER_ID
+			,LETTER_DATE
+			,LETTER_SENDER
+			,LETTER_CONTENT
+			,LETTER_TITLE
+			) 
+		VALUES(
+			  #{letterNo} 
+			, #{memberId}
+			, TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI')
+			, #{letterSender}
+			, #{letterContent}
+			, #{letterTitle}
+			)
+	</insert>
+	
+	<select id="myLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_DELSTATE = '0'
+		ORDER BY LETTER_NO DESC
+	</select>
+	<select id="delLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_DELSTATE = '1'
+		ORDER BY LETTER_DATE DESC
+	</select>
+	<select id="markLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+		AND LETTER_MARK = '1'
+		ORDER BY LETTER_NO DESC
+	</select>
+	<select id="sendLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE LETTER_SENDER = #{memberId}
+		ORDER BY LETTER_NO DESC
+	</select>
+	
+	<select id="letterSelectOne" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER
+		WHERE LETTER_NO = #{letterNo}
+	</select>
+	
+	<!-- 읽으면 확인된걸로 없데이트  -->
+	<update id="letterCheck" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_CHECK = '1'
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	<update id="markletter" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_MARK = #{letterMark}
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	
+	<update id="letterDel" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_DELSTATE = '1'
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	<update id="refreshLetter" parameterType="letterVO">
+		UPDATE LETTER SET LETTER_DELSTATE = '0'
+		WHERE LETTER_NO = #{letterNo} 
+	</update>
+	
+    <insert id="sendLetterFileLocation_K" parameterType="fileLocationVO">
+       <selectKey resultType="Integer" keyProperty="fileLNo" order="BEFORE">
+            SELECT SEQ_FILE_L_NO.NEXTVAL
+              FROM DUAL
+        </selectKey>
+    
+        INSERT INTO FILE_LOCATION (
+            FILE_L_NO
+          , FILE_LOCATION
+          , FILE_UPLOAD_DATE
+          , FILE_ISDELETED
+        ) VALUES (
+            #{fileLNo}
+          , 'LETTER'
+          , SYSDATE
+          , 'F'
+        )
+    </insert>
+    
+    <insert id="sendLetterFile_K" parameterType="fileVO">
+        INSERT INTO BFILE (
+            FILE_L_NO
+          , FILE_L_NO2
+          , FILE_REAL_NAME
+          , FILE_SIZE
+          , FILE_DOWNCNT
+          , FILE_PATH
+          , FILE_ISDELETED
+          , FILE_UPLOADER
+          , FILE_ISIMAGE
+          , FILE_UUID
+          , FILE_NAME
+        ) VALUES (
+            #{fileLNo}
+          , SEQ_FILE_L_NO2.NEXTVAL
+          , #{fileRealName}
+          , #{fileSize}
+          , #{fileDowncnt}
+          , #{filePath}
+          , 'F'
+          , #{fileUploader}
+          , #{image}
+          , #{uuid}
+          , #{fileName}
+        )
+        
+    </insert>
+</mapper>

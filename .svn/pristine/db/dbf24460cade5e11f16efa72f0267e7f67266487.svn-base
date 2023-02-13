@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<div style="position:fixed;z-index:9001;bottom:70px;right:50px;">
+<a href="javascript:void(0);" id= "openChat" onclick= "openchatroom()">
+<img id = "chatImg"style="width:50px;height:50px;" src="/assets/images/kakao-logo.png">
+</a></div>
+
+
+
+	<div id ="chatroom"class="col-3" style="position:fixed;z-index:9003;bottom:70px;right:50px; display : none;">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="header-title mb-4">채팅방</h4>
+
+				<ul class="nav nav-tabs">
+					<li class="nav-item"><a href="#home" data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 채팅방 </a></li>
+					<li class="nav-item"><a href="#profile" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">참가목록</a></li>
+					<!-- <li class="nav-item"><a href="#messages" data-bs-toggle="tab" aria-expanded="true" class="nav-link ">추가가능</a></li> -->
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane " id="home" style ="height:400px;">
+						<p>여기는 채팅방 </p>
+					</div>
+					<div class="tab-pane show active" id="profile" style ="height:400px;">
+						<p>여기는 참가목록</p>
+					</div>
+					<div class="tab-pane " id="messages" style ="height:400px;">
+						<p>Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+						<p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end card-->
+	</div>
+	
+	
+	
+<script type="text/javascript">
+function openchatroom(){
+	console.log("openroom")
+	$('#chatroom').attr('style',"position:fixed;z-index:9003;bottom:100px;right:50px; display : block;")
+	$('#openChat').attr('onclick','closechat()')
+	
+}
+function closechat(){
+	$('#chatroom').attr('style',"position:fixed;z-index:9003;bottom:100px;right:50px; display : none;")
+	$('#openChat').attr('onclick','openchatroom()')
+	
+}
+</script>

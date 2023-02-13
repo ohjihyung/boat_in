@@ -1,0 +1,448 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+table{
+	font-size: 1.5em;
+}
+</style>
+
+
+<div class="content-page">
+	<div class="content">
+
+		<div class="row mt-3">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<!-- Start Content-->
+						<div class="container-fluid">
+				
+							<div class="row">
+								<div class="col-12">
+									<h1 style="text-align: center; font-weight: bold;"> 공지사항 관리 </h1>
+									<div class="row justify-content-center">
+										<div class="col-lg-10 mt-3 text-center" id="insertBtnDiv" style="margin-left: auto; margin-right: auto;">
+											<button type="button" onclick="noticeInsertForm()" class="btn btn-primary waves-effect waves-light" style="font-size: 1.5em">공지글 등록</button>
+										</div>
+									</div>
+									<hr style="width: 80%; margin-top: 20px; margin-left: auto; margin-right: auto;">
+									
+									<div class="row justify-content-center">
+										<div class="col-lg-10" style="margin-top: 10px">
+										    <div class="" id="listBtnDiv" style="display: block; margin-bottom: 0px">
+												<button type="button" class="btn btn-soft-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeList()">전체</button>
+												<button type="button" class="btn btn-outline-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeList('작업')">작업</button>
+												<button type="button" class="btn btn-outline-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeList('서비스')">서비스</button>
+												<button type="button" class="btn btn-outline-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeList('업데이트')">업데이트</button>
+											</div>
+											<div id="table-container">
+												<table id="noticeTable" class="table mt-3">
+											        <thead class="table-light">
+											            <tr>
+											                <th>글번호</th>
+											                <th>카테고리</th>
+											                <th>제목</th>
+											                <th>작성자</th>
+											                <th>조회수</th>
+											                <th>작성일</th>
+											            </tr>
+											        </thead>
+											        <tbody id="tbody-target">
+											        </tbody>
+											    </table>
+										    </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	<!-- container -->
+						
+					</div>
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+
+	</div>
+</div>
+
+
+<script>
+	
+$(document).ready(function() {
+	console.log("ready");
+	noticeList();
+});
+
+
+function makeTable() {
+	let text = ``;
+	text += `<table id="noticeTable" class="table mt-3">`;
+    text += `<thead class="table-light">`;
+    text += `    <tr>`;
+    text += `        <th>글번호</th>`;
+    text += `        <th>카테고리</th>`;
+    text += `        <th>제목</th>`;
+    text += `        <th>작성자</th>`;
+    text += `        <th>조회수</th>`;
+    text += `        <th>작성일</th>`;
+    text += `    </tr>`;
+    text += `</thead>`;
+    text += `<tbody id="tbody-target">`;
+    text += `</tbody>`;
+    
+    document.querySelector("#table-container").innerHTML = text;
+}
+
+
+function noticeList(category) {
+	makeTable();
+	document.querySelector("#insertBtnDiv").style.display = "block";
+	document.querySelector("#listBtnDiv").style.display = "block";
+	
+	console.log("noticeList");
+
+	let listURL = "/notice/noticeList";
+	
+	if (category == '작업')     listURL = `/notice/noticeList?category=work`;
+	if (category == '서비스')   listURL = `/notice/noticeList?category=service`;
+	if (category == '업데이트') listURL = `/notice/noticeList?category=update`;
+	
+	axios
+		.get(listURL)
+		.then((res) => {
+			console.log("공지사항 리스트 - success");
+			console.log("공지사항 리스트 : ", res.data);
+			let list = res.data;
+			
+			for (item of list) {
+				item.sysNTitle = `<a href="javascript: noticeDetail(\${item.sysNNo})" style="font-size: 1.5em">\${item.sysNTitle}</a>`;
+			}
+			
+			const noticeTable = $('#noticeTable').removeAttr("width").DataTable({
+				lengthChange: false,
+				//destroy: true,
+                order: [[0, 'desc']],
+//                 ordering: true,
+//                 responsive:false,
+                //retrieve: true,
+                bAutoWidth: false,
+                bAutoHeigth: false,
+                //scrollX: true,
+                //scrollY: 380,
+                //scrollCollapse:true,
+                searching: true,
+                paging: true,
+                destroy: true,
+                pageLength: 7,
+//                 lengthMenu: [5, 7, 10],
+                columnDefs: [
+                    {width: 40, targets: 0},
+                    {width: 60, targets: 1},
+                    {width: 200, targets: 2},
+                    {width: 40, targets: 3},
+                    {width: 40, targets: 4},
+                    {width: 40, targets: 5},
+                ],
+                data: list,
+                columns: [
+                    { data: "sysNNo" },
+                    { data: "sysNCategory" },
+                    { data: "sysNTitle" },
+                    { data: "adminId" },
+                    { data: "sysNHit" },
+                    { data: "sysNDate" },
+                ],
+                language: {
+                    emptyTable: "공지사항이 없습니다.",
+//                     lengthMenu: "_MENU_ 개씩 보기",
+                    info: "총 _TOTAL_건",
+                    infoEmpty: "공지사항 없음",
+                    infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+                    search: "",
+                    searchPlaceholder: "검색어를 입력하세요",
+                    zeroRecords: "일치하는 데이터가 없습니다.",
+                    loadingRecords: "로딩중...",
+                    processing: "잠시만 기다려 주세요.",
+                    paginate: {
+                      next: "다음",
+                      previous: "이전",
+                    },
+                  },
+			});
+			
+			
+	})
+}
+	
+	
+	
+function noticeDetail(a) {
+	
+	document.querySelector("#insertBtnDiv").style.display = "none";
+	document.querySelector("#listBtnDiv").style.display = "none";
+	
+	//조회수 증가
+	hitUp(a);
+	let noticeNo = a;
+	const vo = {
+	  sysNNo: noticeNo,	
+	};
+	
+	axios
+		.post("/notice/noticeDetail", vo)
+		.then((res) => {
+			console.log("공지사항 디테일 - success");
+			console.log("공지사항 디테일 : ", res.data);
+			
+			const noticeVO = res.data;
+		    let text = ``;
+		    text += `<div class="col-lg-12">`;
+		    text += `	<div class="card h-100">`;
+		    text += `   	<div class="card-header">`; //card-header 시작
+		    text += `       	<h3 class="card-title"><font class="jinoFont">\${noticeVO.sysNTitle }</font></h3>`;
+		    //
+		    text += `			<div class="d-flex align-items-start">`;
+		    text += `		<img class="me-2 avatar-sm rounded-circle" src="/resources/dist/assets/images/users/blank_progile.png" alt="해당 회원 이미지 가져오기">`
+		    text += `				<div class="w-100">`;
+		    text += `				<h3 class="">`;
+		    text += `           	&nbsp; \${noticeVO.adminId} &nbsp;&nbsp;`;
+		    text += `           	&nbsp; \${noticeVO.sysNDate} `;
+		    text += `           	<span hidden id="noticeNo-\${noticeVO.sysNNo}">\${noticeVO.sysNNo }</span>`;
+		    text += `				</h3>`;
+		    	text += `				</div>`; //w-100 끝
+		    	text += `			</div>`; //d-flex align-items-start 끝
+		    text += `		</div>`; // card-header 끝
+		    
+		    text += `    	<div class="card-body" style="min-height: 300px;">`; // 콘텐츠 내용 시작
+		    text += `<div class="inbox-widget" id="viewer" data-simplebar style="max-height: 600px; font-size: 1.5em">\${noticeVO.sysNContent }</div>`;
+		    text += `		</div>`; // card-header 끝
+			text += `    	<div class="card-body">`; // 버튼 시작
+			text += `    		<div class="row" style="text-align: right;">`;
+			text += `    	    	<div class="col-md-12">`;
+			text += `    	        	<button type="button" class="btn btn-success waves-effect waves-light" id="" style="font-size: 1.5em" onclick="noticeList()">목록</button>`;
+			text += `    	        	<button type="button" class="btn btn-primary waves-effect waves-light" id="" style="font-size: 1.5em" onclick="noticeUpdateForm(\${noticeVO.sysNNo})">수정</button>`;
+			text += `    	        	<button type="button" class="btn btn-danger waves-effect waves-light" id="" style="font-size: 1.5em" onclick="noticeDelete(\${noticeVO.sysNNo})">삭제</button>`;
+			text += `    	    	</div>`;
+		    text += `    		</div>`;
+		    text += `    	</div>`;
+		    
+		    document.querySelector("#table-container").innerHTML = text;
+			
+		});
+}
+
+
+function noticeDelete(sysNNo) {
+	
+	const vo = {
+			  sysNNo,	
+			};
+					
+			axios
+			  .post("/notice/noticeDelete", vo)
+			  .then((res) => {
+				 console.log(res.data);
+				 
+				 alert("삭제 완료!");
+				 
+				 noticeList();
+			  });
+}
+
+
+function hitUp(sysNNo) {
+	const vo = {
+	  sysNNo,	
+	};
+			
+	axios
+	  .post("/notice/hitUp", vo)
+	  .then((res) => {
+		 console.log(res.data); 
+	  });
+}
+
+
+function noticeUpdate(sysNNo) {
+	const sysNContent = document.querySelector(".ql-editor").innerHTML;
+	const sysNTitle = document.querySelector("#sysNTitle").value;
+	const sysNCategory = document.querySelector("#noticeCategory").value;
+	
+	const vo = {
+	  sysNContent,
+	  sysNTitle,
+	  sysNCategory,
+	  adminId: '관리자',
+	  sysNNo,
+	};
+			
+	axios
+	  .post("/notice/updateNotice", vo)
+	  .then((res) => {
+		  alert("수정 완료!");
+		  noticeDetail(sysNNo);
+	  });
+		
+}
+
+
+function noticeUpdateForm(sysNNo) {
+	
+	const vo = {
+	  sysNNo,	
+	};
+	
+	axios
+		.post("/notice/noticeDetail", vo)
+		.then((res) => {
+			const noticeVO = res.data;
+			noticeInsertForm(noticeVO);
+			
+			//채우기
+			document.querySelector("#sysNTitle").value = noticeVO.sysNTitle;
+			document.querySelector(".ql-editor").innerHTML = noticeVO.sysNContent;
+		});
+	
+}
+
+
+function noticeInsertForm(data) {
+	
+	document.querySelector("#insertBtnDiv").style.display = "none";
+	document.querySelector("#listBtnDiv").style.display = "none";
+	
+	console.log("noticeInsertForm");
+
+	let text = ``;
+	
+	text += `<div class="col-lg-12">`;
+	text += `	<div class="card h-100">`;
+	text += `			<div class="card-body">`;
+	text += `				<div class="form-group">`;
+	text += `					<div class="row mb-2">`;
+	text += `						<div class="col-lg-2" style="margin: 0px; width: 15%">`;
+	text += `							<select id="noticeCategory" style="width: 180px; height: 35px;font-size: 1.5em">`;
+	text += `								<option hidden>카테고리를 선택하세요</option>`;
+	
+	if (data != null && data.sysNCategory == "작업") {
+	  text += `								<option selected>작업</option>`;
+	  text += `								<option>서비스</option>`;
+	  text += `								<option>업데이트</option>`;
+	} 
+	if (data && data.sysNCategory == "서비스") {
+	  text += `								<option>작업</option>`;
+	  text += `								<option selected>서비스</option>`;
+	  text += `								<option>업데이트</option>`;
+	} 
+	if (data && data.sysNCategory == "업데이트") {
+	  text += `								<option>작업</option>`;
+	  text += `								<option>서비스</option>`;
+	  text += `								<option selected>업데이트</option>`;
+	} 
+	
+	if (!data) {
+	  text += `								<option>작업</option>`;
+	  text += `								<option>서비스</option>`;
+	  text += `								<option>업데이트</option>`;
+	}
+	
+	text += `							</select>`;
+	text += `						</div>`;
+// 	text += `					<label for="inputName"><font class="jinoFont">제목</font></label> 
+// 								<input type="text" id="sysNTitle" name="sysNTitle" value="" class="form-control" placeholder="제목을 입력하세요"><br>`;
+	text += `					<div class="col-lg-10" style="margin: 0px; width: 85%">`;
+	text += `						<input type="text" id="sysNTitle" name="sysNTitle" value="" class="form-control" placeholder="제목을 입력하세요" style="font-size: 1.5em">`;
+	text += `					</div>`;
+	text += `				</div>`;
+	text += `				<div class="form-group">`;
+// 	text += `					<label for="inputName"><font class="jinoFont">내용</font></label>`;
+	text += `					<div id="noticeQuill-container">`;
+	text += `					  <div id="noticeQuill" class="form-control" style="height:550px;"></div>`;
+	text += `					</div>`;
+	text += `					<br>`;
+	text += `					<div id="contents"></div>`;
+	text += `					<input type="hidden" name="dviContent" id="concon" value="" style="font-size: 1.5em">`;
+	text += `				</div>`;
+	text += `				<div class="row">`;
+	text += `					<div class="col-12" style="text-align: right;">`;
+	text += `						<input type="button" value="목록" id="listBtn" class="btn btn-success waves-effect waves-light" style="font-size: 1.5em" onclick="noticeList()">`; 
+							if (data) {
+	  text += `						<input type="submit" value="수정" id="updateBtn" class="btn btn-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeUpdate(\${data.sysNNo})">`;
+							} else {
+	  text += `						<input type="submit" value="등록" id="formBtn" class="btn btn-primary waves-effect waves-light" style="font-size: 1.5em" onclick="noticeInsert()">`;
+							}
+	
+	text += `					</div>`;
+	text += `				</div>`;
+	text += `			</div>`;
+	text += `	</div>`;
+	text += `</div>`;
+	
+	document.querySelector("#table-container").innerHTML = text;
+	
+	document.querySelector("#noticeQuill-container").innerHTML = `<div id="noticeQuill" class="form-control" style="height:550px; font-size: 1.5em;"></div>`;
+	
+	var toolbarOptions = [
+        ['bold', 'underline'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        //[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        //[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+//         [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+//         [{ 'font': [] }],
+        //[{ 'align': [] }],
+
+        //['clean']                                         // remove formatting button
+      ];
+	
+	var quill = new Quill("#noticeQuill", {
+        theme: 'snow',
+        modules: {
+          toolbar: toolbarOptions,
+          syntax: true,
+        },
+        placeholder: '내용을 입력하세요',
+    });
+    
+    $("#toolbar").append($(".ql-toolbar"));
+    $(".ql-toolbar").css("font-size", "1.5em");
+}
+
+
+function noticeInsert() {
+	const sysNContent = document.querySelector(".ql-editor").innerHTML;
+	const sysNTitle = document.querySelector("#sysNTitle").value;
+	const sysNCategory = document.querySelector("#noticeCategory").value;
+	
+	const vo = {
+	  sysNContent,
+	  sysNTitle,
+	  sysNCategory,
+	  adminId: '관리자',
+	};
+	
+	axios
+	  .post("/notice/noticeInsert", vo)
+	  .then((res) => {
+		  const noticeVO = res.data;
+	      console.log("noticeVO",noticeVO);
+	      alert("등록 완료!");
+	      
+	      noticeDetail(noticeVO.sysNNo);
+	  });
+	
+}
+
+
+
+	
+	
+</script>

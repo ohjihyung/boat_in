@@ -1,0 +1,50 @@
+package kr.or.ddit.controller.member.service;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.MemberMapper;
+import kr.or.ddit.vo.MemberVO;
+
+@Service
+public class MemberServiceImpl implements IMemberService {
+
+	@Inject
+	MemberMapper mapper;
+
+	@Override
+	public void memberRegister(MemberVO memberVO) {
+		mapper.insert(memberVO);
+
+	}
+
+	@Override
+	public MemberVO selectOne(String email) {
+
+		return mapper.selectOne(email);
+	}
+
+	@Override
+	public void updateState(MemberVO memberVO) {
+		mapper.updateState(memberVO);
+
+	}
+
+    @Override
+    public MemberVO selectMember(MemberVO vo) throws Exception {
+        return mapper.selectMember(vo);
+    }
+
+
+    // ojh
+	@Override
+	public String getUserNameById(String memberId) {
+		System.out.println(memberId);
+		return mapper.getUserNameById(memberId);
+	}
+
+
+
+
+}

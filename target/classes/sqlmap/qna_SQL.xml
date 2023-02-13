@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.QnaMapper">
+	<insert id="insertQna" parameterType="QnaVO">
+		INSERT INTO QNA
+		(QNA_NO, MEMBER_ID,QNA_CONTENT, QNA_TITLE, QNA_TYPE ,QNA_STATE)
+		VALUES(SEQ_QNA.NEXTVAL, #{memberId}, #{qnaContent}, #{qnaTitle}, #{qnaType}, '0')
+		
+	</insert>
+	
+	<select id="selectAllQna" resultType="QnaVO">
+			SELECT * FROM QNA 
+   			 ORDER BY QNA_NO DESC
+	</select>
+	
+	<select id="selectUncomment" resultType="QnaVO">
+			SELECT * FROM QNA 
+			WHERE QNA_STATE = '0'
+   			 ORDER BY QNA_NO DESC
+	</select>
+	
+	<select id="selectcomment" resultType="QnaVO">
+			SELECT * FROM QNA 
+			WHERE QNA_STATE = '1'
+   			 ORDER BY QNA_NO DESC
+	</select>
+	
+	<select id="getQnaDetail" parameterType="string" resultType="QnaVO">
+		SELECT * FROM QNA 
+		WHERE QNA_NO = #{qnaNo}
+	</select>
+	
+	<update id ="adminAnswer" parameterType="QnaVO">
+		UPDATE QNA
+		SET QNA_STATE = '1',
+		    QNA_ANSWER = #{qnaAnswer},
+		    ANSWER_DATE = sysdate
+		WHERE QNA_NO = #{qnaNo}
+	</update>
+</mapper>

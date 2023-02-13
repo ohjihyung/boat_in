@@ -1,0 +1,990 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+#GAtext:hover{
+/* 	font-size: 1.2em; */
+	font-weight: bold;
+}
+</style>
+<div class="content-page">
+	<div class="content">
+
+		<div class="row mt-3">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="header-title mb-4">
+							통계 페이지
+<!-- 							<button id="testbtn" class="btn btn-primary">값확인</button> -->
+						</h4>
+
+						<ul class="nav nav-tabs nav-bordered nav-justified">
+							<li class="nav-item"><a href="#quanti-member" id="quantiMember"  onclick="printMemberQuanti()" data-bs-toggle="tab" aria-expanded="true" class="nav-link active"> 회원관련 통계</a></li>
+							<li class="nav-item"><a href="#quanti-project"id="quantiProject" onclick="printProQuanti()" data-bs-toggle="tab" aria-expanded="false" class="nav-link "> 프로젝트 이용 관련</a></li>
+							<li class="nav-item"><a href="#quanti-file"   id="quantiFile"    onclick="printFileQuanti()"data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 자료 관련 </a></li>
+							<li class="nav-item"><a href="#quanti-else"   id="quantiElse"    onclick="printElseQuanti()"data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 기타통계 </a></li>
+							<li class="nav-item"><a href="#quanti-GA"     id="quantiGA"      data-bs-toggle="tab" aria-expanded="false" class="nav-link"> 구글애널리틱스 </a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="quanti-member">
+								<div class="row  mt-2 ">
+									<div class="col-6 card ">
+										<div class="card-body">
+											<div class="card-widgets">
+												<a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> <a data-bs-toggle="collapse" href="#cardCollpase5" role="button" aria-expanded="false" aria-controls="cardCollpase5"><i class="mdi mdi-minus"></i></a> <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+											</div>
+											<h4 class="header-title mb-0">이용자 이메일</h4>
+
+											<div id="adminEmailCnt" class="collapse pt-3 show" dir="ltr">
+												<div id="apex-column-1" class="apex-charts" data-colors="#348cd4,#f06292,#ced4da"></div>
+											</div>
+											<!-- collapsed end -->
+										</div>
+										<!-- end card-body -->
+									</div>
+									<div class="col-6 card " >
+										<div class="card-body">
+											<div class="card-widgets">
+												<a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> <a data-bs-toggle="collapse" href="#cardCollpase3" role="button" aria-expanded="false" aria-controls="cardCollpase3"><i class="mdi mdi-minus"></i></a> <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+											</div>
+											<h4 class="header-title mb-0">기간별 가입인원</h4>
+
+											<div id="cardCollpase3" class="collapse pt-3 show" dir="ltr">
+												<div id="adminMemRegdate" class="apex-charts" data-colors="#f06292"></div>
+											</div>
+											<!-- collapsed end -->
+										</div>
+										<!-- end card-body -->
+									</div>
+								</div>
+								<div class="row  mt-2 ">
+									<div class="col-6 card " id="adminNologin">
+										<h4 class="header-title m-3">10일 이상 미접속 인원</h4>
+
+										<table class="table table-hover table-centered mb-0" id="adminNologinTable">
+											<thead>
+												<tr>
+													<th>아이디</th>
+													<th>최근접속일</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+									<div class="col-6 card ">
+										<p>ip 추적</p>
+									</div>
+								</div>
+
+							</div>
+							<div class="tab-pane " id="quanti-project">
+								<div class="row  mt-2 ">
+									<div class="col-4 card" >
+									<h4 class="header-title m-3"> 전체 프로젝트 통계  </h4>
+											<ul class="list-group">
+							                    <li class="list-group-item d-flex align-items-center">
+							                    	<h5 class="header-title "> 프로젝트 총 갯수 &nbsp;&nbsp; <span class="badge bg-primary rounded-pill counter-prototalCnt" id="adminProTotalCnt"></span> </h5>
+							                    </li>
+							                    <li class="list-group-item d-flex justify-content-between align-items-center">
+							                    	<h5 class="header-title "> 프로젝트 총 작업갯수 &nbsp;&nbsp; <span class="badge bg-success rounded-pill counter-protopworkCnt" id="adminProTopworkTotalCnt"></span> </h5>
+							                    </li>
+							                    <li class="list-group-item d-flex justify-content-between align-items-center">
+							                   		<h5 class="header-title ">  프로젝트별 평균 작업생성 갯수&nbsp;&nbsp;   <span class="badge bg-danger rounded-pill counter-protopworkAvg"id="adminProTopworkTotalavg"></span></h5>
+							                    </li>
+							                </ul>
+							          	<h4 class="header-title m-3"> 기간별 프로젝트 </h4> 
+											<ul class="list-group">
+												 <li class="list-group-item d-flex justify-content-between align-items-center">
+							                   		<h5 class="header-title ">  2주미만 &nbsp;&nbsp;   <span class="badge bg-warning rounded-pill counter-periodWeek2" id="periodWeek2"></span></h5>
+							                    </li>
+							                    <li class="list-group-item d-flex justify-content-between align-items-center">
+							                   		<h5 class="header-title ">  2주이상 3개월 미만 &nbsp;&nbsp;   <span class="badge bg-warning rounded-pill counter-periodMonth3" id="periodMonth3"></span></h5>
+							                    </li>
+							                    <li class="list-group-item d-flex justify-content-between align-items-center">
+							                   		<h5 class="header-title ">  6개월 이상 &nbsp;&nbsp;   <span class="badge bg-warning rounded-pill counter-periodMonth6A" id="periodMonth6"></span></h5>
+							                    </li>
+											</ul>
+									</div>
+									<div class="col-8 card " >
+										<div class="card-body">
+											<div class="card-widgets">
+												<a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> <a data-bs-toggle="collapse" href="#cardCollpase5" role="button" aria-expanded="false" aria-controls="cardCollpase5"><i class="mdi mdi-minus"></i></a> <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+											</div>
+											<h4 class="header-title mb-0">프로젝트 종류별 총계</h4>
+
+											<div id="adminProtype" class="collapse pt-3 show" dir="ltr">
+												<div id="apex-column-1" class="apex-charts" data-colors="#348cd4,#f06292,#ced4da"></div>
+											</div>
+											<!-- collapsed end -->
+										</div>
+										<!-- end card-body -->
+									</div>
+								</div>
+							</div>
+							<!-- 파일 -->
+							<div class="tab-pane" id="quanti-file">
+								<div class="row  mt-2 "id="adminBestFile">
+									
+								</div>
+								<div class="row  mt-2 ">
+									<div class="col-12 card " id="adminFileChart">
+									</div>
+										
+								</div>
+							</div>
+							<div class="tab-pane" id="quanti-else">
+								<div class="row  mt-2 ">
+									<div class="col-6 card " >
+										<h4 class="header-title mt-2">위젯 종류별 사용 현황</h4>
+										<div id="adminWidgetCnt"></div>
+									</div>
+									<div class="col-6 card" >
+										<h4 class="header-title mt-2">기간별 qna 등록 수</h4>
+										<div id="adminQnaCnt"></div>
+									</div>
+								</div>
+<!-- 								<div class="row  mt-2 "> -->
+<!-- 									<div class="col-6 card " id=""> -->
+<!-- 										<p>채팅 이용현황</p> -->
+<!-- 									</div> -->
+<!-- 									<div class="col-6 card "> -->
+<!-- 										<p>기타</p> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+							</div>
+							<div class="tab-pane text-center mt-2" id="quanti-GA" style="height:100px;" >
+<!-- 								<a href="https://analytics.google.com/analytics/web/?hl=ko#/p350449611/reports/reportinghub"> 애널리틱스 확인 </a> -->
+								<button class="btn btn-outline-purple rounded-pill waves-effect waves-light">
+								<h2>
+									<a id="GAtext" target="_blank"  href="https://analytics.google.com/analytics/web/?hl=ko#/report-home/a250498191w351326102p283802461"> Google Analytics 확인하기</a>
+								</h2> 
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end card-->
+			</div>
+			<!-- end col -->
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	adminEmailCnt()
+	adminMemRegdate()
+	adminNologin()
+	adminProTopworkCnt()
+	adminProPeriod()
+})
+
+//탭 누르면 프린트 
+function printMemberQuanti() {
+	clearQuanti()
+	adminEmailCnt()
+	adminMemRegdate()
+	adminNologin()
+} 
+function printProQuanti() {
+	clearQuanti()
+	adminProtype()
+	
+	counterUpByQuanti("prototalCnt")
+	counterUpByQuanti("protopworkCnt")
+	counterUpByQuanti("protopworkAvg")
+	counterUpByQuanti("periodWeek2")
+	counterUpByQuanti("periodMonth3")
+	counterUpByQuanti("periodMonth6")
+}
+
+function printFileQuanti() {
+	clearQuanti()
+	printFileChart()
+	counterUpByQuanti("totalFileCnt")
+	counterUpByQuanti("totalFileSize")
+}  
+function printElseQuanti() {
+	clearQuanti()
+	adminWidgetCnt()
+	adminQnaCnt()
+} 
+function clearQuanti(){
+	$('#adminEmailCnt').empty();
+	$('#adminMemRegdate').empty();
+	$('#adminProtype').empty();
+	$('#adminProTopworkCnt').empty();
+	$('#adminProPeriod').empty();
+	$('#adminBestFile').empty();
+	$('#adminFileChart').empty();
+// 	table.clear().draw();
+}
+
+$("#quanti-GA").on('click', function() {
+	
+})     
+
+// 값 확인용 프린트버튼
+$('#testbtn').on('click', function() {
+	
+})
+
+	/* 이메일별 가입자수 이용자 이메일  */
+	function adminEmailCnt() {
+		$.ajax({
+					url : "/adminquanti/adminemailcnt",
+					type : "post",
+					contentType : 'application/json; charset=utf-8',
+					dataType : 'json',
+					success : function(res) {
+						var categories = [];
+						var data = [];
+						var memberName = [];
+// 						console.log(res)
+						var email = [];
+						
+						for (var i = 0; i < res.length; i++) {
+							email.push(res[i].email.substr(1))
+							memberName.push(email[i])
+							categories.push(email[i])
+							data.push(res[i].cnt)
+						}
+						var options = {
+							chart : {
+								type : "bar",
+							},
+							series : [{
+								data : data,
+							}],
+							plotOptions: {
+						          bar: {
+						            distributed: true,
+						            dataLabels: {
+						              position: 'bottom',
+						            }
+						          }
+						        },
+					        xaxis: {
+					            categories: memberName,
+					        },
+					        yaxis: {
+						          min: 0,
+// 						          max: 100
+						        },
+						    labels: memberName
+						};
+
+						var chart = new ApexCharts(document
+								.querySelector("#adminEmailCnt"), options);
+
+						chart.render();
+
+					},
+				});//ajax
+	}
+	/* 기간별 가입자수 */
+	function adminMemRegdate() {
+		$.ajax({
+			url : "/adminquanti/adminmemregdate",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log(res)
+				//chart
+				//작업번호,타이틀, 진행도
+				var categories = [];
+				var data = [];
+				
+// 				console.log("아작스 반환값 : ", res)
+				for (var i = 0; i < res.length; i++) {
+					categories.push(res[i].data.substr(0,10))
+					data.push(res[i].cnt)
+				}
+// 				console.log(categories)
+				 var options = {
+				          series: [{
+				          name: '인원수',
+				          data: data
+				        }],
+				          chart: {
+				          height: 350,
+				          type: 'line',
+				        },
+				        stroke: {
+				          width: 5,
+				          curve: 'smooth'
+				        },
+				        xaxis: {
+// 				            type: 'datetime',
+				            categories:categories ,
+				        },
+				        title: {
+				          text: '인원수(명)',
+				          align: 'left',
+				          style: {
+				            fontSize: "16px",
+				            color: '#666'
+				          }
+				        },
+				        fill: {
+				          type: 'gradient',
+				          gradient: {
+				            shade: 'dark',
+				            gradientToColors: [ '#FDD835'],
+				            shadeIntensity: 1,
+				            type: 'horizontal',
+				            opacityFrom: 1,
+				            opacityTo: 1,
+				            stops: [0, 100, 100, 100]
+				          },
+				        },
+				        yaxis: {
+				          min: 0,
+				          max: 15
+				        }
+				        };
+
+				        var chart = new ApexCharts(document.querySelector("#adminMemRegdate"), options);
+				        chart.render();
+
+				
+
+			},
+		});//ajax
+	}
+	/* 프로젝트 종류별 총계 */
+	function adminProtype() {
+		$.ajax({
+			url : "/adminquanti/adminprotype",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log(res)
+				var categories = [];
+				var data = [];
+				for (var i = 0; i < res.length; i++) {
+					categories.push(res[i].data)
+					data.push(res[i].cnt)
+				}
+				var options = {
+					chart : {
+						type : "bar",
+					},
+					series : [{
+						data : data,
+					}],
+					plotOptions: {
+				          bar: {
+				            distributed: true,
+				            dataLabels: {
+				              position: 'bottom',
+				            }
+				          }
+				        },
+			        xaxis: {
+			            categories: categories,
+			        },
+			        yaxis: {
+				          min: 0,
+//					          max: 100
+				        },
+				    labels: categories
+				};
+
+				var chart = new ApexCharts(document
+						.querySelector("#adminProtype"), options);
+
+				chart.render();
+
+			},
+		});//ajax
+	}
+	
+	/* 프로젝트 작업갯수 총계 */
+	function adminProTopworkCnt() {
+		$.ajax({
+			url : "/adminquanti/adminprotopworkcnt",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log("프로젝트 작업갯수 총계 : ",res)
+				var str = "";
+				var	totalCnt =0 
+				for (var i = 0; i < res.length; i++) {
+// 					str += `<p>프로젝트 :  \${res[i].data} cnt : \${res[i].cnt} </p>`
+					totalCnt += parseInt(res[i].cnt);
+				}
+				var avg = totalCnt/res.length
+				$('#adminProTotalCnt').text(`\${res.length}`)
+				$('#adminProTopworkTotalCnt').text(`\${totalCnt}`)
+				$('#adminProTopworkTotalavg').text(`\${avg.toFixed(2)}`)
+
+			},
+		});//ajax
+	}
+	
+	/* 프로젝트의 평균 소요기간  */
+	function adminProPeriod() {
+		$.ajax({
+			url : "/adminquanti/adminproperiod",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log(res)
+				var str = "";
+				var week2 = 0 ;
+				var month3 = 0;
+				var month6 = 0 ;
+				for (var i = 0; i < res.length; i++) {
+					var period =parseInt(res[i].period);
+					if (period < 14) {
+						week2 += 1
+					}
+					if (period > 14 && period  < 90  ) {
+						month3 += 1
+					}
+					if (period  > 180  ) {
+						month6 += 1
+					}
+// 						str += `<p>2주미만  :  \${res[i].data} cnt : \${res[i].fileSize} </p>`
+				}
+				$('#periodWeek2').text(`\${week2}`)
+				$('#periodMonth3').text(`\${month3}`)
+				$('#periodMonth6').text(`\${month6} `)
+
+			},
+		});//ajax
+	}
+	
+	/* 업로드된 파일 종류 집계  */
+	function adminFileTypeCnt() {
+		var fileTypeCnt ; 
+		$.ajax({
+			url : "/adminquanti/adminfiletypecnt",
+			type : "post",
+			async: false,
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				fileTypeCnt= res ;
+
+			},
+		});//ajax
+		return fileTypeCnt;
+	}
+	/* 업로드된 파일 사용량 크기  */
+	function adminFileSize() {
+		var fileSize;
+		$.ajax({
+			url : "/adminquanti/adminfilesize",
+			type : "post",
+			async: false,
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				fileSize = res
+			},
+		});//ajax
+		return fileSize;
+	}
+	
+	/* 파일 차트그리기  */
+	
+	function printFileChart(){
+		var fileTypeCnt = adminFileTypeCnt(); 
+		var fileSizeCnt =adminFileSize()
+// 		console.log("파일차트 개수 : ",fileTypeCnt)
+// 		console.log("파일차트 사이즈 : ",fileSizeCnt)
+		var type = []
+		var typedata= []
+		var sizedata= []
+		var totalCnt = 0;
+		var totalSize = 0;
+		for (var i = 0; i < fileTypeCnt.length; i++) {
+			type.push(fileTypeCnt[i].data.substr(1))
+			typedata.push(-fileTypeCnt[i].cnt)
+			totalCnt += parseInt(fileTypeCnt[i].cnt);
+		}
+		for (var i = 0; i < fileSizeCnt.length; i++) {
+			console.log("몇이야 : ", fileSizeCnt[i]);
+			console.log("몇이야 : ", fileSizeCnt[i].fileSize);
+			console.log("몇이야 : ", fileSizeCnt[i].fileSize/(1024*1024));
+			sizedata.push(fileSizeCnt[i].fileSize/(1024*1024))
+			totalSize += parseInt(fileSizeCnt[i].fileSize/(1024*1024));
+		}
+// 		console.log("총개수 : ", totalCnt)
+// 		console.log("총사이즈 : ", totalSize)
+// 		type.splice(11,12)      
+// 		typedata.splice(11,12)
+// 		sizedata.splice(11,12)
+		//var jpgsize = fileSizeCnt[12].fileSize/(1024*1024)
+// 			fileTypeCnt[12].cnt
+         var str = `
+        	<h4> <strong> 파일 총 사용량  </strong></h4>
+        	<div class="col-md-4">
+	            <div class="card text-white  bg-warning text-xs-center">
+	                <div class="card-body">
+	                    <blockquote class="card-bodyquote mb-0">
+	                    <h3 class=" text-white"> <strong> 총개수 :&nbsp&nbsp  <span class="counter-totalFileCnt">\${totalCnt}</span> 개 </strong></h3>  
+	                    </blockquote>
+	                </div>
+	            </div>
+            </div>
+        	<div class="col-md-4">
+	            <div class="card text-white bg-warning text-xs-center">
+	                <div class="card-body">
+	                    <blockquote class="card-bodyquote mb-0">
+	                    <h3 class="text-white"> <strong > 총사용량 :&nbsp&nbsp  <span class="counter-totalFileSize"> \${totalSize}</span> MB </strong></h3>  
+	                    </blockquote>
+	                </div>
+	            </div>
+            </div>
+          `
+	        $('#adminBestFile').html(str)			
+		  var options = {
+		          series: [{
+		          name: '데이터크기 합계(MB)',
+		          data: sizedata
+		        },
+		        {
+		          name: '자료 총 개수(개)',
+		          data: typedata
+		        }
+		        ],
+		          chart: {
+		          type: 'bar',
+		          height: 440,
+		          stacked: true
+		        },
+		        plotOptions: {
+		          bar: {
+		        	distributed: true,
+		            horizontal: true,
+		            barHeight: '80%',
+		          },
+		        },
+		        dataLabels: {
+		          enabled: false
+		        },
+		        stroke: {
+		          width: 1,
+		          colors: ["#fff"]
+		        },
+		        
+		        grid: {
+		          xaxis: {
+		            lines: {
+		              show: false
+		            }
+		          }
+		        },
+		        yaxis: {
+// 		          min: -500,
+// 		          max: 999999999,
+		          title: {
+		            text: '파일종류(확장자)',
+		          },
+		        },
+		        tooltip: {
+		          shared: false,
+		          x: {
+		            formatter: function (val) {
+		              return val 
+		            }
+		          },
+		          y: {
+		            formatter: function (val) {
+		              return Math.abs(val.toFixed(2))
+		            }
+		          }
+		        },
+		        title: {
+		          text: "파일 종류별 개수(개) & 사용량(MB) ",
+		        },
+		        xaxis: {
+		          categories:type,
+		          title: {
+// 		            text: '*참고  사진파일(JPG) 총개'
+		          },
+		          labels: {
+		            formatter: function (val) {
+		              return Math.abs(val)
+		            }
+		          }
+		        },
+		        };
+
+		        var chart = new ApexCharts(document.querySelector("#adminFileChart"), options);
+		        chart.render();
+		       
+		
+	}
+	
+	
+	
+// 	/* 프로젝트의 종류별  평균 투입 인력  */
+// 	function adminProPeriod() {
+// 		$.ajax({
+// 			url : "/adminquanti/adminproavgmem",
+// 			type : "post",
+// 			contentType : 'application/json; charset=utf-8',
+// 			dataType : 'json',
+// 			success : function(res) {
+// 				console.log(res)
+// 				var str = "";
+// 				var totalCnt = 0 ;
+// 				for (var i = 0; i < res.length; i++) {
+// 					totalCnt
+// 				}
+// 				avg = avg/res.length
+// 				str += `<p>  \${avg} </p>`
+// 				$('#adminProAvgMem').append(str)
+
+// 			},
+// 		});//ajax
+// 	}
+
+/* 위젯별   사용량  */
+ function adminWidgetCnt() {
+		$.ajax({
+			url : "/adminquanti/adminwidgetcnt",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log(res)
+// 				for (var i = 0; i < res.length; i++) {
+// 					str += `<p>위젯종류 :  \${res[i].widgetName} cnt : \${res[i].cnt} </p>`
+// 				}
+				
+				var data = [];
+				var widgetName = [];
+				
+				for (var i = 0; i < res.length; i++) {
+					widgetName.push(res[i].widgetName)
+					data.push(res[i].cnt)
+				}
+				var options = {
+					chart : {
+						type : "bar",
+					},
+					series : [{
+						data : data,
+					}],
+					plotOptions: {
+				          bar: {
+				            distributed: true,
+				            dataLabels: {
+				              position: 'bottom',
+				            }
+				          }
+				        },
+			        xaxis: {
+			            categories: widgetName,
+			        },
+			        yaxis: {
+				          min: 0,
+//					          max: 100
+				        },
+				    labels: widgetName
+				};
+
+				var chart = new ApexCharts(document.querySelector("#adminWidgetCnt"), options);
+
+				chart.render();
+
+			},
+		});//ajax
+
+	}
+/* 기간별 qna 등록수   */
+ function adminQnaCnt() {
+		$.ajax({
+			url : "/adminquanti/adminqnacnt",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+// 				console.log(res)
+// 				for (var i = 0; i < res.length; i++) {
+// 					str += `<p>date :  \${res[i].period} cnt : \${res[i].cnt} </p>`
+// 				}
+				var categories = [];
+				var data = [];
+				
+// 				console.log("아작스 반환값 : ", res)
+				for (var i = 0; i < res.length; i++) {
+					categories.push(res[i].period)
+					data.push(res[i].cnt)
+				}
+// 				console.log(categories)
+				 var options = {
+				          series: [{
+				          name: '등록수',
+				          data: data
+				        }],
+				          chart: {
+				          height: 350,
+				          type: 'line',
+				        },
+				        stroke: {
+				          width: 5,
+				          curve: 'smooth'
+				        },
+				        xaxis: {
+// 				            type: 'datetime',
+				            categories:categories ,
+				        },
+				        title: {
+				          text: '인원수(명)',
+				          align: 'left',
+				          style: {
+				            fontSize: "16px",
+				            color: '#666'
+				          }
+				        },
+				        fill: {
+				          type: 'gradient',
+				          gradient: {
+				            shade: 'dark',
+				            gradientToColors: [ '#FDD835'],
+				            shadeIntensity: 1,
+				            type: 'horizontal',
+				            opacityFrom: 1,
+				            opacityTo: 1,
+				            stops: [0, 100, 100, 100]
+				          },
+				        },
+				        yaxis: {
+				          min: 0,
+// 				          max: 100
+				        }
+				        };
+
+				        var chart = new ApexCharts(document.querySelector("#adminQnaCnt"), options);
+				        chart.render();
+
+			},
+		});//ajax
+	}
+ 
+/* 미접속 경과 회원 리스트  */
+ function adminNologin() {
+		$.ajax({
+			url : "/adminquanti/adminnologin",
+			type : "post",
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				var table = $('#adminNologinTable').DataTable({
+					responsive:true,
+					 retrieve: true,
+//						 scrollX: true,
+					scrollCollapse:true,
+					 lengthMenu :  [ [5], [5] ],
+					 bAutoWidth: false, //자동너비
+// 					 bAutoWidth: true, //자동너비
+//		 			columns:[
+//		 				{data : "컬럼명"},
+//		 				{data : "컬럼명"},
+//		 			]
+					language: {
+			            emptyTable: "텅~",
+			            lengthMenu: "_MENU_ 개씩 보기",
+			            info: "현재 _START_ - _END_ / _TOTAL_건",
+			            infoEmpty: "데이터 없음",
+			            infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+			            search: "",
+			            zeroRecords: "일치하는 데이터가 없습니다.",
+			            loadingRecords: "로딩중...",
+			            processing: "잠시만 기다려 주세요.",
+			            paginate: {
+			              next: "다음",
+			              previous: "이전",
+			            },
+			          },
+			            order: [ [ 1, "asc" ] ],
+			            pageLength: 4,
+				})
+				table.clear().draw();
+				
+				
+// 				console.log(res)
+				var today = new Date()
+				for (var i = 0; i < res.length; i++) {
+					var recentlog =new Date(res[i].recentlog).getDate()
+					var today = new Date().getDate()
+					var compareday  = recentlog-today
+					if (compareday < -10) {
+						table.row.add([
+							`<td>\${res[i].memberId}</td>`,
+							`<td>\${res[i].recentlog}</td>`
+								]).draw(false);
+					}
+				}
+// 				$('#adminNologin').append(str)
+
+			},
+		});//ajax
+	}
+	
+// 카운팅함수 
+ function counterUpByQuanti(countTarget) {
+		$(`.counter-\${countTarget}`).counterUp({
+		    delay: 10,
+		    time: 1000,
+		});
+	}
+</script>
+
+
+
+
+
+<!-- GA -->
+<!-- <script src="https://apis.google.com/js/api.js"></script> -->
+<script>
+// // 인증방식만 현재껄로 바꾸면 가능해질듯 GDOCS 참고  
+
+// // 	Replace with your client ID from the developer console.
+// 	var CLIENT_ID = "616281354554-6o87hislmpbfkje2r0ma6iq364je4lab.apps.googleusercontent.com" // <-- 발급받은 Client ID 입력 
+
+// 	// Set authorized scope.
+// 	var SCOPES = [ 'https://www.googleapis.com/auth/analytics.readonly' ];
+// 		// Handles the authorization flow.
+// 		// `immediate` should be false when invoked from the button click.
+// 		var useImmdiate = event ? false : true;
+// 		var authData = {
+// 			client_id : CLIENT_ID,
+// 			scope : SCOPES,
+// 			immediate : false
+// 		};
+// 		console.log("인증 ")
+// 		gapi.auth.authorize(authData, function(response) {
+// 			var authButton = document.getElementById('auth-button');
+// 			console.log("인증 후  ", response)
+
+// 			if (response.error) {
+// 				authButton.hidden = false;
+// 			} else {
+// 				authButton.hidden = true;
+// 				queryAccounts();
+// 			}
+// 		});
+
+// 	function queryAccounts() {
+// 		console.log("쿼리어카운트   ")
+// 		// Load the Google Analytics client library.
+// 		gapi.client.load('analytics', 'v3').then(
+// 				function() {
+
+// 					// Get a list of all Google Analytics accounts for this user
+// 					gapi.client.analytics.management.accounts.list().then(
+// 							handleAccounts);
+// 				});
+// 	}
+
+// 	function handleAccounts(response) {
+// 		console.log("핸들어카운트   ")
+// 		// Handles the response from the accounts list method.
+// 		if (response.result.items && response.result.items.length) {
+// 			// Get the first Google Analytics account.
+// 			var firstAccountId = response.result.items[0].id;
+
+// 			// Query for properties.
+// 			queryProperties(firstAccountId);
+// 		} else {
+// 			console.log('No accounts found for this user.');
+// 		}
+// 	}
+
+// 	function queryProperties(accountId) {
+// 		console.log("쿼리프로퍼티스   ")
+// 		// Get a list of all the properties for the account.
+// 		gapi.client.analytics.management.webproperties.list({
+// 			'accountId' : accountId
+// 		}).then(handleProperties).then(null, function(err) {
+// 			// Log any errors.
+// 			console.log(err);
+// 		});
+// 	}
+
+// 	function handleProperties(response) {
+// 		console.log("핸들프로퍼티스   ")
+// 		// Handles the response from the webproperties list method.
+// 		if (response.result.items && response.result.items.length) {
+
+// 			// Get the first Google Analytics account
+// 			var firstAccountId = response.result.items[0].accountId;
+
+// 			// Get the first property ID
+// 			var firstPropertyId = response.result.items[0].id;
+
+// 			// Query for Views (Profiles).
+// 			queryProfiles(firstAccountId, firstPropertyId);
+// 		} else {
+// 			console.log('No properties found for this user.');
+// 		}
+// 	}
+
+// 	function queryProfiles(accountId, propertyId) {
+// 		console.log("쿼리프로필스  ")
+// 		// Get a list of all Views (Profiles) for the first property
+// 		// of the first Account.
+// 		gapi.client.analytics.management.profiles.list({
+// 			'accountId' : accountId,
+// 			'webPropertyId' : propertyId
+// 		}).then(handleProfiles).then(null, function(err) {
+// 			// Log any errors.
+// 			console.log(err);
+// 		});
+// 	}
+
+// 	function handleProfiles(response) {
+// 		console.log("핸들프로필스  ")
+// 		// Handles the response from the profiles list method.
+// 		if (response.result.items && response.result.items.length) {
+// 			// Get the first View (Profile) ID.
+// 			var firstProfileId = response.result.items[0].id;
+// 			// Query the Core Reporting API.
+// 			queryCoreReportingApi(firstProfileId);
+
+// 		} else {
+// 			console.log('No views (profiles) found for this user.');
+// 		}
+// 	}
+
+// 	function queryCoreReportingApi(profileId) {
+// 		console.log("쿼리 코어 리포팅 api  ")
+// 		// Query the Core Reporting API for the number sessions for
+// 		// the past seven days.
+// 		gapi.client.analytics.data.ga
+// 				.get(
+// 						{
+// 							'ids' : 'ga:' + profileId,
+// 							// ## 조회 시작일자
+// 							'start-date' : '2020-03-03',
+// 							// ## 조회 마지막일자
+// 							'end-date' : '2020-03-09',
+// 							// ##  -- 사용자, 신규 방문자, 세션, 이탈률, 평균세션시간(초), 페이지뷰 수, 세션당 페이지수, 사용자당 세션 수 
+// 							'metrics' : 'ga:users,ga:newUsers,ga:sessions,ga:bounceRate,ga:avgSessionDuration,ga:pageviews,ga:pageviewsPerSession,ga:sessionsPerUser',
+// 							// ##  -- 소스 , 매체
+// 							'dimensions' : 'ga:source,ga:medium'
+// 						})
+// 				.then(
+// 						function(response) {
+// 							var formattedJson = JSON.stringify(response.result,
+// 									null, 2);
+// 							console.log("GA 데이터 ", formattedJson)
+// 							document.getElementById('query-output').value = formattedJson;
+// 						}).then(null, function(err) {
+// 					// Log any errors.
+// 					console.log(err);
+// 				});
+// 	}
+</script> 
+<!-- <script src="https://apis.google.com/js/client.js?onload=authorize"></script> -->

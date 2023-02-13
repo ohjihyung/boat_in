@@ -1,0 +1,1058 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
+
+<style>
+.backgroundColorDiv {
+	/* 	border:1px solid  black; */
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	float: left;
+	margin: 10px;
+	cursor: pointer;
+	text-align: center;
+	padding-top: 1.5%;
+}
+
+.backgroundColorDiv:hover {
+	treansform: scale(1.2);
+	-webkit-transform: scale(1.2);
+}
+
+.bgCheckedIcon {
+	font-size: 30px;
+	display: none;
+}
+
+.newsCard:hover{
+	treansform: scale(1.05);
+	-webkit-transform: scale(1.05);
+	cursor: pointer;
+}
+
+#projectIcon{
+	font-size: 3em;
+}
+
+
+#projectNameSpan{
+	display:none;
+}
+
+#projectBtnFromHome:hover #projectIcon{
+	display:none;
+}
+
+#projectBtnFromHome:hover #proTypeNamePTag{
+	display:none;
+}
+
+#projectBtnFromHome:hover #projectNameSpan{
+	display:block;
+}
+
+
+</style>
+
+
+
+
+
+
+
+<div class="content-page" id="changeMyhomeBgDiv">
+	<!-- 배경색 변경은 이 div에 줘야함 -->
+	<div class="content">
+		<div class="container-fluid">
+
+
+			<div class="mt-3">
+				<div class="row justify-content-center">
+					<div class="col-xl-10">
+						<div class="card-body" style="text-align: center">
+							<div>
+								<img src="" class="rounded-circle avatar-xl" alt="profile-image" id="memberPicPrintTag">
+							</div>
+							<h1>
+								안녕하세요, <span id="memberNamePrint"></span>&nbsp;님
+							</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row justify-content-center">
+				<div class="col-xl-10">
+
+					<nav id="navbar-example2" class="navbar navbar-light bg-white px-3" style="border-radius: 5px">
+						<a class="navbar-brand"  style="width: 119px">HOME</a>
+
+						<div class="justify-content-center">
+							<ul class="nav nav-pills">
+								<li class="nav-item" style="font-size: 1em">
+									<h4>
+										<input type="text" id="inputDateInMyHome" style="text-align: center; outline-style: none; width: 50%; margin-left: 20%; border: none;" readonly>
+									</h4>
+								</li>
+							</ul>
+						</div>
+						<ul class="nav nav-pills">
+							<li class="nav-item"><a class="nav-link" href="#myHomeCostomizingModal" data-bs-toggle="modal"><i class="fe-grid">&nbsp;사용자 지정</i></a></li>
+
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<br>
+
+			
+			<div class="row justify-content-center homeDraggable">		
+				<div class="col-xl-10">
+					<div class="card" style="height: 180px;">
+						<div class="card-body">
+							<div class="dropdown float-end">
+								<a href="#" class="dropdow n-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"> <i class="mdi mdi-dots-vertical"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end">
+									<!-- item-->
+									<a href="" class="dropdown-item text-danger"><i class="fe-trash-2">&nbsp;위젯제거</i></a>
+								</div>
+							</div>
+							 <div class="row align-items-center">
+									<h4 class="header-title mb-2" >내 프로젝트</h4>
+									<div class="d-flex" id="myprojectListInMyhome">
+<!-- 	                                            <div class="d-flex" style="margin-left:2%"> -->
+<!-- 	                                                <div style="width:100px;height:100px;"> -->
+<!-- 	                                                    <button type="button" class="btn btn-soft-primary waves-effect waves-light" style="width:100%;height:100%;border-radius:15%"> -->
+<!-- 	                                                    </button> -->
+<!-- 	                                                </div> -->
+<!-- 	                                            </div> -->
+	                                            
+								  </div><!-- 프로젝트 리스트 뽑을 곳 -->
+										
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!-- 내 프로젝트 row끝! -->
+				
+			<div class="row justify-content-center homeDraggable">	
+				
+				<div class="col-xl-5">
+					<div class="card" style="height: 320px;">
+						<div class="card-body">
+							<div class="dropdown float-end">
+								<a href="#" class="dropdow n-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"> <i class="mdi mdi-dots-vertical"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end">
+									<!-- item-->
+									<a href="" class="dropdown-item text-danger"><i class="fe-trash-2">&nbsp;위젯제거</i></a>
+								</div>
+							</div>
+							
+								<div class="row">
+									<h4 class="header-title mb-2" style="float: left;">알림&nbsp;<i class="fe-bell"></i></h4>
+								</div>	
+									
+									    <div class="row justify-content-center">
+                                            <div class="col-xl-3">
+                                                <div class="nav flex-column nav-pills nav-pills-tab" id="v-pills-tab-myHome" role="tablist" aria-orientation="vertical">
+                                                    <a class="nav-link show mb-1 active" id="v-pills-project-tab" data-bs-toggle="pill" href="#v-pills-project" role="tab" aria-controls="vv-pills-project" aria-selected="true" >
+                                                        FROM. 프로젝트</a>
+                                                    <a class="nav-link mb-1" id="v-pills-invite-tab" data-bs-toggle="pill" href="#v-pills-invite" role="tab" aria-controls="v-pills-invite" aria-selected="false">
+                                                        FROM. 초대</a>
+                                                    <a class="nav-link mb-1" id="v-pills-mail-tab" data-bs-toggle="pill" href="#v-pills-mail" role="tab" aria-controls="v-pills-mail" aria-selected="false">
+                                                        FROM. 쪽지</a>
+                                                    <a class="nav-link mb-1" id="v-pills-chatting-tab" data-bs-toggle="pill" href="#v-pills-chatting" role="tab" aria-controls="v-pills-chatting" aria-selected="false">
+                                                        FROM. 채팅</a>
+                                                    <a class="nav-link mb-1" id="v-pills-common-tab" data-bs-toggle="pill" href="#v-pills-common" role="tab" aria-controls="v-pills-common" aria-selected="false">
+                                                        FROM. 댓글</a>
+                                                    <a class="nav-link mb-1" id="v-pills-likelike-tab" data-bs-toggle="pill" href="#v-pills-likelike" role="tab" aria-controls="v-pills-likelike" aria-selected="false">
+                                                        FROM. 좋아요❤</a>
+                                                </div>
+                                            </div> <!-- end col-->
+                                            
+                                            <div class="col-xl-8" data-simplebar style="max-height: 240px;">
+                                                <div class="tab-content pt-0">
+                                                    <div class="tab-pane fade active show" id="v-pills-project" role="tabpanel" aria-labelledby="v-pills-project-tab">
+                                                        <div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-invite" role="tabpanel" aria-labelledby="v-pills-invite-tab">
+																	<div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>                                                        
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-mail" role="tabpanel" aria-labelledby="v-pills-mail-tab">
+                                                        			<div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-chatting" role="tabpanel" aria-labelledby="v-pills-chatting-tab">
+																	<div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-common" role="tabpanel" aria-labelledby="v-pills-common-tab">
+			                                                        <div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-likelike" role="tabpanel" aria-labelledby="v-pills-likelike-tab">
+                                                        <div class="list-group">
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+							                                            <a href="#" class="list-group-item list-group-item-action">
+							                                                <div class="d-flex w-100 justify-content-between">
+							                                                    <h5 class="mb-1">List group item heading</h5>
+							                                                    <small class="text-muted">3 days ago</small>
+							                                                </div>
+							                                                <small class="text-muted">Donec id elit non mi porta.</small>
+							                                            </a>
+			                                       				 </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end col-->
+									</div><!-- end row -->	
+						
+					</div>
+				</div>
+			</div>
+
+				<div class="col-xl-5">
+					<div class="card" style="height: 320px;">
+						<div class="card-body">
+							<div class="dropdown float-end">
+								<a href="#" class="dropdow n-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"> <i class="mdi mdi-dots-vertical"></i>
+								</a>
+								<div class="dropdown-menu dropdown-menu-end">
+									<!-- item-->
+									<a href="" class="dropdown-item text-danger"><i class="fe-trash-2">&nbsp;위젯제거</i></a>
+								</div>
+							</div>
+								<div class="row align-items-center">
+									<h4 class="header-title mb-2" style="float: left;">마감 3일 전 작업</h4>
+									<!-- 이 안에 내용 들어가야 함 -->
+									<div class="inbox-widget" data-simplebar style="max-height: 380px;">
+										
+									                                            
+									</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+
+			<!-- 	 		<div style="height:100px"></div>배경색 끝까지 채우기 위해서 필요 -->
+
+				
+	<div class="homeDraggable">
+					<div class="row justify-content-center">
+						<div class="col-xl-10">
+						
+						<div class="row">		
+					
+								<div class="col-xl-4 newsCard"  id="newsLinkTag1" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag1" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle1"></strong></h5>
+														<p class="card-text" >
+															<small class="text-muted" >
+																<strong id="newsTime1"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag2" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag2" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle2"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime2"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag3" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag3" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle3"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime3"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag4" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag4" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle4"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime4"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag5" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag5" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle5"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime5"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag6" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag6" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle6"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime6"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag7" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag7" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle7"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime7"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag8" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag8" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle8"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime8"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-4 newsCard"  id="newsLinkTag9" onclick="">
+									<div class="card mb-3"  style="height:145px">
+										<div class="row g-0">
+											<div class="col-xl-5" style="height:145px;margin:0 auto;">
+												<img  id="newsImgTag9" style="width:100%;height:100%;object-fit:fill;border-top-left-radius:3%;border-bottom-left-radius:3%" src="" alt="..." >
+											</div>
+											<div class="col-xl-7">
+												<div class="card-body" style="padding-top:7%;">
+												 <div style="height:90px;">
+														<h5 class="card-title"  style="line-height:1.5em;margin-bottom:1%;"><strong id="newsTitle9"></strong></h5>
+														<p class="card-text">
+															<small class="text-muted">
+																<strong id="newsTime9"></strong>
+															</small>
+														</p>
+												 </div>
+															<div>
+																<img  class="avatar-xs rounded-circle" src="/resources/profileImg/mk_logo.jfif">
+																<strong>매일경제:&nbsp;IT&#149;인터넷</strong>
+															</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+				</div><!-- col-10안쪽에 있는 row -->
+	
+				</div><!-- 젤 처음 생성한 row를 col-10으로 고정해주는 div -->
+				
+				</div><!-- end row  -->
+
+			</div>
+			<!-- news위젯 끝! -->
+
+
+
+			<!-- 사용자 지정 관련 모달 -->
+			<div id="myHomeCostomizingModal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div style="text-align: center">
+							<h3 style="padding-bottom: 10px;">
+								<strong>홈 사용자 지정</strong>
+							</h3>
+						</div>
+						<div class="modal-body p-4">
+							<div class="row">
+								<div class="mb-3">
+									<label for="#colorPreviewDiv" class="form-label" style="font-size: 1.2em; margin-left: 3%;">배경</label>
+									<div id="colorPreviewDiv">
+										<div class="backgroundColorDiv" style="background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);" id="bgcolor111">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon111"></i>
+										</div>
+										<div class="backgroundColorDiv" style="background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);" id="bgcolor222">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon222"></i>
+										</div>
+										<div class="backgroundColorDiv" style="background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);" id="bgcolor333">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon333"></i>
+										</div>
+										<div class="backgroundColorDiv" style="background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);" id="bgcolor444">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon444"></i>
+										</div>
+										<div class="backgroundColorDiv" style="background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);" id="bgcolor555">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon555"></i>
+										</div>
+										<div class="backgroundColorDiv" style="background-color: #ecf2f5" id="bgcolor666">
+											<i class="fe-check bgCheckedIcon" id="bgcolorIcon666"></i>
+										</div>
+									</div>
+								</div>
+								<!-- 배경색 변경 div끝! -->
+
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary waves-effect waves-light" onclick="updateMyhomeBgColor()">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 업데이트 성공했을 때 modal창 -->
+			<div id="myhomeColorUpdateSuccessAlert" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+				<div class="modal-dialog modal-sm">
+			        <div class="modal-content modal-filled bg-success">
+			            <div class="modal-body p-4">
+			                <div class="text-center">
+			                    <i class="dripicons-checkmark h1 text-white"></i>
+			                    <h4 class="mt-2 text-white">Well Done!</h4>
+			                    <p class="mt-3 text-white">수정이 완료됐습니다</p>
+			                    <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">Continue</button>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			
+			<div id="myhomeColorUpdateFailedAlert" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+				<div class="modal-dialog modal-sm">
+			        <div class="modal-content modal-filled bg-danger">
+			        <div class="modal-body p-4">
+			            <div class="text-center">
+			                <i class="dripicons-wrong h1 text-white"></i>
+			                <h4 class="mt-2 text-white">Failed!</h4>
+			                <p class="mt-3 text-white">수정 중 문제가 발생했습니다.<br>
+			                고객센터에 문의해 주세요.</p>
+			                <button type="button" class="btn btn-light my-2" data-bs-dismiss="modal">확인</button>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			</div>
+
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<script>
+var myHomeBgColor = "";
+
+getMemberNameAndImg()
+getTodayDate()
+changeMyhomeBg()
+projectList_B()
+
+function getTodayDate(){
+	var curDate = new Date();
+
+	var todayYear = curDate.getFullYear();
+	var todayMonth = curDate.getMonth() + 1;
+	var todayDate = curDate.getDate();
+	
+	var todayValue = todayYear + "-";
+	if(todayMonth < 10){
+		todayValue += "0";
+	}
+	todayValue += todayMonth + "-";
+	if(todayDate < 10){
+		todayValue += "0";
+	}
+	todayValue += todayDate;
+	
+	$("#inputDateInMyHome").attr("value", todayValue);
+}
+
+
+function getMemberNameAndImg(){
+	   
+	var memberNamePrint = document.querySelector("#memberNamePrint");
+	var memberPicPrintTag = document.querySelector("#memberPicPrintTag");
+	var changeMyhomeBgDiv = $("#changeMyhomeBgDiv");
+	
+	var memberId ={
+	         memberId : localStorage.getItem('id')
+	   }
+
+	$.ajax({
+	      url : "/myhome/selectMemberbyHome",
+	      type : "post",
+	      data : JSON.stringify(memberId),
+	      contentType : 'application/json; charset=utf-8',
+	      dataType : 'json',
+	      success : function(res) {
+	         console.log("myhome정보확인: ", res)
+	    	  
+	         memberNamePrint.innerText = res.memberName;
+	         if(res.memberPic == 0){
+	        	 memberPicPrintTag.src = "${pageContext.request.contextPath }/resources/dist/assets/images/users/blank_progile.png"
+	         }else{
+	         	memberPicPrintTag.src = res.memberPic;
+	         }
+	         
+	         if(res.myhomeColor == 0) {
+	        	 changeMyhomeBgDiv.css("background-image", "none");
+	        	 changeMyhomeBgDiv.css("background-color", "#ecf2f5");
+	        	 $("#bgcolorIcon666").show();
+	         }
+	         if(res.myhomeColor == 1) {
+	        	 changeMyhomeBgDiv.css("background-image", "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)");
+	        	 $("#bgcolorIcon111").show();
+	         }
+	         if(res.myhomeColor == 2) {
+	        	 changeMyhomeBgDiv.css("background-image", "linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%)");
+	        	 $("#bgcolorIcon222").show();
+	         }
+	         if(res.myhomeColor == 3) {
+	        	 changeMyhomeBgDiv.css("background-image", "linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)");
+	        	 $("#bgcolorIcon333").show();
+	         }
+	         if(res.myhomeColor == 4) {
+	        	 changeMyhomeBgDiv.css("background-image", "linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)");
+	        	 $("#bgcolorIcon444").show();
+	         }
+	         
+	       	 if(res.myhomeColor == 5) {
+	        	 changeMyhomeBgDiv.css("background-image", "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)");
+	        	 $("#bgcolorIcon555").show();
+	         }
+	         
+	         itNewsList()
+	         
+	      }
+	   });//ajax
+}
+
+function changeMyhomeBg(){
+	
+	$("#bgcolor111").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "1"
+		$("#bgcolorIcon111").show();
+	})
+	$("#bgcolor222").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "2"
+		$("#bgcolorIcon222").show();
+	})
+	$("#bgcolor333").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "3"
+		$("#bgcolorIcon333").show();
+	})
+	$("#bgcolor444").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "4"
+		$("#bgcolorIcon444").show();
+	})
+	$("#bgcolor555").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "5"
+		$("#bgcolorIcon555").show();
+	})
+	$("#bgcolor666").on("click", function(){
+		$(".bgCheckedIcon").hide();
+		myHomeBgColor = "0"
+		$("#bgcolorIcon666").show();
+	})
+	
+}
+
+function itNewsList(){
+	var newsListFirstRow = $("#newsListFirstRow");
+	var newsListSecondRow = $("#newsListSecondRow");
+	
+	$.ajax({
+	      url : "/myhome/crawlingNews",
+	      type : "get",
+	      contentType : 'application/json; charset=utf-8',
+	      dataType : 'json',
+	      success : function(res) {
+	    	  
+	    	  	  let list = res.newsList;
+// 	    	  	  console.log("뉴스",res)
+	    	  	  
+ 				for (let i = 0; i < list.length; i++) {
+ 					$("#newsTitle" + (i+1)).text(list[i].newsTitle);
+ 				}
+ 				
+ 				for (let i = 0; i < list.length; i++) {
+ 					$("#newsImgTag" + (i+1)).attr("src", list[i].newsImgSrc);
+				}
+ 				
+ 				for (let i = 0; i < list.length; i++) {
+ 					$("#newsLinkTag" + (i+1)).attr("onclick", "window.open('" + list[i].newsLink +"')");
+				}
+ 				
+ 				for(let i = 0; i < list.length; i++){
+ 					let str = "";
+ 					str += timeForToday(list[i].newsTime);
+ 					$("#newsTime" + (i+1)).text(str);
+//  					console.log(str);
+ 				}
+ 				
+	      }
+	   });
+	
+}
+
+
+function timeForToday(newsTime) {
+		
+			let today = new Date();
+		    let timeValue = new Date(newsTime);
+		
+		    let betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+		    if (betweenTime < 1) return '방금전';
+		    if (betweenTime < 60) {
+		        return `\${betweenTime}분전`;
+		    }
+		
+		    let betweenTimeHour = Math.floor(betweenTime / 60);
+		    if (betweenTimeHour < 24) {
+		        return `\${betweenTimeHour}시간전`;
+		    }
+		
+		    let betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+		    if (betweenTimeDay < 365) {
+		        return `\${betweenTimeDay}일전`;
+		    }
+    
+}
+
+function projectList_B(){
+	let memberVO = {
+	         memberId : localStorage.getItem('id')
+	   }
+	
+	let myprojectListInMyhome = $("#myprojectListInMyhome")
+	
+	$.ajax({
+		type: "post",
+		url: "/myhome/projectList",
+		data: JSON.stringify(memberVO),
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(res){
+			console.log("projectList", res);
+			
+			let str = "";
+			
+			//projecttype에 따라서 다른 색상의 버튼과 아이콘 나중에 설정해주기
+			for (let i = 0; i < res.length; i++) {
+				if(res[i].proType == "WEB"){
+				str += ` <div class="d-flex" style="margin-left:2%">
+	               			 <div style="width:100px;height:100px;">
+	               				 <button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-pink waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+	               				<iconify-icon icon="heroicons:window" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">WEB</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+	          				  </div>
+	       					 </div>`;
+				}else if(res[i].proType == "AI"){
+					str += ` <div class="d-flex" style="margin-left:2%">
+              			 <div style="width:100px;height:100px;">
+              				 <button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-warning waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+              				<iconify-icon icon="fluent:brain-circuit-24-regular" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">A.I</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+         				  </div>
+      					 </div>`;
+				}else if(res[i].proType == "SISM"){
+					str += ` <div class="d-flex" style="margin-left:2%">
+             			 <div style="width:100px;height:100px;">
+             				 <button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-success waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+             				<iconify-icon icon="clarity:settings-line" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">SI/SM</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+        				  </div>
+     					 </div>`;
+				}else if(res[i].proType == "APP"){
+					str += ` <div class="d-flex" style="margin-left:2%">
+            			 	<div style="width:100px;height:100px;">
+            				 	<button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-info waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+            				 	<iconify-icon icon="ri:apps-2-line" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">APP</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+       				 		 </div>
+    					 </div>`;
+				}else if(res[i].proType == "GAME"){
+					str += ` <div class="d-flex" style="margin-left:2%">
+        			 	<div style="width:100px;height:100px;">
+        				 	<button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-purple waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+        				 	<iconify-icon icon="carbon:game-wireless" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">GAME</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+   				 		 </div>
+					 </div>`;
+				}else if(res[i].proType == "BIGDATA"){
+					str += ` <div class="d-flex" style="margin-left:2%">
+        			 	<div style="width:100px;height:100px;">
+    				 	<button id="projectBtnFromHome" onclick="location.href='/project/home?proNo=\${res[i].proNo}'" type="button" class="btn btn-soft-secondary waves-effect waves-light" style="width:100%;height:100%;border-radius:15%;padding-top:15px">
+    				 	<iconify-icon icon="carbon:db2-database" id="projectIcon"></iconify-icon><p id="proTypeNamePTag">BIG&nbsp;DATA</p><span id="projectNameSpan">\${res[i].proName}</span></button>
+				 		 </div>
+				 </div>`;
+				}
+				
+			}
+			myprojectListInMyhome.html(str)
+		}
+	});
+}
+
+function updateMyhomeBgColor(){
+// 	alert(myHomeBgColor);
+
+	   let myhomeVO = {
+	         memberId : localStorage.getItem('id'),
+	         myhomeColor : myHomeBgColor
+	   }
+
+	$.ajax({
+		type: "post",
+		url: "/myhome/updateBgColor",
+		data: JSON.stringify(myhomeVO),
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",	
+		success: function(res){
+			console.log(res)
+			$("#myHomeCostomizingModal").modal("hide");
+			if(res == "성공") $('#myhomeColorUpdateSuccessAlert').modal("show");
+			if(res == "실패") $('#myhomeColorUpdateFailedAlert').modal("show");
+			
+			getMemberNameAndImg();
+		}
+	})
+	
+}
+
+
+//////////김진호
+//드래그 이벤트주기용
+var dragItems = document.querySelectorAll(".homeDraggable");
+drag(dragItems);
+  function drag(target) {
+    target.forEach((container) => {
+      //인자로 자식 div들을 받음
+      //console.log("드래그왜안돼 : ", container);
+      new Sortable(container, {
+        group: {
+          name: "shared", //이게 같은 Sortable 객체들끼리 이동 가능
+        },
+        swapThreshold: 1,
+        animation: 150,
+        ghostClass: "blue-background-class",
+        //sort: false, 이거 false하면 원래 영역 내에서는 안움직임
+        onChoose: function (event) {
+          //클릭한 아이템
+          //선택한 영역 안에 테이블 목록
+        },
+        filter: ".filtered",
+        onEnd: function (event) {
+          //내려놓았을때!
+          console.log("이동중", event.from);
+          console.log("엔드아이템 : ", event.item);
+        },
+      });
+    });
+  }
+  
+</script>
+

@@ -1,0 +1,22 @@
+package kr.or.ddit.controller.myhome.service;
+
+
+import java.util.List;
+
+import kr.or.ddit.vo.AlarmVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.MyhomeVO;
+
+public interface IMyhomeService {
+
+	public MemberVO selectMemberInfo(MemberVO memberVO);
+
+	public int updateMyHomeColor(MyhomeVO myhomeVO);
+
+	public MyhomeVO selectMyhome(MemberVO memberVO);
+
+	public int insertMyhomeMemberId(MemberVO memberVO);
+
+	public List<AlarmVO> selectMyAllAlarm(String memberId);
+
+}

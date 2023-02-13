@@ -1,0 +1,31 @@
+package kr.or.ddit.vo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+public class DevinVO {
+	private String dviNo;
+	private String memberId;
+	private String dviTitle;
+	private String dviContent;
+	private Integer dviHit;
+	private String localStorageMemberId; // 조회수 올릴 로컬스토리지 아이디
+
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date dviDate;
+	private Integer dviLike;
+	
+	 //프로젝트별 멤버 출력할 때 추가로 필요한 정보들
+    private String memberName;
+    private String memberPic;
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/assets/**" location="/resources/dist/assets/" />
+	<resources mapping="assets/**" location="/resources/dist/assets/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" /> <!-- 앞 매핑 -->
+		<beans:property name="suffix" value=".jsp" />            <!-- 뒤 매핑 -->
+	</beans:bean>
+
+
+	<!-- tiles 설정 시작 -->
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+		<beans:property name="order" value="1" />
+	</beans:bean>
+
+
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<beans:property name="definitions">
+			<beans:list>
+				<beans:value>classpath:config/spring/tiles-config.xml</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+
+	<!-- email 인증 관련 google zjestxvifymvclqd -->
+	<!-- <beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> <beans:property name="host" value="smtp.google.com" /> <beans:property name="port" value="587" /> <beans:property name="username" value="hhnh24@google.com" /> <beans:property name="password" value="zjestxvifymvclqd" /> <beans:property name="javaMailProperties"> <beans:props> <beans:prop key="mail.transport.protocol">smtp</beans:prop> <beans:prop key="mail.smtp.auth">true</beans:prop> <beans:prop key="mail.smtp.starttls.enable">true</beans:prop> <beans:prop key="mail.debug">true</beans:prop> </beans:props> </beans:property> </beans:bean> -->
+	<!-- naver.com -->
+	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<beans:property name="host" value="smtp.naver.com" />
+		<beans:property name="port" value="465" />
+		<beans:property name="username" value="ddit404@naver.com" />
+		<beans:property name="password" value="ddit.or.kr" />
+		<beans:property name="defaultEncoding" value="utf-8" />
+		<beans:property name="javaMailProperties">
+			<beans:props>
+				<beans:prop key="mail.debug">true</beans:prop>
+				<beans:prop key="mail.smtp.starttls.enable">true</beans:prop>
+				<beans:prop key="mail.smtps.ssl.checkserveridentity">true</beans:prop>
+				<beans:prop key="mail.smtp.auth">true</beans:prop>
+				<beans:prop key="mail.smtp.ssl.enable">true</beans:prop>
+				<beans:prop key="mail.smtps.ssl.trust">*</beans:prop>
+				<beans:prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+
+	<context:component-scan base-package="kr.or.ddit.controller, egovframework" />
+
+
+
+</beans:beans>

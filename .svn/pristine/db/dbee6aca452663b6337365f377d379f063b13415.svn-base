@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.LetterMapper">
+
+	<insert id="sendLetter_H" parameterType="letterVO">
+		INSERT INTO 
+		LETTER(
+			LETTER_NO
+			,MEMBER_ID
+			,LETTER_DATE
+			,LETTER_SENDER
+			,LETTER_CONTENT
+			) 
+		VALUES(
+			'LETTER'||SEQ_LETTER.NEXTVAL 
+			, #{memberId}
+			, TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI')
+			, #{letterSender}
+			, #{letterContent}
+			)
+	</insert>
+	
+	<select id="myLetterList" parameterType="letterVO" resultType="letterVO">
+		SELECT * FROM LETTER 
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+
+</mapper>

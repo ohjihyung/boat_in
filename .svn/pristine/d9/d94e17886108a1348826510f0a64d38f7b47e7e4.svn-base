@@ -1,0 +1,532 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<style>
+
+.proTypeIcon{
+	font-size:70px;
+}
+
+</style>
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="left-side-menu">
+
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+						<ul>
+                            <li>
+
+                                <a class="boat-a" href="/myhome/home" id="hometab">
+
+                                    <i class="dripicons-home"></i>
+                                    <span style="font-weight: bold;"> HOME </span>
+                                </a>
+                            </li>
+                            <hr style="margin-bottom: 10px">
+						</ul>
+						
+                        <ul id="side-menu">
+                            <li>
+                                <a class="custom-accordion-title text-reset d-block collapsed"  href="javascript:0"  data-bs-toggle="collapse" data-bs-target=".collapse1" aria-expanded="true" aria-controls="collapseExample">
+									<span style="font-size: 13px; text-align: justify; font-weight: bold;"> MY APPS </span>
+                                	<i class="mdi mdi-chevron-down accordion-arrow"></i>
+                                </a>
+                            </li>
+	                            
+                            <li class="collapse1 show" >
+								<a class="boat-a" href="/data/myDataMain">
+									<i class="fe-folder"></i>
+									<span> 내 자료실 </span>
+								</a>
+							</li>
+							
+	                         <li class="collapse1 show" >   
+	                            <a class="boat-a" href="/chat/chatMain">
+	                              <i class="fe-message-square"></i>
+	                              <span>BOAT_TALK</span>                                
+	                            </a>
+	                         </li>
+	                         
+	                         <li class="collapse1 show" >
+	                            <a class="boat-a" href="/letter/home">
+	                              <span  class="badge badge rounded-pill bg-info float-end chkletterinit"></span>
+	                              <i class="fe-mail"></i>
+	                              <span>쪽지함</span>                                  
+	                            </a>
+                             </li>
+                             
+                            <hr style="margin-bottom: 10px">
+                            <li class="menu-title" style="font-size:1em; font-weight: bold;">project</li>
+
+                            <li>
+                                <a class="boat-a" href="javascript:newProjectModalToggle()">
+                                    <i class="fe-plus"></i>
+                                    <span>새 프로젝트 생성</span> <!-- 누르면 모달로. -->
+                                </a>
+                            </li>
+                            
+                            <!-- 프로젝트 리스트 -->
+                            <li>
+                                <a class="boat-a" href="javascript:0"  data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+                                    <i class="fe-layers"></i>
+									<span style="text-align: justify;"> 진행 중 프로젝트 </span>
+									<i class="mdi mdi-chevron-down accordion-arrow"></i>
+									<span class="badge badge rounded-pill bg-info ms-1 float-end" id="projectLength"></span>
+                                </a>
+                            </li>
+                            <div class="collapse" id="collapseExample">
+		                            <div class="h-100" data-simplebar style="max-height: 150px;">
+			                            <ul class="list-group list-group" id="projectList">
+			                            
+		                               </ul>
+	                               </div>
+                            </div>
+                            
+                            <li>
+                                <a class="boat-a" href="javascript:0" data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="true" aria-controls="collapseExample2">
+                                    <i class="fe-layers"></i>
+									<span style="text-align: justify;" > 완료된 프로젝트 </span>
+									<i class="mdi mdi-chevron-down accordion-arrow"></i>
+									<span class="badge badge rounded-pill bg-info ms-1 float-end" id="projectLength-finished"></span>
+                                </a>
+                            </li>
+                            <div class="collapse" id="collapseExample2">
+                            	<div class="h-100" data-simplebar style="max-height: 150px;">
+		                            <ul class="list-group list-group" id="projectList-finished">
+		                            
+	                               </ul>
+	                            </div>
+                            </div>
+                            
+                            
+                            <hr style="margin-bottom: 10px">
+                            <li class="menu-title" style="font-size:1em; font-weight: bold;">help</li>
+                            <li>							
+	                            <a class="boat-a" href="/devin/devinList"> 
+	                                <i class="fe-linkedin"></i>
+	                                <span> 개발자 지식인 </span> 
+	                            </a>
+	                         </li>
+                            
+                            <li>
+                            	<a class="custom-accordion-title d-block collapsed boat-a"  href="javascript:0" data-bs-toggle="collapse" data-bs-target=".collapse2" aria-expanded="false" aria-controls="collapse2">
+									<i class="fe-help-circle"></i>
+									<span style="text-align: justify;" > 고객센터 </span>
+	                        		<i class="mdi mdi-chevron-down accordion-arrow"></i>
+                            	</a>
+                            </li>
+	                        
+                            <li class="collapse2 collapse" style="margin-left: 30px">
+								<a href="/notice/noticeMain">
+									<i class="fe-volume-1"></i>
+									<span> 공지사항 </span>
+								</a>
+							</li>
+
+                             <li class="collapse2 collapse" style="margin-left: 30px">    
+                               <a href="/faq/faqMain"> 
+                                  <i class="fe-bookmark"></i>
+                                  <span> 자주 묻는 질문 </span> 
+                               </a>
+                          	 </li>
+                           	  
+							 <li class="collapse2 collapse" style="margin-left: 30px">
+                                <a href="/oneoone/question">
+                                  <i class="fe-edit-1"></i>
+                                  <span> 1:1 문의 </span>                                
+                                </a>
+                             </li>
+                             </ul>
+
+
+                            <ul id="adminList">
+<!--                             <hr style="margin-bottom: 10px"> -->
+                            <li  class="menu-title" style="font-size:1em; font-weight: bold;">admin</li>
+                            <li>
+                            	 <a href="javascript:void(0);" onclick="pageTab('/admin/notice')" class="boat-a">
+                                    <i class="fe-volume-1"></i>
+                                    <span>공지사항</span>                                  
+                                  </a>
+                            </li>
+                            <li>
+                            	 <a href="javascript:void(0);" onclick="pageTab('/admin/qna')" class="boat-a">
+                                    <span  class="badge badge rounded-pill bg-info float-end"></span>
+                                    <i class="fe-edit-1"></i>
+                                    <span>1:1 문의</span>                                  
+                                  </a>
+                            </li>
+                            <li>
+                            	 <a href="javascript:void(0);" onclick="pageTab('/admin/faq')" class="boat-a">
+                                    <i class="fe-bookmark"></i>
+                                    <span>자주 묻는 질문</span>                                 
+                                  </a>
+                            </li>
+                            <li>
+                            	 <a href="javascript:void(0);" onclick="pageTab('/admin/quantity')" class="boat-a">
+                                    <i class="fe-bar-chart-2"></i>
+                                    <span>통계</span>                                  
+                                  </a>
+                            </li>
+                            <li>
+                            	 <a href="javascript:void(0);" onclick="pageTab('/admin/member')" class="boat-a">
+                                    <i class="fe-users"></i>
+                                    <span>회원/프로젝트 관리</span>                                  
+                                  </a>
+                            </li>
+						 </ul>
+					<div class="container-widget2" style="width: 200px; height: 200px;"></div>
+
+                    </div>
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+            
+            
+<!-- 프로젝트 생성 모달 -->
+<!-- Standard modal content -->
+<div id="newProject-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #338CD4;">
+                <h4 class="modal-title" id="standard-modalLabel"><font class="jinoFont" style="color:white">프로젝트 생성하기</font></h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close" onclick="newProjectModalToggle()"></button>
+            </div>
+            <div class="modal-body">
+                <font class="jinoFont">프로젝트의 종류를 선택하세요.</font>
+                <div id="proTypeIconDiv" style="text-align:center;">
+                </div>
+                <p>
+                    <select id="proType" class="form-select" style="margin-top: 10px;">
+                        <option value="WEB" class="proTypeOption">Web</option>
+                        <option value="AI" class="proTypeOption">A.I</option>
+                        <option value="SISM" class="proTypeOption">SI / SM</option>
+                        <option value="APP" class="proTypeOption">App</option>
+                        <option value="GAME" class="proTypeOption">Game</option>
+                        <option value="BIGDATA" class="proTypeOption">Big Data</option>
+                    </select>
+                </p>
+                <font class="jinoFont">새로운 프로젝트 명을 입력해주세요.</font>
+                <p>
+                    <input class="form-control" id="proName" placeholder="Enter Project name" style="margin-top: 10px;">
+                </p>
+                <hr>
+                <font class="jinoFont">프로젝트 기간</font><br/>
+                <div class="row" style="margin-top: 10px;">
+                  <div class="col-md-6">
+                    시작일 : 
+                    <input
+                        class="form-control"
+                        id="proStart"
+                        placeholder=""
+                        required
+                        th:field="*{proStart}"
+                        type="text"
+                        value=""
+                        onchange="changeProStart()"
+                      />
+                  
+                  </div>
+                  <div class="col-md-6">
+                    종료일 : 
+                    <input
+                        class="form-control"
+                        id="proEnd"
+                        placeholder=""
+                        required
+                        th:field="*{proEnd}"
+                        type="text"
+                        value=""
+                      />
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"
+                    data-bs-dismiss="modal" onclick="newProjectModalToggle()">취소</button>
+                <button type="button" class="btn btn-primary" onclick="projectInsert()">프로젝트 생성하기</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<button type="button" id="btnNewProject-modal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newProject-modal" style="display: none;">projectModal</button>
+
+<script>
+//솔직히 이거나 load() 나 다를게뭐냐 ... 같아보이는디
+function pageTab(url){
+   $.ajax({
+      url : url,
+      type : "get",
+      dataType : 'text',
+      success : function(res) {
+         $('#indexContent').html(res)
+      },
+   });//ajax
+}
+if (localStorage.getItem("id") != "admin") {
+	$('#adminList').attr('class',"d-none")
+	$('#side-menu').attr('class',"d-block")
+	$('#hometab').remove('onclick')
+}else if(localStorage.getItem("id") == "admin"){
+	pageTab('/admin/adminhome');
+	$('#adminList').attr('class',"d-block")
+	$('#side-menu').attr('class',"d-none")
+	$('#hometab').attr('href',"javascript:void(0);")
+	$('#hometab').attr('onclick',"pageTab('/admin/adminhome')")
+}
+
+projectRender_K();
+projectRender_K('finished');
+
+makeStartFp();
+makeEndFp();
+changeEventProType();
+
+var proStartDay = "";
+
+function changeProStart() {
+	//console.log("변경 전 :", proStartDay);
+	//console.log("변경 후 :", proStartDay);
+	//로직 - > 시작일을 지정하면 종료일 범위를 맞춰준다.
+	proStartDay = document.querySelector("#proStart").value;
+	makeEndFp();
+}
+
+function makeStartFp() {
+	var proStartFp = flatpickr(document.getElementById("proStart"), {
+	    //'monthSelectorType' : 'static',
+	    locale: "ko",
+	});
+}
+
+function makeEndFp() {
+	var proEndFp = flatpickr(document.getElementById("proEnd"), {
+		//'monthSelectorType' : 'static',
+		locale: "ko",
+		disable: [
+			{
+				from: "2020-01-01",
+				to: proStartDay
+			}
+		],
+	});	
+}
+
+function newProjectModalToggle() {
+	document.querySelector("#proName").value = "";
+	document.querySelector("#proStart").value = "";
+	document.querySelector("#proEnd").value = "";
+	document.querySelector("#proType").value = "WEB";
+	document.querySelector("#proTypeIconDiv").innerHTML = `<button type="button" class="btn btn-soft-pink waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+        <span class="proTypeIcon"><iconify-icon icon="heroicons:window"></iconify-icon></span>
+        </button>`;
+	
+	const btnNewProjectModal = document.querySelector("#btnNewProject-modal");
+	btnNewProjectModal.click();
+	
+}
+
+function projectInsert() {
+	//기간 선택안하면 불가능
+	const proStart = document.querySelector("#proStart").value;
+	const proEnd = document.querySelector("#proEnd").value;
+	const proName = document.querySelector("#proName").value;
+	const proType = document.querySelector("#proType").value;
+	if (!proStart || !proEnd) {
+		alert("시작일과 종료일을 입력해주세요.");
+		return;
+	}
+	
+	if (!proName) {
+		alert("프로젝트 이름을 입력해주세요.");
+		
+		return;
+	}
+	
+	const obj = {
+	    proName,
+	    proType,
+	    memberId,
+	    proStart,
+	    proEnd,
+	};
+	console.log("새로운 플젝 : ", obj);
+	
+	axios
+	  .post("/project/insert", obj)
+	  .then((res) => {
+		 console.log(res.data);
+		 //이 후 project home으로 이동
+		 location.href = "/project/home?proNo=" + res.data;
+	  });
+	
+	newProjectModalToggle();
+}
+
+function projectRender_K(mode) {
+	const memberVO = {
+	  memberId,
+	};
+	
+	let projectListURL = (mode == 'finished') ? '/project/finishList' : '/project/list';
+	
+    axios
+      .post(projectListURL, memberVO)
+      .then((res) => {
+    	 const json = res.data;
+    	 
+    	 if (mode == 'finished') {
+    	   document.querySelector("#projectLength-finished").innerHTML = json.length;
+    	 } else {
+    	   document.querySelector("#projectLength").innerHTML = json.length;
+    	 }
+    	 
+    	 
+		 let text = "";
+    	 
+		 for (item of json) {
+		    
+			 if(item.proType == "WEB"){
+			    text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+			    			<li class="list-group-item" style="border:none;margin-left:2%">
+			    			<span  class="badge badge-soft-pink rounded-pill" style="font-size:1.1em"><iconify-icon icon="heroicons:window"></iconify-icon></span>
+						 	&nbsp;&nbsp;\${item.proName}
+			                	</li>
+			                </a>
+			    	`;
+			 }else if(item.proType == "AI"){
+				 text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+		    			<li class="list-group-item" style="border:none;margin-left:2%">
+		    			<span  class="badge badge-soft-warning rounded-pill" style="font-size:1.2em"><iconify-icon icon="fluent:brain-circuit-24-regular"></iconify-icon></span>
+		    			&nbsp;&nbsp;\${item.proName}
+		                	</li>
+		                </a>
+		    	`;
+			 }else if(item.proType == "SISM"){
+				 text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+		    			<li class="list-group-item" style="border:none;margin-left:2%">
+		    			<span  class="badge badge-soft-success rounded-pill" style="font-size:1.2em"><iconify-icon icon="clarity:settings-line"></iconify-icon></span>
+		    			&nbsp;&nbsp;\${item.proName}
+		                	</li>
+		                </a>
+		    	`;
+			 }else if(item.proType == "APP"){
+				 text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+		    			<li class="list-group-item" style="border:none;margin-left:2%">
+		    			<span  class="badge badge-soft-info rounded-pill" style="font-size:1.2em"><iconify-icon icon="ri:apps-2-line"></iconify-icon></span>
+		    			&nbsp;&nbsp;\${item.proName}
+		                	</li>
+		                </a>
+		        `;        
+			 }else if(item.proType == "GAME"){
+				 text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+		    			<li class="list-group-item" style="border:none;margin-left:2%">
+		    			<span  class="badge badge-soft-purple rounded-pill" style="font-size:1.2em"><iconify-icon icon="carbon:game-wireless"></iconify-icon></span>
+		    			&nbsp;&nbsp;\${item.proName}
+		                	</li>
+		                </a>
+		        `;        
+			 }else if(item.proType == "BIGDATA"){
+				 text += `<a href="javascript: changeMenu(\${item.proNo});" style="color:gray;" id="projectListLeftbar">
+		    			<li class="list-group-item" style="border:none;margin-left:2%">
+		    			<span  class="badge badge-soft-secondary rounded-pill" style="font-size:1.2em"><iconify-icon icon="carbon:db2-database"></iconify-icon></span>
+		    			&nbsp;&nbsp;\${item.proName}
+		                	</li>
+		                </a>
+		        `;      
+			 }
+		 }
+    	 
+// 		 console.log("프로젝트 리스트", text);
+         if (mode == 'finished') {
+		   document.querySelector("#projectList-finished").innerHTML = text;
+		   
+		   return;
+         }
+         
+		 document.querySelector("#projectList").innerHTML = text;
+      });
+}
+
+function changeEventProType(){
+	let webBtn = `<button type="button" class="btn btn-soft-pink waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+							<span class="proTypeIcon"><iconify-icon icon="heroicons:window"></iconify-icon></span>
+						 </button>`
+	let aiBtn = `<button type="button" class="btn btn-soft-warning waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+							<span class="proTypeIcon"><iconify-icon icon="fluent:brain-circuit-24-regular"></iconify-icon></span>
+		 				</button>`
+	let sismBtn = `<button type="button" class="btn btn-soft-success waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+							<span class="proTypeIcon"><iconify-icon icon="clarity:settings-line"></iconify-icon><span>
+		 				   </button>`
+	let appBtn = `<button type="button" class="btn btn-soft-info waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+							<span class="proTypeIcon"><iconify-icon icon="ri:apps-2-line"></iconify-icon></span>
+						 </button>`
+	let gameBtn = `<button type="button" class="btn btn-soft-purple waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+								<span class="proTypeIcon"><iconify-icon icon="carbon:game-wireless"></iconify-icon></span>
+						    </button>`
+	let bigdataBtn = `<button type="button" class="btn btn-soft-secondary waves-effect waves-light" style="border-radius:50%;height:100px;width:100px;">
+									<span class="proTypeIcon"><iconify-icon icon="carbon:db2-database"></iconify-icon></span>
+		 						</button>`
+	
+	$("#proType").change(function(){
+		var state = $("#proType option:selected").val();
+		console.log("selectbox: ", state)
+		if(state == "WEB"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(webBtn)
+		}else if(state == "AI"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(aiBtn)
+		}else if(state == "SISM"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(sismBtn)
+		}else if(state == "APP"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(appBtn)
+		}else if(state == "GAME"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(gameBtn)
+		}else if(state == "BIGDATA"){
+			$("#proTypeIconDiv *").remove();
+			$("#proTypeIconDiv").append(bigdataBtn)
+		}
+		
+		
+	})
+}
+
+function changeMenu(arg) {
+	//console.log("함수로 바뀜");
+	let url = "/project/home?proNo=" + arg;
+	console.log("url : ", url);
+	location.href = url;
+}
+/* var container2 = document.querySelector(".container-widget");
+new Sortable(container2, {
+    group: {
+        name: "shared", //이게 같은 Sortable 객체들끼리 이동 가능
+      },
+      swapThreshold: 1,
+      animation: 150,
+      ghostClass: "blue-background-class",
+      //sort: false, 이거 false하면 원래 영역 내에서는 안움직임
+      onChoose: function (event) {
+        //클릭한 아이템
+        //선택한 영역 안에 테이블 목록
+        //console.log("시작~~~");
+        //setTimeout(delay, 1000);
+      },
+      filter: ".filtered",
+      onEnd: function (event) {
+        //내려놓았을때!
+        console.log("레프트 사이드 바");
+      },
+}); */
+</script>

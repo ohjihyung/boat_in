@@ -1,0 +1,238 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+
+<div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">my page</h4>
+                                    <div>
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">BOAT-IN</a></li>
+<!--                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Extras</a></li> -->
+                                            <li class="breadcrumb-item active">My Page</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+	
+                      <div class="row">
+                           <div class="col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                    
+                                        <div class="dropdown float-end">
+                                            <a href="#" class="dropdow n-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">비밀번호 변경</a>
+                                                <!-- item-->
+                                                <a href="javascript:void(0);" class="dropdown-item">회원 탈퇴</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="mypageProfilePrint"></div>                                 
+
+                                    </div><!-- end card-body -->                                 
+                                </div> <!-- end card -->
+								
+								
+								<!-- 내 소개 -->
+								<div class="card">
+                                    <div class="card-body">
+                                    	<div class="float-end">
+                                            <a class="dropdow n-toggle arrow-none card-drop" data-bs-toggle="modal"  href="#memberInfoEditModalDiv">
+                                                <i class="fe-edit" style="font-size: 0.9em"></i>
+                                            </a>
+                                         </div>
+                                        <h4 class="header-title mb-3">내 소개</h4>
+
+                                        <div class="inbox-widget" data-simplebar style="max-height: 370px;" id="mypageMemberInfoDiv">
+                                   		 
+                                   		 </div>
+                                </div>
+                                <!-- 내소개 카드 끝 -->
+
+
+                            </div><!-- end col -->
+                            
+						
+						</div><!--  end row -->
+
+                        </div><!-- container-fluid -->
+
+                    </div> <!-- content -->
+
+                </div> <!-- content-page -->
+
+			</div>
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+            
+
+<!-- 프로필 편집 모달 -->
+<div id="myProfileEditModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true" ></div>            
+
+<!-- 내소개 편집 모달 -->
+<div id="memberInfoEditModalDiv" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true" ></div>            
+    
+            
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+
+<script>
+var memberId = localStorage.getItem('id');
+
+myPageProfile_B();
+
+function myPageProfile_B(){
+
+var mypageProfilePrint = document.querySelector("#mypageProfilePrint");	
+var myProfileEditModal = document.querySelector("#myProfileEditModal"); 
+var mypageMemberInfoDiv = document.querySelector("#mypageMemberInfoDiv");
+var memberInfoEditModalDiv = document.querySelector("#memberInfoEditModalDiv");
+
+	$.ajax({
+		type: "get",
+		url: "/mypage/member/",
+		data:"memberId="+memberId,
+		dataType: "json",	
+		success: function(result){
+			console.log("result",result);
+			
+			let Str = "";
+			let Str2 = "";
+			let Str3 = "";
+			let Str4 = "";
+			
+			Str += ` <div class="d-flex align-items-start">
+                <img src="\${result.memberPic}" class="rounded-circle avatar-xl" alt="profile-image">
+                <div class="w-100 ms-4">
+                    <h3 class="header-title" style="margin-top: 10%; margin-bottom:10%;">\${result.memberName}</h3>
+                    <button type="button" class="btn btn-soft-primary btn-xs waves-effect mb-2 waves-light" data-bs-toggle="modal" data-bs-target="#myProfileEditModal">프로필 수정</button>
+                    <button type="button" class="btn btn-soft-pink btn-xs waves-effect mb-2 waves-light">부재중 설정</button>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <p class="text-muted mb-2 font-13"><strong>생년월일 :</strong> <span class="ms-2" style="color:black">\${result.memberBirth}</span></p>
+                
+                <p class="text-muted mb-2 font-13"><strong>핸드폰 :</strong><span class="ms-2" style="color:black">\${result.memberPhone}</span></p>
+            
+                <p class="text-muted mb-2 font-13"><strong>Email :</strong> <span class="ms-2" style="color:black">\${result.memberId}</p>
+            </div>` 
+            
+            Str2 += profileEditModal(result);
+            Str3 += mypageMemberInfo(result);
+            Str4 += memberInfoEditModal(result);
+           
+			
+			mypageProfilePrint.innerHTML = Str;
+			myProfileEditModal.innerHTML = Str2;
+			mypageMemberInfoDiv.innerHTML = Str3;
+			memberInfoEditModalDiv.innerHTML = Str4;
+			
+			console.log(Str4);
+		}
+	})
+}
+
+//프로필 수정 모달 출력해주는 함수
+function profileEditModal(result){
+	let Str = "";
+	
+	Str +=   `<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div style="text-align:center">
+    	<h3><strong>프로필 수정</strong></h3>
+    </div>
+    <div class="modal-body p-4">
+        <form>
+    	<div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label for="profileName" class="form-label">이름</label>
+                    <input type="text" class="form-control" id="profileName" placeholder="\${result.memberName}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label for="profileBirth" class="form-label">생년월일</label>
+                    <input type="text" class="form-control" id="profileBirth" placeholder="\${result.memberBirth}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label for="profilePhone" class="form-label">핸드폰</label>
+                    <input type="text" class="form-control" id="profilePhone" placeholder="\${result.memberPhone}">
+                </div>
+            </div>
+        </div>
+    </div></form>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary waves-effect">Save</button>
+    </div>
+</div>
+</div>`
+
+return Str;
+}
+
+//내소개 출력
+function mypageMemberInfo(result){
+	let Str = result.memberInfo
+	return Str;
+}
+
+//내소개 수정 모달
+function memberInfoEditModal(result){
+	let Str = "";
+	
+	Str += `<div class="modal-dialog">
+	    <div class="modal-content">
+	    <div class="modal-header">
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	    </div>
+	    <div style="text-align:center">
+	    	<h3><strong>내 소개 수정</strong></h3>
+	    </div>
+	    <div class="modal-body p-4">
+	    <form>
+	    	<div class="row">
+	            <div class="col-md-12">
+	            <textarea class="form-control" id="field-7" placeholder="\${result.memberInfo}" style="height: 300px;">\${result.memberInfo}</textarea>   
+	        	</div>
+	    	</div>
+	    </form>
+	    <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary waves-effect">Save</button>
+	    </div>
+	</div>
+	</div>`;
+	
+	return Str; 
+}
+
+
+</script>

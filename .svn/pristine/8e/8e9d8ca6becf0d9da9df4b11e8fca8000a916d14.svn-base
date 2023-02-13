@@ -1,0 +1,16 @@
+package kr.or.ddit.controller.project.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProjectJoinStateVO;
+
+public interface IProjectJoinService {
+	public int insertProJoin(ProjectJoinStateVO vo);
+	public int updateProJoinState(ProjectJoinStateVO vo);
+	public int updateProAuth(ProjectJoinStateVO vo);
+	public ProjectJoinStateVO  selectProJoin(ProjectJoinStateVO vo);
+	
+    public ProjectJoinStateVO checkAuth(Map<String, String> map) throws Exception;
+}

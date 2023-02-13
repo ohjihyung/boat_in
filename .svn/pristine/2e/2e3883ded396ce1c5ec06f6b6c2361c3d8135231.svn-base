@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.TopWorkMapper">
+
+    <select id="topWorklist" resultType="topWorkVO" parameterType="String">
+        <![CDATA[
+            SELECT A.TOPWORK_NO
+                 , A.PRO_NO
+                 , A.TW_CATEGORY_NO
+                 , A.TOPWORK_CONTENT
+                 , A.TOPWORK_START
+                 , A.TOPWORK_END
+                 , A.TOPWORK_STATE
+                 , A.TOPWORK_IMPORTANCE
+                 , A.TOPWORK_PROGRESS
+                 , A.TOPWORK_LIKE
+                 , A.TOPWORK_FILE
+                 , A.TOPWORK_TITLE
+                 , B.TW_CATEGORY_COLOR
+              FROM TOPWORK A
+              LEFT JOIN TOPWORK_CATEGORY B
+                   ON A.TW_CATEGORY_NO = B.TW_CATEGORY_NO
+             WHERE A.TOPWORK_NO > 0
+               AND A.PRO_NO = #{proNo}
+               AND A.TOPWORK_DELETE = 'F'
+             ORDER BY A.TOPWORK_START ASC
+        ]]>
+    </select>
+    
+    <select id="myList" resultType="topWorkVO" parameterType="Map">
+        <![CDATA[
+            SELECT A.TOPWORK_NO
+                 , A.PRO_NO
+                 , A.TW_CATEGORY_NO
+                 , A.TOPWORK_CONTENT
+                 , A.TOPWORK_START
+                 , A.TOPWORK_END
+                 , A.TOPWORK_STATE
+                 , A.TOPWORK_IMPORTANCE
+                 , A.TOPWORK_PROGRESS
+                 , A.TOPWORK_LIKE
+                 , A.TOPWORK_FILE
+                 , A.TOPWORK_TITLE
+                 , B.TW_CATEGORY_COLOR
+              FROM TOPWORK A
+              LEFT JOIN TOPWORK_CATEGORY B
+                   ON A.TW_CATEGORY_NO = B.TW_CATEGORY_NO
+              LEFT JOIN TOPWORK_RELATION C
+                   ON A.TOPWORK_NO = C.TOPWORK_NO
+             WHERE A.TOPWORK_NO > 0
+               AND A.PRO_NO = #{proNo}
+               AND C.MEMBER_ID = #{memberId}
+               AND A.TOPWORK_DELETE = 'F'
+             ORDER BY A.TOPWORK_START ASC
+        ]]>
+    </select>
+    
+    <select id="select" parameterType="String" resultType="topWorkVO">
+        <!-- 멤버 여러명이먼 에러날 확률이 있음. -> 멤버 삭제. -->
+        SELECT A.*
+             , B.PRO_NAME
+          FROM TOPWORK A
+          LEFT JOIN PROJECT B
+            ON A.PRO_NO = B.PRO_NO  
+         WHERE A.TOPWORK_NO = #{topWorkNo}
+           AND A.TOPWORK_DELETE = 'F'
+    </select>
+    
+    <insert id="insert" parameterType="topWorkVO">
+         <selectKey resultType="String" keyProperty="topWorkNo" order="BEFORE">
+            SELECT SEQ_TOPWORK.NEXTVAL FROM DUAL
+         </selectKey>
+        
+        INSERT INTO TOPWORK (
+            TOPWORK_NO
+          , PRO_NO
+          , TW_CATEGORY_NO
+          , TOPWORK_CONTENT
+          , TOPWORK_START
+          , TOPWORK_END
+          , TOPWORK_STATE
+          , TOPWORK_PROGRESS
+          , TOPWORK_LIKE
+          , TOPWORK_FILE
+          , TOPWORK_TITLE
+        ) VALUES (
+            <if test="topWorkStart == null and topWorkEnd == null">
+                #{topWorkNo}
+              , #{proNo}
+              , #{twCategoryNo}
+              , #{topWorkContent}
+              , #{topWorkStart}
+              , #{topWorkEnd}
+              , 0
+              , 0
+              , 0
+              , #{topWorkFile}
+              , #{topWorkTitle}
+            </if>
+            <!-- file은 null을 받을수가없네.. 왜지-->
+            <if test="topWorkStart != null">
+                #{topWorkNo}
+              , #{proNo}
+              , #{twCategoryNo}
+              , #{topWorkContent}
+              , #{topWorkStart}
+              , #{topWorkEnd}
+              , 0
+              , 0
+              , 0
+              , #{topWorkFile}
+              , #{topWorkTitle}
+            </if>
+        )
+    </insert>
+    <!-- 작업 insert 후 관계 테이블에 작업자 insert -->
+    <insert id="insertRelation" parameterType="topWorkRelationVO">
+        <selectKey resultType="String" keyProperty="topWorkRNo" order="BEFORE">
+            SELECT SEQ_TOPWORK_R.NEXTVAL FROM DUAL
+         </selectKey>
+         
+        INSERT INTO TOPWORK_RELATION (
+            TOPWORK_R_NO
+          , TOPWORK_NO
+          , MEMBER_ID
+        ) VALUES (
+            #{topWorkRNo}
+          , #{topWorkNo}
+          , #{memberId}
+        )
+        
+    </insert>
+    
+    <update id="updateMove" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_START = #{topWorkStart}
+             , TOPWORK_END = #{topWorkEnd}
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+    <update id="update" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_TITLE = #{topWorkTitle}
+             , TOPWORK_CONTENT = #{topWorkContent}
+             , TOPWORK_PROGRESS = #{topWorkProgress}
+             , TW_CATEGORY_NO = #{twCategoryNo}
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+    <delete id="delete" parameterType="topWorkVO">
+        DELETE TOPWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </delete>
+    
+    <select id="selectTopWork" parameterType="String" resultType="topWorkVO">
+        SELECT *
+          FROM TOPWORK
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+           AND TOPWORK_DELETE = 'F'
+    </select>
+    
+    <!-- topWorkCategory -->
+    <select id="categoryList" resultType="topWorkCategoryVO" parameterType="String">
+        SELECT *
+          FROM TOPWORK_CATEGORY
+         WHERE PRO_NO = #{proNo}
+           AND TW_CATEGORY_STATE = '0'
+         ORDER BY TW_CATEGORY_NO ASC
+    </select>
+    
+    <insert id="categoryInsert" parameterType="topWorkCategoryVO">
+        INSERT INTO TOPWORK_CATEGORY (
+            TW_CATEGORY_NO
+          , TW_CATEGORY_NAME
+          , TW_CATEGORY_COLOR
+          , PRO_NO
+        ) VALUES (
+            SEQ_TW_CATEGORY.NEXTVAL
+          , #{twCategoryName}
+          , #{twCategoryColor}
+          , #{proNo}
+        )
+    </insert>
+    
+    <update id="categoryDelete" parameterType="topWorkCategoryVO">
+        UPDATE TOPWORK_CATEGORY
+           SET TW_CATEGORY_STATE = '1'
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+    </update>
+    
+    <update id="topWorkMove" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TW_CATEGORY_NO = #{twCategoryNo}
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+    <update id="topWorkWaiting" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TW_CATEGORY_NO = 1
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+    <!-- 로그 인서트 -->
+    <insert id="logInsert" parameterType="projectLogVO">
+        INSERT INTO PROJECT_LOG (
+            PRO_LOG_NO
+          , PRO_NO
+          , PRO_LOG_CONTENT
+          , PRO_LOG_DATE
+          , TOPWORK_NO
+          , PRO_LOG_PROGRESS_ORIGIN
+          , PRO_LOG_PROGRESS_NEW
+        ) VALUES (
+            SEQ_PROJECT_LOG.NEXTVAL
+          , #{proNo}
+          , #{proLogContent}
+          , SYSDATE
+          , #{topWorkNo}
+          , #{proLogProgressOrigin}
+          , #{proLogProgressNew}
+        )
+    </insert>
+
+    <delete id="logDelete" parameterType="projectLogVO">
+        DELETE PROJECT_LOG
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </delete>
+    
+    <update id="categoryUpdate" parameterType="topWorkCategoryVO">
+        UPDATE TOPWORK_CATEGORY
+           SET TW_CATEGORY_NAME = #{twCategoryName}
+             , TW_CATEGORY_COLOR = #{twCategoryColor}
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+    </update>
+    
+    <update id="topWorkUpdate" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_TITLE = #{topWorkTitle}
+             , TOPWORK_CONTENT = #{topWorkContent} 
+             , TOPWORK_START = #{topWorkStart}
+             , TOPWORK_END = #{topWorkEnd}
+             , TW_CATEGORY_NO = #{twCategoryNo}
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+    <update id="topWorkDelete" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_DELETE = 'T'
+         WHERE TOPWORK_NO = #{topWorkNo}
+    </update>
+    
+   <!-- 2023/01/02 -->
+   <select id="selectCategoryColor" parameterType="String" resultType="String">
+        SELECT TW_CATEGORY_COLOR
+          FROM TOPWORK_CATEGORY
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </select>
+   
+   <update id="updateTopworkFile" parameterType="hashMap">
+	   	UPDATE TOPWORK
+		SET TOPWORK_FILE = #{fileNo}
+		WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+    <!-- OJH 상위작업 카테고리번호로 TOPWORKFILE 가져오는 메소드 -->
+    <select id="getTopWorkFile" parameterType="topWorkVO" resultType="int">
+    	SELECT TOPWORK_FILE 
+    	  FROM TOPWORK 
+    	 WHERE TOPWORK_NO = #{topWorkNo}
+    	   AND TOPWORK_DELETE = 'F'
+    </select>
+    
+    <select id="topWorkMyList" parameterType="Map" resultType="topWorkVO">
+        SELECT A.MEMBER_ID
+             , B.*
+          FROM TOPWORK_RELATION A
+          LEFT JOIN TOPWORK B
+            ON A.TOPWORK_NO = B.TOPWORK_NO
+         WHERE A.MEMBER_ID = #{memberId}
+           AND B.PRO_NO = #{proNo}
+           AND B.TOPWORK_DELETE = 'F'
+   </select>
+   
+   <select id="categoryPersonal" resultType="topWorkVO">
+       <![CDATA[
+            SELECT *
+              FROM TOPWORK_CATEGORY
+             WHERE TW_CATEGORY_NO < 4
+       ]]>
+   </select>
+   
+   <update id="moveState" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_STATE = #{topWorkState}
+         WHERE TOPWORK_NO = #{topWorkNo} 
+   </update>
+   
+   <select id="getCategoryName" parameterType="string" resultType="string">
+		SELECT TW_CATEGORY_NAME FROM TOPWORK_CATEGORY
+		WHERE TW_CATEGORY_NO = #{categoryNo}
+   </select>
+   
+   <select id="logList" parameterType="topWorkVO" resultType="projectLogVO">
+        SELECT *
+          FROM PROJECT_LOG
+         WHERE TOPWORK_NO = #{topWorkNo}
+           AND PRO_LOG_STATE = '0'
+           AND SUBWORK_NO = 'F'
+         ORDER BY PRO_LOG_NO ASC
+   </select>
+   
+   <select id="getTopWorkTitle" parameterType="string" resultType="string">
+   		SELECT TOPWORK_TITLE 
+   		  FROM TOPWORK
+   		 WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <select id="selectMemberList" parameterType="topWorkVO" resultType="topWorkRelationVO">
+        SELECT *
+          FROM TOPWORK_RELATION
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <update id="topWorkUpdate_K" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_TITLE = #{topWorkTitle}
+             , TOPWORK_CONTENT = #{topWorkContent}
+             , TOPWORK_START = #{topWorkStart}
+             , TOPWORK_END = #{topWorkEnd}
+             , TOPWORK_STATE = #{topWorkState}
+             , TOPWORK_IMPORTANCE = #{topWorkImportance}
+             , TOPWORK_PROGRESS = #{topWorkProgress}
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <select id="topWorkComentList" parameterType="topWorkVO" resultType="topWorkComentVO">
+        SELECT *
+          FROM TOPWORK_COMENT
+         WHERE TOPWORK_NO = #{topWorkNo}
+           AND TW_COMENT_STATE = '0'
+         ORDER BY TW_COMENT_NO ASC
+   </select>
+   
+   <insert id="topWorkComentInsert" parameterType="topWorkComentVO">
+        <selectKey resultType="String" keyProperty="twComentNo" order="BEFORE">
+           SELECT SEQ_TW_COMENT.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TOPWORK_COMENT (
+            TW_COMENT_NO
+          , TOPWORK_NO
+          , MEMBER_ID
+          , TW_COMENT_DATE
+          , TW_COMENT_CONTENT
+          , TW_COMENT_FILE
+        ) VALUES (
+            #{twComentNo}
+          , #{topWorkNo}
+          , #{memberId}
+          , SYSDATE
+          , #{twComentContent}
+          , 0
+        )
+   </insert>
+   
+   <update id="topWorkComentDelete" parameterType="topWorkComentVO">
+        UPDATE TOPWORK_COMENT
+           SET TW_COMENT_STATE = '1'
+         WHERE TW_COMENT_NO = #{twComentNo}
+   </update>
+   
+   <update id="topWorkComentUpdate" parameterType="topWorkComentVO">
+        UPDATE TOPWORK_COMENT
+           SET TW_COMENT_CONTENT = #{twComentContent}
+         WHERE TW_COMENT_NO = #{twComentNo}
+   </update>
+   
+   <select id="selectCategoryName" parameterType="String" resultType="String">
+        SELECT TW_CATEGORY_NAME
+          FROM TOPWORK_CATEGORY
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </select>
+   
+   <select id="selectOriginProgress" parameterType="topWorkVO" resultType="map">
+        SELECT TOPWORK_PROGRESS
+             , PRO_NO
+             , TOPWORK_NO
+          FROM TOPWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <select id="getProNo" parameterType="topWorkVO" resultType="String">
+        SELECT PRO_NO
+          FROM TOPWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <insert id="topWorkProgressLogInsert" parameterType="projectLogVO">
+        INSERT INTO PROJECT_LOG (
+            PRO_LOG_NO
+          , PRO_NO
+          , PRO_LOG_CONTENT
+          , PRO_LOG_DATE
+          , TOPWORK_NO
+          , PRO_LOG_STATE
+          , PRO_LOG_PROGRESS_ORIGIN
+          , PRO_LOG_PROGRESS_NEW
+          , PRO_LOG_PROGRESS_TOTAL
+        ) VALUES (
+            SEQ_PROJECT_LOG.NEXTVAL
+          , #{proNo}
+          , #{proLogContent}
+          , SYSDATE
+          , #{topWorkNo}
+          , 0
+          , #{proLogProgressOrigin}
+          , #{proLogProgressNew}
+          , #{proLogProgressTotal}
+        )
+   </insert>
+   
+   <select id="categorySelect" parameterType="topWorkVO" resultType="topWorkCategoryVO">
+        SELECT *
+          FROM TOPWORK_CATEGORY
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </select>
+   
+   <select id="categoryPersonalList" parameterType="String" resultType="topWorkCategoryVO">
+   <![CDATA[
+        SELECT *
+          FROM TOPWORK_CATEGORY
+         WHERE TO_NUMBER(TW_CATEGORY_NO) < 3
+   ]]>
+   </select>
+   
+   <update id="updateProgress" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_PROGRESS = #{topWorkProgress}
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <update id="topWorkComplete" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_STATE = 4
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <update id="topWorkReject" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_STATE = 3
+             , TOPWORK_PROGRESS = '90'
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <select id="selectTopWorkRelationList" parameterType="String" resultType="topWorkRelationVO">
+        SELECT *
+          FROM TOPWORK_RELATION
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <delete id="deleteTopWorkRelation" parameterType="String">
+        DELETE
+          FROM TOPWORK_RELATION
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </delete>
+   
+   <select id="selectTopWorkRelation" parameterType="topWorkRelationVO" resultType="topWorkRelationVO">
+        SELECT *
+          FROM TOPWORK_RELATION
+         WHERE TOPWORK_NO = #{topWorkNo}
+           AND MEMBER_ID = #{memberId}   
+   </select>
+   
+   <select id="getAlltwCategory" resultType="topWorkCategoryVO">
+        SELECT TW_CATEGORY_NO
+             , TW_CATEGORY_NAME
+             , PRO_NO
+             , TW_CATEGORY_STATE
+          FROM TOPWORK_CATEGORY
+   </select>
+   
+   <select id="getAllTopWork" resultType="topWorkVO">
+        SELECT TOPWORK_NO
+             , PRO_NO
+             , TW_CATEGORY_NO
+             , TOPWORK_TITLE
+             , TOPWORK_START
+             , TOPWORK_END
+             , TOPWORK_PROGRESS
+             , TOPWORK_DELETE
+          FROM TOPWORK
+   </select>
+   
+   <select id="getAlltwRelation" resultType="topWorkRelationVO">
+        SELECT *
+          FROM TOPWORK_RELATION
+   </select>
+   
+   <update id="updateCategoryName" parameterType="topWorkCategoryVO">
+        UPDATE TOPWORK_CATEGORY
+           SET TW_CATEGORY_NAME = #{twCategoryName}
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </update>
+   
+   <update id="updateTopWorkTitle" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_TITLE = #{topWorkTitle}
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <update id="updateTopWorkProgress" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_PROGRESS = #{topWorkProgress}
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <select id="checkTopWorkProgress" parameterType="topWorkVO" resultType="topWorkVO">
+        SELECT *
+          FROM TOPWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <update id="updateTopWorkState_1" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_STATE = '1'
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <update id="updateTopWorkState_2" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_STATE = '2'
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <select id="selectTopWork_admin" parameterType="topWorkVO" resultType="topWorkVO">
+        SELECT *
+          FROM TOPWORK
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </select>
+   
+   <update id="topWorkNotDelete" parameterType="topWorkVO">
+        UPDATE TOPWORK
+           SET TOPWORK_DELETE = 'F'
+         WHERE TOPWORK_NO = #{topWorkNo}
+   </update>
+   
+   <select id="selectTwCategory" parameterType="topWorkCategoryVO" resultType="topWorkCategoryVO">
+        SELECT *
+          FROM TOPWORK_CATEGORY
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </select> 
+   
+   <update id="twCategoryNotDelete" parameterType="topWorkCategoryVO">
+        UPDATE TOPWORK_CATEGORY
+           SET TW_CATEGORY_STATE = 0
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </update>
+   
+   <select id="getAllRelationTopWork" parameterType="topWorkCategoryVO" resultType="topWorkVO">
+        SELECT *
+          FROM TOPWORK
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </select>
+   
+   <update id="twCategoryDelete" parameterType="topWorkCategoryVO">
+        UPDATE TOPWORK_CATEGORY
+           SET TW_CATEGORY_STATE = 1
+         WHERE TW_CATEGORY_NO = #{twCategoryNo}
+   </update>
+   
+   <select id="getAllRelationTwCategory" parameterType="projectVO" resultType="topWorkCategoryVO">
+        SELECT *
+          FROM TOPWORK_CATEGORY
+         WHERE PRO_NO = #{proNo}
+   </select>
+</mapper>

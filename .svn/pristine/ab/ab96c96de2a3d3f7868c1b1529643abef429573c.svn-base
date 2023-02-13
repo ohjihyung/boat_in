@@ -1,0 +1,180 @@
+package kr.or.ddit.handler;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import kr.or.ddit.mapper.ChatMapper;
+import kr.or.ddit.vo.ChatContentVO;
+import kr.or.ddit.vo.ChatMemVO;
+import kr.or.ddit.vo.ChatUserVO;
+
+
+public class ChatHandler extends TextWebSocketHandler{
+
+	@Autowired
+	ChatMapper mapper;
+
+
+	//접속한 사람들(웹소켓 세션) 담아둘 리스트
+	private static List<WebSocketSession> list = new ArrayList<WebSocketSession>();
+    // session, 방 번호가 들어간다.
+    private Map<String, List<ChatMemVO>> sessionList = new HashMap<String, List<ChatMemVO>>();
+    private static List<ChatMemVO> charMemList = new ArrayList<ChatMemVO>();
+
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		System.out.println("잘들어왔나?" + session.getId());
+		list.add(session);
+		//session.sendMessage(new TextMessage("연결 성공"));
+	}
+	@Override // 메세지가 클라이언트로 부터 왔을 때
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		JSONObject returnMessage = new JSONObject();
+		//현재 시간
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println(now);
+		String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/HH:mm:ss"));
+		System.out.println(formatedNow);
+		//String uMsg = message.getPayload();
+		// 방번호도 여기서 처리해라
+
+
+		String msg = "";
+		System.out.println("클라이언트가 보낸 메세지 : " + message.getPayload());
+
+		//받아온 stringify data 데이터 분해 하기
+		JsonParser parser = new JsonParser();
+		JsonObject obj = (JsonObject)parser.parse(message.getPayload());
+		String roomId = obj.get("roomId").getAsString();
+		String myName = obj.get("myName").getAsString();
+		String myId = obj.get("myId").getAsString();
+		String state = obj.get("state").getAsString();
+		System.out.println( "메세지 상태" + state);
+
+		// 채팅방을 눌러서 접속시 obj.size == 3이다  이때 해당 방에 해당 유저를 담아준다
+		if(state.equals("open")) {
+
+			//해당 체팅방의  상태 true로 변경  UPDATE
+			// 이떄 chat_no_read에 있는 데이터도 삭제한다..
+			ChatUserVO userVO = new ChatUserVO();
+			userVO.setChatRNo(roomId);
+			userVO.setMemberPk(myId);
+			mapper.updateIsOnlineT(userVO);
+
+			ChatMemVO cmVO = new ChatMemVO();
+			System.out.println(session); // [dsad12klasdkl;k21;lkdas  ]
+			System.out.println(roomId);  // 2
+			System.out.println(myName);  // 오지형
+			System.out.println(myId);  // rkwkakstp123@gmail.com
+			cmVO.setWsSession(session);
+			cmVO.setRoomId(roomId);
+			cmVO.setMyName(myName);
+			cmVO.setMyId(myId);
+            //초기에 사이즈는 0이기에 처음 들어올때는 charMemList 가 0
+			if(charMemList.size() == 0) {
+				charMemList.add(cmVO);
+			}else {  // 처음들어온게 아니면 여길탐
+				boolean flag = false;	// 중복이 되지 않고 새로들어온 유저
+				int idx = 0;
+				for(int i = 0; i < charMemList.size(); i++) {
+					if(charMemList.get(i).getMyId().equals(myId)) {
+						flag = true;
+						idx = i;
+						break;
+					}
+				}
+				if(flag)
+					charMemList.set(idx, cmVO); // 만약에 list에 있으면 소켓 죽은놈 새로운걸로 갈아낌
+				else
+					charMemList.add(cmVO); // 기존에 있는방에 새롭게 새로운사람이들어오면 그냥 추가
+			}
+			sessionList.put(roomId, charMemList);
+		}
+		//채팅창에 글썼을 때
+		if(state.equals("message")) {
+			msg = obj.get("msg").getAsString();
+			//나 . 즉 그사람의 웹세션으로 체팅 쳣을때 해당 채팅 해당 방에 내용 db처리
+			ChatContentVO chatContentVO = new ChatContentVO();
+			chatContentVO.setChatCNo(roomId);
+			chatContentVO.setMemberPk(myId);
+			chatContentVO.setChatDate(formatedNow);
+			chatContentVO.setChatContent(msg);
+
+
+			int res = mapper.insertChatContent(chatContentVO);
+
+
+			// 본인방에  false 인 사람들 불러와서 그 안읽은 테이블에 싹다 넣는다.
+			// 2명나옴
+			List<ChatUserVO> userList = new ArrayList<ChatUserVO>();
+			userList = mapper.getOfflineUser(roomId);
+			//userList = mapper.getRoomUserOffline();
+			//hhnh24@gmail.com	16
+			//fnvkfl12@naver.com	16
+			// 이친구들을 디비작업해서 넣음
+			for(ChatUserVO user : userList) {
+				mapper.insertNoRead(user);
+			}
+			//이미지 가져오기
+			String imgPath = mapper.getMemPic(myId);
+
+			if(res >= 1)  System.out.println("성공");
+			//여기서 보낼 체팅 json 만듬  {msg : '' , time : '', myId : '', myname : '', profileImg : ``}
+			String formatTime = formatedNow.substring(11, 16);
+			returnMessage.put("msg", msg);
+			returnMessage.put("time", formatTime);
+			returnMessage.put("myId", myId);
+			returnMessage.put("myName", myName);
+			returnMessage.put("img", imgPath);
+		}
+		if(state.equals("disconnect")) {
+			//연결 끊길때  해당 방 유저 isonline false
+			ChatUserVO userVO = new ChatUserVO();
+			userVO.setChatRNo(roomId);
+			userVO.setMemberPk(myId);
+			mapper.updateIsOnlineF(userVO);
+
+			 if(sessionList.size() != 0) {
+				 for(int i = 0; i < sessionList.get(roomId).size(); i++) {
+					 ChatMemVO mem = sessionList.get(roomId).get(i);
+					 if(mem.getMyId() != null) {
+						 if(mem.getMyId().equals(myId)) {
+							 charMemList.remove(i);
+							 break;
+						 }
+					 }
+				 }
+			 }
+		}
+		//메세지 전송
+		if(state.equals("message")) {
+			for (int i = 0; i < sessionList.get(roomId).size(); i++) {
+				if(sessionList.get(roomId).get(i).getMyId() != null) {
+					if(sessionList.get(roomId).get(i).getRoomId().equals(roomId)) {
+						sessionList.get(roomId).get(i).getWsSession().sendMessage(new TextMessage(returnMessage.toJSONString()));
+					}
+				}
+			}
+		}
+	}
+
+	@Override  //접속이 끊어진후
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		list.remove(session);
+	}
+
+}

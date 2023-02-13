@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.AlarmMapper">
+	<insert id="insertAlarm" parameterType="AlarmVO">
+		INSERT INTO ALARM  (ALARM_NO, MEMBER_ID, ALR_T_NO, ALARM_SENDER, ALARM_CONTENT,ALARM_DATA)
+		VALUES (SEQ_ALARM_NO.NEXTVAL, #{memberId}, #{alrTNo}, #{alarmSender}, #{alarmContent}, #{alarmData}) 
+	</insert>
+	
+	<select id="getMemNameById"  parameterType="string" resultType="string">
+		SELECT MEMBER_NAME FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="getUnreadAlarm" parameterType="AlarmVO" resultType="AlarmVO">
+		select * from alarm where member_id = #{memberId} and alarm_check ='F' order by alarm_no desc
+	</select>
+	
+	<update id="deleteAllAlarm" parameterType="String">
+		update alarm
+		set alarm_check ='T'
+		where member_id = #{memberId}
+	</update>
+</mapper>

@@ -1,0 +1,60 @@
+package kr.or.ddit.controller.subwork;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.controller.subwork.service.ISubWorkService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.SubWorkVO;
+import kr.or.ddit.vo.TopWorkVO;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
+@Controller
+@RequestMapping("/subWork")
+public class SubWorkController {
+    @Inject
+    private ISubWorkService service;
+    
+    @PostMapping(value = "/subWorkInsert", produces = "text/plain; charset=utf-8")
+    @ResponseBody
+    public String subWorkInsert(@RequestBody SubWorkVO subWorkVO) throws Exception {
+        log.debug("인서트하러 온 서브워크 : {}", subWorkVO);
+        service.subWorkInsert(subWorkVO);
+        
+        return "서브워크 인서트 성공";
+    }
+    
+    @PostMapping(value = "/subWorkList", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<SubWorkVO> subWorkList(@RequestBody TopWorkVO topWorkVO) throws Exception {
+        log.debug("서브워크리스트 조회할 탑워크객체 : {}", topWorkVO);
+        List<SubWorkVO> subWorkList = service.subWorkList(topWorkVO);
+        
+        return subWorkList;
+    }
+    
+    @PostMapping(value = "/subWorkDetail", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public SubWorkVO subWorkDetail(@RequestBody SubWorkVO vo) throws Exception {
+        log.debug("서브워크 디테일할 객체 : {}", vo);
+        SubWorkVO subWorkVO = service.subWorkDetail(vo);
+        
+        return subWorkVO;
+    }
+    
+    @PostMapping(value = "/selectSubWorkMember", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public MemberVO selectSubWorkMember(@RequestBody SubWorkVO vo) throws Exception {
+        MemberVO memberVO = service.selectSubWorkMember(vo);
+        
+        return memberVO;
+    }
+
+}

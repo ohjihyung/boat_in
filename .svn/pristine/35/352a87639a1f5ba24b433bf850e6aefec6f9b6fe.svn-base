@@ -1,0 +1,975 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<style>
+.speech-bubble {
+    position: relative;
+    background: #00aabb;
+    border-radius: .4em;
+}
+
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 18px solid transparent;
+    border-left-color: #00aabb;
+    border-right: 0;
+    margin-top: -18px;
+    margin-right: -18px;
+}
+
+#chatImg{
+ border-radius: 7px; 
+}
+
+#imgdiv{
+	position: relative;
+}
+#imgtime{
+	position : absolute;
+	bottom :0%;
+	right : 160px;
+}
+#anotherimgdiv{
+	position: relative;
+}
+#anotherimgtime{
+	position : absolute;
+	bottom :0%;
+	left : 200px;
+}
+
+#filediv{
+	position: relative;
+}
+#filetime{
+	position : absolute;
+	bottom :0%;
+	right : 285px;
+}
+#anotherfilediv{
+	position: relative;
+}
+#anotherfiletime{
+	position : absolute;
+	bottom :0%;
+	left : 330px;
+}
+
+</style>
+
+<div id="chatMainimg"></div>
+
+<div id="chatDiv" draggable="true"  style="position: fixed; z-index: 9001; bottom: 20px; right: 20px;">
+    <a href="javascript:void(0);" draggable="true"  id="openChat" onclick="openchatroom()"> <img id="chatImg" style="width: 50px; height: 50px;" src="/resources/src/images/boattalk.png">
+
+    </a>
+</div>
+
+
+
+<div id="chatroom" draggable="true"  style="position: fixed; z-index: 9003; bottom: 60px; right: 30px; display: none;">
+    <div class="card" draggable="true"  style="width:400px;">
+        <div class="card-body">
+            <div class="mb-4 d-flex justify-content-between">
+                <div class="mt-1">
+                    <h4 class="header-title">BOAT_TALK</h4>
+                </div>
+                <div >
+                    <a  href="javascript:void(0);" onclick="ojhF()" class="mx-1 fs-6" > <i class="mdi mdi-chat-plus-outline fs-3"></i> </a>
+                    <button type="button" class="btn-close" onclick="closechat()"></button>
+                    <button type="button" class="btn btn-primary"  id="ojhModal" data-bs-toggle="modal" data-bs-target="#signup-modal" style="display: none;"></button>
+<!--                    <button id="chatmove" draggable="true" class="button-menu-mobile waves-effect waves-light "> -->
+<!--                            <i class="fe-menu"></i> -->
+<!--                    </button> -->
+                    
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="#home" data-bs-toggle="tab" aria-expanded="false" class="nav-link active" id="messagelist"> 채팅방목록 </a></li>
+                <li class="nav-item"><a href="#messages" data-bs-toggle="tab" aria-expanded="true" class="nav-link " id="messagewindow">채팅창</a></li>
+            </ul>
+            <div class="tab-content">
+            
+                <!-- 방목록 -->
+                <div class="tab-pane show active" id="home" style="height: 400px;">
+                    <div class="list-group" id="rList" style="overflow: auto; height:400px;"></div>
+                </div>
+                
+                <!-- 채팅창 -->
+                <div class="tab-pane  " id="messages" style="height: 400px;">
+                    <div id="chatWrap" class="h-100 d-flex justify-content-between flex-sm-column" >
+                        <div id="chatHeader" class="row">
+                        
+                            <div class="col-md-10" id="Rtitle"></div>
+                            <div class="col-md-2 text-end" id="Rbtn">
+                            
+                            <a href="javascript:void(0);" id="roomDel-btn" onclick="delRoom()"> <i class="mdi mdi-exit-to-app fs-2" title="채팅방나가기"></i> </a>
+                            </div>
+
+                        </div>
+                        <div id="chatForm">
+                            <div id="chatLog" class="d-flex flex-column" style=" height:300px;   overflow-y: scroll;">
+                            </div>
+                            <div class="w-100">
+                                <input type="text" class="w-100 form-control border-bottom-white" style="height:45px;" autocomplete="off" id="message" placeholder="메시지를 입력하세요" onkeydown="fnEnterKey()"> 
+                            </div>
+                            <div class="d-flex flex-row-reverse">
+                            <button id="send" type="button" class="btn btn-primary waves-effect waves-light">전송</button>
+                            <button id="chatFileBtn" type="button" class="d-none btn btn-warning waves-effect waves-light" onclick="onClickUpload()">
+									<i class="mdi mdi-file-plus"></i>
+							</button>
+                            <input type="hidden" id="id_exit" value="나갈령">
+                            </div>
+                            <div id="filebox">
+                            <input type="file" id="my-input" style="visibility: hidden;" onchange="uploadmyFile()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end card-->
+</div>
+
+
+
+<!-- 초대하기 모달창 -->
+<!-- 새로운방 만드는 모달창 -->
+<!-- makeRoom modal content -->
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="auth-logo text-center mt-2 mb-4">
+                    <a href="index.html" class="logo logo-dark"> <span class="logo-lg"> <img src="../assets/images/logo-dark.png" alt="" height="20">
+                    </span>
+                    </a> <a href="index.html" class="logo logo-light"> <span class="logo-lg"> <img src="../assets/images/logo-light.png" alt="" height="20">
+                    </span>
+                    </a>
+                </div>
+
+                <form id="createForm" class="px-3" action="javascript:createRoom()">
+                    <div class="mb-3">
+                        <label for="chatRoomName" class="form-label">채팅방 이름</label> <input class="form-control" type="text" id="chatRoomName" required="" placeholder="채팅방 이름">
+                    </div>
+                    
+                    <label for="chatRoomMember" class="form-label">초대할 인원</label> <input class="form-control" type="text" id="emailaddress" required="" placeholder="boat123@boat.com" style="display: none;"/>
+                    <select class="form-control select2-multiple" id="emailaddress2" data-toggle="select2" data-width="100%" multiple="multiple" data-placeholder="초대할 회원을 선택하세요.">
+                    </select>
+
+                    <div class="mb-3" id="selectBox">
+                    </div>
+                    <div id="invitedMem"></div>
+                    <div class="mb-3">
+                    </div>
+                    <div class="mb-3 text-center">
+                        <button class="btn btn-primary" type="button" onclick="createRoom()">생성</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<script type="text/javascript">
+var locationCaht = $('#chatDiv').css();
+console.log("locationCaht: ", locationCaht)
+
+    
+    function openchatroom(e) {
+        
+        console.log("openroom")
+        $("#chatroom").css({
+            position: "fixed",
+            display: "block",
+        });
+        $('#openChat').attr('onclick', 'closechat()')
+        $('#openChat').attr('class','d-none')
+        
+    }
+    function closechat(e) {
+        $('#messages').attr('class','tab-pane')
+        $('#home').attr('class','tab-pane show active')
+        $('#messagewindow').attr('class','nav-link')
+        $('#messagewindow').css('display','none')
+        $('#messagelist').attr('class','nav-link active')
+        
+        $("#chatroom").css({
+            position: "fixed",
+            display: "none",
+        });
+        $('#openChat').attr('onclick', 'openchatroom()')
+        $('#openChat').attr('class','d-block')
+        disconnect("out")
+
+    }
+</script>
+
+
+<script>
+
+console.log("sendBtns : ", sendBtns);
+
+var myId;
+var myName;
+var beforeRoomId;
+let webSocket;
+var c_chatWin = document.querySelector("#chatLog");
+var c_message = document.querySelector("#message");     
+var sendBtns = document.querySelectorAll("#send");
+var c_exit = document.querySelector("#id_exit");
+var c_chatWrap = document.querySelector("#chatWrap");
+var c_header = document.querySelector("#chatHeader");
+var c_chatForm = document.querySelector("#chatForm");
+var chatMainImgs = document.querySelectorAll("#chatMainimg");
+var c_headerTitle = document.querySelector("#Rtitle");
+var c_Rbtn = document.querySelector("#Rbtn");
+var c_filebox = document.querySelector("#filebox");
+var c_chatFileBtns = document.querySelectorAll("#chatFileBtn");
+
+$(document).ready(function(){
+    $('#messages').attr('class','tab-pane')
+    $('#home').attr('class','tab-pane show active')
+    $('#messagewindow').attr('class','nav-link')
+    $('#messagewindow').css('display','none')
+    $('#messagelist').attr('class','nav-link active')
+    myId = localStorage.getItem("id");
+    myName = getName(myId);
+    
+    console.log()
+    // 채팅 전송 버튼 활성화 비활성화 
+    if ($('#message').val() == "" || $('#message').val() == null) {
+        $('#send').attr('class',"btn btn-primary waves-effect waves-light")
+    }
+    
+    $('#message').on('keyup',function(){
+        $('#send').attr('class',"btn btn-primary waves-effect waves-light")
+            if ($('#message').val() == "" || $('#message').val() == null) {
+            $('#send').attr('class',"btn btn-primary waves-effect waves-light")
+        }
+    })
+    
+    //url 찾기
+    const URLSearch = new URLSearchParams(location.search);
+    const getRoomId = URLSearch.get("roomId");
+    
+    if (getRoomId) {
+        showRoom();
+        openRoom(getRoomId);
+    }
+    console.log("ready function : " + myName);
+
+    //1.해당 페이지 오면 나에 관한 방정보들 세팅 
+    showRoom();
+    setInterval(() => showRoom(), 1000);
+//  해당 페이지 나갔다왔는데 localStorage에 currentRoom 있을시 해당 것 보여줌 
+//  보여주고 다시 beforeRoom삭제
+    if(localStorage.getItem("beforeRoom") != null ){
+        setTimeout(() => {
+            openRoom(localStorage.getItem("beforeRoom"));
+//          localStorage.removeItem("beforeRoom");
+        }, 200);
+    }
+
+}); // end of .ready
+
+
+// ojh 클릭시 파일 업로드 처리
+function onClickUpload(){
+     let myInput = document.getElementById("my-input");
+      myInput.click();
+}
+
+// 파일이 진짜 들어갔을 때 
+function uploadmyFile(roomId){
+     const chatData = document.querySelector("#my-input");
+     console.log(chatData);
+     const chatfileList = chatData.files;
+     const formData_O = new FormData();
+     formData_O.append("uploadFile", chatfileList[0]);
+     
+     const jsonObj = {
+           "roomId" : roomId,
+           "myId" : myId
+     }
+     
+     const jsonData = JSON.stringify(jsonObj);    
+     formData_O.append("jsonData", jsonData);
+     $.ajax({
+           url : '/chat/uploadAjaxchat_O',
+           processData : false,
+           contentType : false,
+           data : formData_O,
+           type : 'post',
+           dataType : 'json',
+           success : function(result){
+              console.log(result);
+              var roomData = { roomId : roomId,
+                           myName : myName,
+                           myId : myId,
+                           uploadFileName : result.uploadFileName,
+                           image : result.image,
+                           filePath : result.filePath,
+                           state :"file"
+                           };
+              webSocket.send(JSON.stringify(roomData));
+           }
+       }); 
+}
+
+function isOpen(ws) { return ws.readyState === ws.OPEN }
+
+
+function chatalarmCheck(){ 
+    console.log("chatmain에서의 연결상태",webSocketAlarm.readyState);  
+}
+
+
+
+
+var c_inviteMem = document.querySelector("#invitedMem");
+
+// 생성창에서 해당 팀원 x 누를시 없에는 것
+function delSel(e){
+    console.log(e.parentElement);
+    e.parentElement.remove();
+}
+
+// 생성창에서 해당 팀원 누르면 목록 뽑아서 담는것 
+function selectMem(e){
+    console.log(e);
+    let selectedMem = e.innerText;
+    let spanTag = document.createElement("span");
+    spanTag.innerHTML = selectedMem + "<i onclick = 'delSel(this)'>X</i></br>";
+    console.log(spanTag.innerText);
+    let box = document.querySelector("#selectBox");
+    c_inviteMem.append(spanTag);
+    
+}
+
+//모달 띄우기전에 맴버전체 목록 가져오는 것  나빼고
+function ojhF() {
+	$("#emailaddress2").val([]).trigger('change');
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", '/chat/getMembers', true);
+    let text = "";
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200){
+        	let jinoText = ``;
+        	
+            var data = JSON.parse(xhr.responseText);
+            console.log(data);
+            text += `<label for="chatRoomMember" class="form-label">초대할 인원</label><br>`;
+            text += `<select  class='form-control' id="chatMem" multiple>`;
+            for(let i in data){
+                if(data[i].memberId != memberId){
+                    text+= `<option onclick = 'selectMem(this)' value='\${data[i].memberId}'>\${data[i].memberId}</option>`;
+                    jinoText += `<option value='\${data[i].memberId}'>\${data[i].memberId}</option>`;
+                }
+            }
+            text += `</select>`;
+            document.querySelector("#emailaddress2").innerHTML = jinoText;
+            
+            $("#emailaddress2").select2({
+                dropdownParent: $("#signup-modal"),
+                placeholder: {
+                	id: '-1',
+                	text: '초대할 회원을 선택하세요.',
+                },
+                allowClear: true,
+              });
+            
+            document.querySelector("#ojhModal").click();
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send();
+}
+
+
+//엔터키 누르면 해당 방에서 채팅 바로 입력됨 
+function fnEnterKey(roomId){
+    //console.log(roomId);
+    if(window.event.keyCode == 13){
+        console.log("엔터키 누름, 방번호 :",roomId);
+        $('#send').click()
+//      chatsend(roomId);
+    }
+}
+
+// 스크롤 항상 아래로 하게 해주는 메서드
+function scrollDown(){
+    //채팅 다입력하고 스크롤 아래로 작동시키는 거
+    let mySpace = document.querySelector("#chatLog"); 
+    mySpace.scrollTop = mySpace.scrollHeight;
+}
+
+//해당 채팅방 나가기 누르면 실행되는 함수 
+function delRoom(roomId){
+    console.log(roomId, myId);
+    Swal.fire({
+          title: '방을 나가시겠습니까??',
+//        text: "한번 나가면 다시 들어올 수 없습니다!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '나가기'
+        }).then((result) => {
+          if (result.isConfirmed) {
+              //여기서 해당방에 내이름을 지운다.. 
+                var xhr = new XMLHttpRequest();
+                xhr.open("post", '/chat/getoutRoom', true);
+                let obj = {"myId" : myId, "roomId": roomId};
+                xhr.onreadystatechange = function() {
+                    if(xhr.readyState == 4 && xhr.status == 200){   
+                        var data = xhr.responseText;
+                        //console.log(data);
+                        disconnect("out");
+                        c_chatWrap.style.display = 'none';
+                        
+                        chatMainImgs.forEach(chatMainImg => {
+                           chatMainImg.style.display = 'block';
+                        });
+                   /*      sendBtns.forEach(sendBtn => {
+                        	sendBtn.style.display = 'none';
+                        });
+                        c_chatFileBtn.style.display = 'none';
+                         */
+                        
+                        showRoom();
+                        Swal.fire(
+                                  '방을 나갔습니다..'
+                                )
+                                
+                        document.querySelector("#messagelist").click();
+                        document.querySelector("#messagewindow").style.display = "none";
+                    }
+                };
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify(obj));
+                
+          }
+        })
+}
+//해당 유저가 속한 채팅방 목록 뿌려주는 비동기 
+function showRoom(){
+    var xhr = new XMLHttpRequest();
+    var myIdData = {"myId" : myId};
+    //console.log("내 아이디 in showRoom",myId);
+    var rList = document.querySelector("#rList");
+    xhr.open("post", '/chat/getRoomsById', true);
+    xhr.onreadystatechange = function() {
+    var str = "";
+        if(xhr.readyState == 4 && xhr.status == 200){
+            //console.log("showRoom data", xhr.responseText);
+            var data = JSON.parse(xhr.responseText);
+            //console.log("data : ",data);  
+            data.forEach((i, idx) =>  {
+                //console.log("마지막 채팅날짜 : ",i.lastChatDate);                            
+                str += `<a href="javascript:openRoom(\${i.roomId})" class="p-1 list-group-item list-group-item-action">`;
+                str +=  `<div class="d-flex align-items-center  " id="tooltips-container" >`;
+                var imgData = i.Img;
+                //console.log("imgData" , imgData);
+                //console.log("imgData" , imgData.length);
+                // imgData[0] 0번째가 나
+                if(imgData.length == 1){
+                    str += `<div class="me-2"><img src="\${imgData[0]}" class="avatar-md rounded-circle"  ></div>`;                 
+                }
+                else if(imgData.length == 2){
+                    str += `<div class="me-2"><img src="\${imgData[1]}" class="avatar-md rounded-circle"  ></div>`;
+                }else if(imgData.length == 3){
+                    str += `<div >
+                                <div>
+                                <img src="\${imgData[0]}" class="avatar-xs rounded" style="margin:2px;" >
+                                <img src="\${imgData[1]}" class="avatar-xs rounded" style="margin:2px;" >
+                                <img src="\${imgData[2]}" class="avatar-xs rounded" style="margin:2px;" >
+                                </div>
+                                
+                            </div>`;                    
+                }else {
+                    str += `<div class="d-flex me-2">
+                                <div style="width:30px;">
+                                    <img src="\${imgData[0]}" class="avatar-xs rounded" style="margin:2px;" >
+                                    <img src="\${imgData[1]}" class="avatar-xs rounded" style="margin:2px;" >
+                                </div>                                
+                                <div style="width:30px;">                                 
+                                    <img src="\${imgData[2]}" class="avatar-xs rounded" style="margin:2px;" >
+                                    <img src="\${imgData[3]}" class="avatar-xs rounded" style="margin:2px;" >
+                                </div>  
+                            </div>`;
+                }
+                
+                str += `<div class="w-100 ms-1">`;
+                
+                    if (imgData.length == 1 ) {
+                        str +=  `<span class="badge bg-secondary rounded-pill d-inline">나</span> &nbsp; <h5 class="mb-1 header-title d-inline"> \${i.nameList[0]}  </h5>`
+                    }else if(imgData.length == 2){
+                        str +=  `<h5 class="mb-1 header-title d-inline">  \${i.nameList[1]}  </h5> `
+                    }else if(imgData.length > 2){
+                        str +=  `<h5 class="mb-1 header-title d-inline">  \${i.roomTitle}  </h5>  <i class="mdi mdi-account-multiple ms-1"></i>\${imgData.length}`
+                    }
+                if(i.notReadCnt != "0"){
+                    str +=   `<p class="mb-0 font-13 text-muted">\${i.lastChatContent}  &nbsp;&nbsp;&nbsp; \${i.lastChatDate} <span class="badge bg-danger float-end rounded-circle chkletterinit text-sm-end">\${i.notReadCnt}</span></p>`;
+                }else{                  
+                    str +=   `<p class="mb-0 font-13 text-muted">\${i.lastChatContent}  &nbsp;&nbsp;&nbsp; \${i.lastChatDate} </p>`;
+                }           
+                str += `</div>`;        
+                str += `</div>`;        
+                str += `</a>`;
+            });
+            
+            rList.innerHTML = str;
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(myIdData));
+}
+
+addEventListener('beforeunload', (event) => {
+    console.log("beforeunload");
+    disconnect("out")
+}); 
+
+
+
+//모달데이터들을 가지고 방을 만듬
+function createRoom(){
+	const selectedMemberList_K = document.querySelector("#emailaddress2").selectedOptions;
+	const selectedMemberArray = {};
+	let i = 0;
+	for (item of selectedMemberList_K) {
+		//console.log("선택된 멤버 : ", item.value);
+		selectedMemberArray[i] = item.value;
+		i++;
+	}
+	
+	//console.log("selectedMemberArray", selectedMemberArray);
+	
+    var chatRoomName = document.querySelector("#chatRoomName").value;
+    var obj = document.querySelector("#chatMem");
+    /* 
+    var memarr ={}; 
+    console.log(c_inviteMem.children.length);
+    for(let i = 0; i<c_inviteMem.children.length; i++){
+        console.log(c_inviteMem.children[i].innerText);
+         str = c_inviteMem.children[i].innerText;
+         memarr[i]  = str.substr(0,str.length-2); // dsakldsal@naver.comX
+    }
+ */
+    
+    var data = {
+            chatRoomName : chatRoomName,
+            chatRoomCreater : myId,
+            roomLimit : 10,
+            memarr : selectedMemberArray     
+    }
+        
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", '/chat/createRoom', true);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4 && xhr.status == 200){
+            //console.log("data", xhr.responseText);
+            var roomNM = xhr.responseText;
+            //console.log(memarr);
+            for(let v = 0; v < Object.keys(selectedMemberArray).length; v++){
+              updateAlarm(myAlarmId, 'inviteChat', selectedMemberArray[v], roomNM); //    id,  'letter' , 보낼사람의 id ,  뷰페이지이동에 필요한 데이터 ex> devinNo , roomId 
+            }
+            c_inviteMem.innerHTML = "";
+            //모달닫고 
+            $('#signup-modal').modal('hide');
+            //$('#signup-modal').modal('show'); 이건 쇼
+            showRoom();
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
+        
+} // end of createRoom
+
+//OJH 비동기로 이름 가져오기  
+function getName(myId){
+    var xhr = new XMLHttpRequest(); 
+    var datao = {"myId" : myId};
+    xhr.open("post",'/chat/getNameById',true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4 && xhr.status==200){
+            console.log(xhr.responseText);
+            myName = xhr.responseText;
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(datao));
+} // end of getname
+
+// 해당방의 채팅내역가지고오기 
+function getChatContent(roomId){
+    c_chatWrap.style.display = 'block';
+    
+    chatMainImgs.forEach(chatMainImg => {
+       chatMainImg.style.display = 'none';
+    });
+    sendBtns.forEach(sendBtn => {
+    	sendBtn.style.display = 'block';
+    });
+    sendBtns.forEach(sendBtn => {
+    	sendBtn.setAttribute('type', 'button'); 
+    });
+    c_chatFileBtns.forEach(sendBtn => {
+    	sendBtn.setAttribute("class","btn btn-warning waves-effect waves-light");
+    });
+    
+   
+    
+    var xhr2 = new XMLHttpRequest();
+    var data = {"roomId" : roomId};
+    var str = "";
+    xhr2.open('post','/chat/getChatContent', true);
+    xhr2.onreadystatechange = function(){
+        if(xhr2.readyState == 4 && xhr2.status == 200){
+            var data = JSON.parse(xhr2.responseText);
+            
+            var mRoom = roomId; 
+            console.log("데이터 in getChatContent",data);
+            c_headerTitle.innerText = data[0].roomTitle;
+            c_Rbtn.children[0].setAttribute("onclick", `delRoom(\${roomId})`);
+            console.log(data);
+            for(let i in data){          	
+            	  if(data[i].filePath != "NO"){
+            		  if(data[i].ptype == "image"){ // 이미지일때
+            				if(data[i].memberPk == memberId){
+		            			  str += `<div class="text-end bg-color-yellow mt-1" id="imgdiv">`;
+		                          str += ` <span style="font-size : 4px;" id="imgtime">\${data[i].time} </span>`;
+		                          str += `<div class="d-inline fs-3 me-1">
+		                          		   <a href="\\resources\\upload\${data[i].filePath}" download>
+		                          		   			<img src='\\resources\\upload\${data[i].filePath}' class="w-50" style="max-width:150px; max-height:150px; " id="chatImg"/>
+		                          		   			</a>
+		                          		   </div>`;
+		                          str += `</div>`;            					
+            				}else{
+		            			  str += `<div class="anotherMsg mt-1 ms-1" id="anotherimgdiv">`;
+		                          str += `<img class="me-2 avatar-sm rounded-circle" src="\${data[i].memberprofile}" alt="Generic placeholder image" style="float:left">`;
+		                          str += `<span class="anotherName d-block"> \${data[i].memberName}</span>`;
+		                          str += ` <span style="font-size : 4px;" id="anotherimgtime">\${data[i].time} </span>`;		                    	
+		                          str += `<div class="d-inline fs-3 me-1">
+		                          		   <a href="\\resources\\upload\${data[i].filePath}" download>
+		                          		   			<img src='\\resources\\upload\${data[i].filePath}' class="w-50" style="max-width:150px; max-height:150px; " id="chatImg"/>
+		                          		   			</a>
+		                          		   </div>`;
+		                          str += `</div>`;           					
+            				}
+            		  	} // 이미지일때 끝
+            		  if(data[i].ptype=="file"){
+            				  
+            		  } // 파일일때 끝
+            		  
+            		}// filePath no 가 아닐때 끝            		 
+            	            		 
+            	  else{ // 일반 메세지일때
+                    if(data[i].memberName == myName){
+                        str += `<div class="text-end bg-color-yellow mt-1 "  >`;
+                        str += ` <span style="font-size : 4px;">\${data[i].time} </span>`;
+                        str += `<div class="d-inline fs-3 card me-1"style="background:yellow;"> <span class="msg">\${data[i].chatContent}&nbsp&nbsp</span></div>`;
+                        str += `</div>`;
+                    }else{              
+                        str += `<div class="anotherMsg mt-1 ms-1">`;
+                        str += `<img class="me-2 avatar-sm rounded-circle" src="\${data[i].memberprofile}" alt="Generic placeholder image" style="float:left">`;
+                        str += `<span class="anotherName d-block"> \${data[i].memberName}</span>`;
+                        str += `<div class="d-inline card fs-3"style="background:white; "> <span class="msg">\${data[i].chatContent}</span> </div>`;
+                        str += ` <span style="font-size : 4px;">&nbsp&nbsp\${data[i].time}</span>`;
+                        str += `</div>`;
+            	   }
+            	  }
+            }
+            c_chatWin.innerHTML = str;
+//          $('#sender').append()
+            c_chatForm.children[0].setAttribute('onkeydown', `fnEnterKey(\${roomId})`);
+            c_filebox.children[0].setAttribute('onchange', `uploadmyFile(\${roomId})`);
+            
+            scrollDown();
+        }
+    };
+    xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr2.send(JSON.stringify(data));
+    
+}// end of getChatContent
+function deleteUnread(roomId){
+    var xhr = new XMLHttpRequest(); 
+    var datad = {"myId" : myId, "roomId" : roomId};
+    xhr.open("post",'/chat/deleteUnread',true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4 && xhr.status==200){
+            console.log(xhr.responseText);
+            showRoom();
+            
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(datad));
+    
+    
+} //end of deleteUnread
+
+function connect(roomId) {
+        //만약에 안읽은거 있었으면 여기서 후처리 해주고
+        //다시로드 
+        deleteUnread(roomId);
+        beforeRoomId = roomId;
+        c_chatWin.innerHTML = "";
+        // 여기서 해당 방 채팅 내역 가져오는 비동기 처리 ㄱㄱ 
+        // 각 체팅쓴사람의 이름과 이미지를 가져오는 작업   {memberName : '김진호', chatContent : '안녕' memberprofile : '/resources/image/sddd.png'}
+        getChatContent(roomId);
+        
+        webSocket = new WebSocket("ws://192.168.144.3/ws-chat"); // End Point   ws-chat/1234
+        console.log("webSocket : ", webSocket);
+        //이벤트에 이벤트핸들러 뜽록 
+        console.log("connect안의 myName",myName);
+        console.log("connect안의 roomId", roomId);
+        webSocket.onopen = () => {          
+            console.log(webSocket.readyState); // 1이면 연결된거임 
+            fOpen(roomId); // 소켓 접속되면 짜똥 실행할 함수(fOpen) -- 해당 방에 누가 접속했는지
+            webSocket.onmessage = fMessage; // 써버에서 메쎄징 오면  짜똥 실행할 함수(fMessage) 
+        }   
+        
+        sendBtns.forEach(sendBtn => {
+            console.log("sendBtn : ", sendBtn);
+            //존나해결~~
+            sendBtn.onclick = () => {
+                 console.log("채팅 전송하기");
+                  chatsend(roomId);
+                };
+        });
+         
+        // 연결 끊깅
+        c_exit.onclick = function() {
+                disconnect("out");
+         };
+} // end of connect
+
+function fOpen(roomId) {
+        var roomData = {roomId : roomId, myName : myName, myId : myId, state : "open"};
+        console.log("fOpen안의 roomData :",roomData);
+        console.log('chatSend에서 보냅니다~');
+        webSocket.send(JSON.stringify(roomData));
+} //end of fOpen
+
+function chatsend(roomId) {  // 써버로 메쎄찡 떤쏭하는 함수
+    document.body.scrollTop = document.body.scrollHeight;
+    let msg = c_message.value;
+    var roomData = {roomId : roomId, myName : myName, myId : myId, msg : msg, state :"message"};
+    
+    console.log(roomData);
+    console.log('chatSend에서 보냅니다~');
+    webSocket.send(JSON.stringify(roomData));   
+    c_message.value = "";
+} //end of send 
+
+function fMessage() {
+        let data = JSON.parse(event.data);
+        console.log("fmessage data ",data);
+        var str2 = "";  
+        
+        //파일이 왔을때
+        if(data.filePath != undefined){
+        	
+        	// 이미지 일때 
+        	if(data.ptype == "image"){
+        		
+              if(myId == data.myId){
+                   str2 += `<div class="text-end bg-color-yellow mt-1 " id="imgdiv" >`;
+                   str2 += ` <span style="font-size : 4px;"id="imgtime">\${data.time} </span>`;
+                   str2 += `<div class="d-inline fs-3 me-1"><a href="\\resources\\upload\${data.filePath}" download><img src='\\resources\\upload\${data.filePath}'class="w-50" style="max-width:150px; max-height:150px;" id="chatImg"/></a></div>`;
+                   str2 += `</div>`;
+
+                   c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+                   scrollDown();
+               }else {
+               
+                   str2 += `<div class="anotherMsg mt-1 ms-1" id="anotherimgdiv">`;
+              	   str2 += `<img class="me-2 avatar-sm rounded-circle" src="\${data.img}" alt="Generic placeholder image" style="float:left">`;
+                   str2 += `<span class="anotherName d-block"> \${data.myName}</span>`;
+                   str2 += `<div class="d-inline  fs-3"><a href="\\resources\\upload\${data.filePath}" download><img src='\\resources\\upload\${data.filePath}' class="w-50" style="max-width:150px; max-height:150px;"/></a></div>`;
+                   str2 += ` <span style="font-size : 4px;" id="anotherimgtime">&nbsp&nbsp\${data.time}</span>`;
+                   str2 += `</div>`;
+
+                   c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+                   scrollDown();	
+               }
+          		
+        	} //end of image 
+        	
+        	//이미지가 아니고 파일일때
+        	if(data.ptype == "file"){
+        	    if(myId == data.myId){ 
+		        		str2 += `<div class="text-end bg-color-yellow mt-1" style="height:60px;" id="anotherfilediv">
+		        		    	 <span style="font-size : 4px;"id="filetime">\${data.time} </span>
+				        			<div class="card mb-1 shadow-none border" style="width: 280px; float:right;">
+				                		<div class="p-1">
+				                  		  <div class="row align-items-center">
+				                        	 <div class="col-auto">
+				                            	<div class="avatar-sm">
+				                                	<span class="avatar-title bg-soft-primary text-primary rounded">\${data.extractFileType}</span>
+				                                </div>
+				                       	     </div>
+						                       	<div class="col ps-0">
+						                            <a href="javascript:void(0);" class="text-muted fw-bold">\${data.uploadFileName}</a>
+						                        </div>
+						                        <div class="col-auto">
+						                            <!-- Button -->
+						                            <a href="\\resources\\upload\${data.filePath}" download ="\${data.uploadFileName}"class="btn btn-link btn-lg text-muted">
+						                                <i class="dripicons-download"></i>
+						                            </a>
+						                        </div>
+				                		    </div>
+				               			 </div>
+				           			 </div>		        		
+		        	  			 </div>`
+		        	   
+		        	 	c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+		        		scrollDown();
+        	    }else{
+	          		  str2 += `<div class="anotherMsg mt-1 ms-1" id="anotherfilediv" style="height:60px;">
+			     		 	<img class="me-2 avatar-sm rounded-circle" src="\${data.img}" alt="Generic placeholder image" style="float:left">
+			        				<span class="anotherName d-block"> \${data.myName}</span>
+		        		    	 	<span style="font-size : 4px;"id="anotherfiletime">\${data.time} </span>
+			      			<div class="card mb-1 shadow-none border" style="width: 280px; float:left;">
+			              		<div class="p-1">
+			                 		 <div class="row align-items-center">
+			                      <div class="col-auto">
+			                          <div class="avatar-sm">
+			                              <span class="avatar-title bg-soft-primary text-primary rounded">
+			                                    \${data.extractFileType}
+			                              </span>
+			                          </div>
+			                      </div>
+			                      <div class="col ps-0">
+			                          <a href="javascript:void(0);" class="text-muted fw-bold">\${data.uploadFileName}</a>
+			                         
+			                      </div>
+			                      <div class="col-auto">
+			                          <!-- Button -->
+			                          <a href="\\resources\\upload\${data.filePath}" download ="\${data.uploadFileName}"class="btn btn-link btn-lg text-muted">
+			                              <i class="dripicons-download"></i>
+			                          </a>
+			                      </div>
+			                  </div>
+			              </div>
+			          </div>		        		
+				   </div>`
+				   
+				 	c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+					scrollDown();
+				} // end of else
+        	  } //end of file
+        			  
+        }else
+        { // 그냥 메세지 왔을 때	    
+	        if(myId == data.myId)
+	        {
+	            str2 += `<div class="text-end bg-color-yellow mt-1 "  >`;
+	            str2 += ` <span style="font-size : 4px;">\${data.time} </span>`;
+	            str2 += `<div class="d-inline fs-3 card me-1"style="background:yellow;"> <span class="msg">\${data.msg}&nbsp&nbsp</span></div>`;
+	            str2 += `</div>`;
+	            c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+	            
+	        }else 
+	        	  {        
+		            str2 += `<div class="anotherMsg mt-1 ms-1">`;
+		            str2 += `<img class="me-2 avatar-sm rounded-circle" src="\${data.img}" alt="Generic placeholder image" style="float:left">`;
+		            str2 += `<span class="anotherName d-block"> \${data.myName}</span>`;
+		            str2 += `<div class="d-inline card fs-3"style="background:white; "> <span class="msg">\${data.msg}</span> </div>`;
+		            str2 += ` <span style="font-size : 4px;">&nbsp&nbsp\${data.time}</span>`;
+		            str2 += `</div>`;
+		            c_chatWin.innerHTML = c_chatWin.innerHTML + str2;
+	       		 }               
+	        scrollDown();
+      }
+        
+} //end of fMessage()
+
+function disconnect(roomId) { //써버와 인연 끊는 함쑹
+        console.log("disconnect!");
+        
+        if (webSocket == undefined) {
+           console.log("안전빵 리턴");
+            return;
+        }
+    
+        console.log(roomId, myName);
+        var roomData = {roomId : roomId, myName: myName, myId : myId, msg: "", state : "disconnect"};
+        console.log('disconnect에서 보냅니다~');
+        
+        console.log("webSocket");
+        console.log(webSocket);
+        console.dir(webSocket);
+        webSocket.send(JSON.stringify(roomData));
+        webSocket.close();
+} //end of disconnect()
+
+function openRoom(roomId){
+    $('#home').attr('class','tab-pane')
+    $('#messages').attr('class','tab-pane show active')
+    $('#messagelist').attr('class','nav-link')
+    $('#messagewindow').attr('class','nav-link active')
+    $('#messagewindow').css('display','block')
+    console.log("roomId in openRoom :", roomId);
+    console.log("beforeRoomId in openRoom :", beforeRoomId );
+    console.log("beforeRoomId != undefined? ", beforeRoomId != undefined);
+    
+    if(beforeRoomId != undefined && roomId != beforeRoomId || beforeRoomId != undefined && roomId == beforeRoomId){
+        disconnect("out");
+    }
+    
+    connect(roomId);    
+} //end of openRoon
+
+
+const chatDiv = document.querySelector("#chatDiv");
+chatDiv.addEventListener("dragstart", (e) => {
+    console.log("드래그시작됨");
+    console.log(e);
+});
+chatDiv.addEventListener("dragend", (e) => {
+    console.log("드래그 종료됨");
+    console.log(e);
+    const divX = e.clientX;
+    const divY = e.clientY;
+    $("#chatDiv").css({
+        position: "fixed",
+        top: divY,
+        left: divX,
+        width : "50px",
+        height : "50px"
+    });
+    let roomY ;
+    let roomX ;
+    if (divY < 550) {
+        roomY = divY
+    }else{
+        roomY = divY-550
+    }
+    if (divX < 1000) {
+        roomX = divX
+    }else{
+        roomX = divX-350
+    }
+    $("#chatroom").css({
+        position: "fixed",
+        top: roomY,
+        left: roomX,
+        width : "400px",
+        height : "570px"
+    });
+});
+</script>
+

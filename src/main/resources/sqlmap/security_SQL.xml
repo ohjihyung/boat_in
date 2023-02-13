@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.SecurityMapper">
+
+	<insert id="insertLog" parameterType="loginLogVO">
+		INSERT INTO LOGIN_LOG(MEMBER_ID, LOGIN_DATE, LOGIN_IP ,LOGIN_LOG_NO)
+		VALUES (
+			  #{memberId}
+			, TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI')
+			, #{loginIp}
+			, 'loginlog_' || LOGINLOG_SEQ.NEXTVAL 
+			) 
+	</insert>
+
+
+</mapper>

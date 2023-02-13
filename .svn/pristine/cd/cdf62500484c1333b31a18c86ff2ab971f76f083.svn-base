@@ -1,0 +1,584 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<style>
+.fc-day-sun a {
+  color: red;
+  text-decoration: none;
+}
+
+/* 토요일 날짜 파란색 */
+.fc-day-sat a {
+  color: blue;
+  text-decoration: none;
+}
+
+/*month/week/day*/
+.fc-button-primary {
+  background-color: #DCEAF7 !important;
+  color: black !important;
+  border: 0.5px !important;
+  margin: 1px solid #DCE3E6 !important;
+}
+.fc-listWeek-button {
+  margin-right: 10px !important;
+}
+.fc-prev-button {
+  margin-left: 10px !important;
+}
+.fc-button-active {
+  border-color: #338CD4       !important;
+  background-color: #338CD4   !important;
+  color: white                 !important;
+  font-weight: bold           !important;
+}
+.btn-warning{
+    font-weight: bold;
+}
+.fc-col-header-cell-cushion {
+  color: #000;
+}
+.fc-col-header-cell-cushion:hover {
+  text-decoration: none;
+  color:#000;
+}
+/*일자*/
+.fc-daygrid-day-number{
+  color: #000;
+  font-size:1em;
+}
+
+#calendar {
+  margin: auto;
+}
+ 
+div#myProject-tab > .active {
+  background-color: skyblue !important;
+}
+</style>
+<div class="card-body">
+	<div class="row" style="">
+		<div class="col-lg-2" style="background-color: white; border-radius: 0.5em;">
+			<div id="accordion" class="mb-3" >
+              <div class="card mb-1" style="box-shadow: none;" >
+                <div class="card-header" id="headingOne" style="background-color: white;">
+                    <h5 class="m-0">
+                        <a class="text-dark" data-bs-toggle="collapse" href="#collapseOne" aria-expanded="true" >
+                            <i class="mdi mdi-help-circle me-1 text-primary"></i> 
+                            도움말
+                        </a>
+                    </h5>
+                </div>
+    
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+                    <div class="card-body">
+                        일정 관리 달력
+                    </div>
+                </div>
+              </div>
+            </div>
+			<div class="nav flex-column nav-pills nav-pills-tab" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+				<a class="nav-link active show mb-1" id="v-pills-home-tab" data-bs-toggle="pill" href="javascript :;" role="tab" aria-controls="v-pills-home"
+				    aria-selected="true">
+				    전체 작업</a>
+				<a class="nav-link mb-1" id="v-pills-profile-tab" data-bs-toggle="pill" href="javascript:;" role="tab" aria-controls="v-pills-profile"
+				    aria-selected="false">
+				    나의 작업</a>
+			</div>
+			
+			<button class="btn btn-primary waves-effect waves-light collapsed" 
+			        type="button" 
+			        data-bs-toggle="collapse"
+			        data-bs-target="#collapseProjectList"
+			        aria-expanded="false"
+			        aria-controls="collapseProjectList" 
+			        style="width: 100%; margin-top: 50px;" id="btnCollapseProjectList">프로젝트별 보기</button>
+			
+			<div class="collapse" id="collapseProjectList">
+			<!-- 플젝리스트 -->
+			<div class="nav flex-column nav-pills nav-pills-tab" id="myProject-tab" style="margin-top: 20px;" role="tablist" aria-orientation="vertical">
+				<a class="nav-link mb-1" id="v-pills-home-tab" data-bs-toggle="pill" href="javascript:;" role="tab" aria-controls="v-pills-home"
+				    aria-selected="true">
+				    프로젝트 1</a>
+				<a class="nav-link mb-1" id="v-pills-profile-tab" data-bs-toggle="pill" href="javascript:;" role="tab" aria-controls="v-pills-profile"
+				    aria-selected="false">
+				    프로젝트 2</a>
+			</div>
+			</div>
+			
+		</div>
+		<div class="col-lg-10">
+			<div id="calendar" style="background-color: white; border-radius: 0.5em; border: 0px solid gray;" ></div>
+		</div>
+	</div>
+</div>
+
+<!-- 달력에서 드래그로 이벤트 추가시 카테고리 먼저 셀렉트하도록 -->
+<!-- Category 추가 모달 -->
+<div
+  id="categorySelectModal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body p-4">
+        <div class="text-center">
+          <i class="dripicons-information h1 text-info"></i>
+          <h4 class="mt-2"><font class="jinoFont">카테고리 선택</font></h4>
+          <!-- 색상 선택 드롭박스 -->
+          <div class="dropdown" style="margin: 10px">
+            <input type="hidden" id="dropBox-colorCode" value="#ECF2F5" />
+            <button
+              class="btn btn-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <font id="category-select-target">카테고리</font
+              ><i class="mdi mdi-chevron-down"></i>
+            </button>
+            <input type="hidden" id="category-select-twCategoryNo"/>
+            <input type="hidden" id="category-select-twCategoryName"/>
+            <input type="hidden" id="category-select-topWorkStart"/>
+            <input type="hidden" id="category-select-topWorkEnd"/>
+            <div class="dropdown-menu" id="category-select-list" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="javascript: selectColor('light')"
+                ><font class="text-dark color-light">색상</font></a>
+            </div>
+          </div>
+          <!-- 드롭박스 끝 -->
+          <button
+            id="category-select-add"
+            onclick="categorySelect()"
+            type="button"
+            class="btn btn-primary waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            추가
+          </button>
+          <button
+            id="category-select-cancel"
+            onclick="categorySelectModalToggle()"
+            type="button"
+            class="btn btn-danger waves-effect waves-light"
+            data-bs-dismiss="modal"
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<button type="button" id="btnCategorySelect"class="btn btn-success" data-bs-toggle="modal"
+data-bs-target="#categorySelectModal" style="display: none;"></button>
+<!-- 달력에서 드래그로 이벤트 추가시 카테고리 먼저 셀렉트하도록 -->
+
+
+<script>
+calendarRender_C_K('project');
+myProjectListRender();
+
+function myProjectListRender() {
+	const targetDiv = document.querySelector("#myProject-tab");
+	const memberVO = {
+	  memberId,		
+	};
+	
+	axios
+	  .post("/project/list", memberVO)
+	  .then((res) => {
+		 //console.log("프로젝트 리스트 : ", res.data);
+		 const projectList = res.data;
+		 let text = ``;
+		 
+		 for (project of projectList) {
+			 if (project.proNo == proNo) {
+			   text += `<a class="project-list nav-link mb-1 active" id="project-pills-tab-\${project.proNo}" data-bs-toggle="pill" `;
+			 } else {
+			   text += `<a class="project-list nav-link mb-1" id="project-pills-tab-\${project.proNo}" data-bs-toggle="pill" `;
+			 }
+			 
+			 text += `  href="javascript:;" onclick="calendarRender_C_K('project', \${project.proNo})" `;
+			 text += `  role="tab" aria-controls="project-pills-tab-\${project.proNo}" `;
+			 
+			 if (project.proNo == proNo) {
+               text += `  aria-selected="true">\${project.proName} `;
+			 } else {
+               text += `  aria-selected="false">\${project.proName} `;
+			 }
+			 
+             text += `</a>`;
+		 }
+		 
+		 targetDiv.innerHTML = text;
+		 
+	  });
+}
+
+function selectCategory(twCategoryNo, twCategoryName, twCategoryColor) {
+	//console.log("twCategoryName", twCategoryName, "twCategoryColor", twCategoryColor);
+	document.querySelector("#category-select-twCategoryNo").value = twCategoryNo;
+	document.querySelector("#category-select-twCategoryName").value = twCategoryName;
+	
+	document.querySelector("#category-select-target").color = "white";
+	document.querySelector("#category-select-target").parentNode.style.backgroundColor = twCategoryColor;
+	document.querySelector("#category-select-target").innerText = twCategoryName;
+}
+
+function categorySelect() {
+	const twCategoryNo = document.querySelector("#category-select-twCategoryNo").value;
+    const twCategoryName = document.querySelector("#category-select-twCategoryName").value;
+    const topWorkStart = document.querySelector("#category-select-topWorkStart").value;
+    const topWorkEnd = document.querySelector("#category-select-topWorkEnd").value;
+    console.log("topWorkStart", topWorkStart, "topWorkEnd", topWorkEnd);
+    
+    document.querySelector("#birth").value = topWorkStart;
+    document.querySelector("#birth2").value = topWorkEnd;
+    insertModalOpen_New(twCategoryNo, "calendarMode");
+}
+
+function calendarSelect(arg) {
+	console.log("에알쥐 : ", arg);
+	document.querySelector("#category-select-topWorkStart").value = arg.startStr + " 12:00";
+	document.querySelector("#category-select-topWorkEnd").value = arg.endStr + " 12:00";
+	
+    const vo = {
+      proNo,
+    };
+    console.log("캘린더에서옴", vo);
+    
+    axios
+      .post(`/kanban/categoryList?proNo=\${proNo}`)
+      .then((res) => {
+         //console.log("카테고리 목록 : ", res);
+         const categorySelectBox = document.querySelector("#category-select-list");
+         const categoryList = res.data;
+         let text = ``;
+         
+         for (category of categoryList) {
+        	 text += `<a class="dropdown-item" `;
+        	 text += `href="javascript: selectCategory('\${category.twCategoryNo}', '\${category.twCategoryName}', '\${category.twCategoryColor}');">`;
+        	 text += `<font color="\${category.twCategoryColor}">\${category.twCategoryName}</font></a>`;
+         }
+         
+         categorySelectBox.innerHTML = text;
+         categorySelectModalToggle();
+      });
+}
+
+function categorySelectModalToggle() {
+	//드롭박스 비우기
+    document.querySelector('#category-select-target').innerText = `카테고리`;
+    document.querySelector('#category-select-target').color = `#000`;
+    document.querySelector('#dropdownMenuButton').style.backgroundColor = "#EFF4F7";
+    
+    document.querySelector("#btnCategorySelect").click();
+}
+
+var btnProjectCalendar = document.querySelector("#v-pills-home-tab"); //var로 써야 에러가 안남. var안쓰면 already..
+btnProjectCalendar.addEventListener("click", () => {
+	calendarRender_C_K('project');
+	
+	
+});
+var btnPersonalCalendar = document.querySelector("#v-pills-profile-tab");
+btnPersonalCalendar.addEventListener("click", () => {
+	calendarRender_C_K('personal');
+});
+
+function calendarRender_C_K(mode, selectProNo) {
+	  const selectTapAll = document.querySelector("#v-pills-home-tab");
+	  const selectTapPersonal = document.querySelector("#v-pills-profile-tab");
+      //console.log(selectTapPersonal.classList);
+      //나의작업 누른 상태에서 프로젝트목록 클릭시
+      if (selectTapPersonal.classList.length > 2) {
+    	  mode = "personal";
+    	  const tabList = document.querySelectorAll(".project-list");
+          tabList.forEach(tab => {
+              if (tab.classList.length > 3) {
+                  //console.log("tab.id", tab.id.split("-")[3]);
+                  selectProNo = tab.id.split("-")[3];
+              }
+          });
+      }
+      
+      //전체작업 누른 상태에서 프로젝트 목록 클릭시
+      if (selectTapAll.classList.length > 3) {
+    	  const tabList = document.querySelectorAll(".project-list");
+    	  tabList.forEach(tab => {
+    		  if (tab.classList.length > 3) {
+    			  //console.log("tab.id", tab.id.split("-")[3]);
+    			  selectProNo = tab.id.split("-")[3];
+    		  }
+    	  });
+    	  
+      }
+	
+	   console.log("mode : ", mode, "selectProNo", selectProNo);
+	   if (selectProNo) {
+		   let choiceProject = document.querySelector(`#project-pills-tab-\${selectProNo}`).innerText;
+		   document.querySelector("#btnCollapseProjectList").innerText = choiceProject;
+	   }
+	   
+	   //티피가 실행되면 해당 엘리먼트를 삭제시켜버림.
+	   //컨테이너로 감싸고 초기화해줘야한다.
+	   document.querySelector("#tippyContainer").innerHTML = `<div id="tippyChart" style="display: none;"><div class="spinner-border text-primary m-2" role="status"></div></div>`;
+	   const tippyDiv = document.querySelector("#tippyChart");
+	   
+       var calendarEl = document.querySelector("#calendar");
+       // full-calendar 생성하기
+       var calendar = new FullCalendar.Calendar(calendarEl, {
+         //plugins: ['interaction', 'dayGridPlugin'], //이거하면 왜 오륜가
+         firstDay                  : 1,
+         height                    : "700px", // calendar 높이 설정
+         expandRows                : true, // 화면에 맞게 높이 재설정
+         slotMinTime               : "12:00", // Day 캘린더에서 시작 시간
+         slotMaxTime               : "12:00", // Day 캘린더에서 종료 시간
+         weekends                  : true,
+         nowIndicator              : true,
+         interaction: true,
+         // 해더에 표시할 툴바
+         headerToolbar: {
+           left: "prev,next today",
+           center: "title",
+           right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek", //여기서 정렬기준 조정
+         },
+         initialView: "dayGridMonth", // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+         //initialDate: "2021-07-15", // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+         editable                 : true, // 수정 가능?
+         navLinks                 : true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+         selectable               : true, // 달력 일자 드래그 설정가능
+         nowIndicator             : true, // 현재 시간 마크
+         dayMaxEvents             : true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+         locale                   : "ko", // 한국어 설정
+         eventMouseEnter: function(info) {
+             //console.log("인포", info);
+             //console.log("인포2", info.event._def.extendedProps);
+               
+               //console.log("tippyDiv", tippyDiv);
+               tippyDiv.style.display = "block";
+               
+               const topWorkContent = info.event._def.extendedProps.topWorkContent;
+               const progress = info.event._def.extendedProps.topWorkProgress;
+               //console.log("info.event", info.event);
+               tippy(info.el, {
+                  allowHTML: true,
+                  theme: 'light',
+                  content:  tippyDiv,
+                  delay: [200,0],
+                  position:'top',
+                  animation:'fade',
+                  animateFill: false,
+                  //interactive:'true',
+                  //followCursor: true,
+               
+               });
+               
+               setTimeout(() => {
+            	   var options = {
+            		          series: [progress],
+            		          chart: {
+            		          height: 200,
+            		          type: 'radialBar',
+            		        },
+            		        plotOptions: {
+            		          radialBar: {
+            		            hollow: {
+            		              margin: 10,
+            		              size: '50%',
+            		              image: '',
+            		              imageWidth: 64,
+            		              imageHeight: 64,
+            		              imageClipped: false
+            		            },
+            		            track: {
+            		            	strokeWidth: '100%',
+            		            },
+            		            dataLabels: {
+            		              name: {
+            		                show: true,
+            		                color: '#333',
+            		                fontSize: '15px',
+            		              },
+            		              value: {
+            		                show: true,
+            		                color: '#333',
+            		                offsetY: 20,
+            		                fontSize: '20px'
+            		              }
+            		            }
+            		          }
+            		        },
+            		        fill: {
+            		          type: 'image',
+            		          image: {
+            		            src: ['https://media.wired.com/photos/5bb6accf0abf932caf294b18/1:1/w_1800,h_1800,c_limit/waves-730260985.jpg'],
+            		          }
+            		        },
+            		        stroke: {
+            		          lineCap: 'round'
+            		        },
+            		        labels: ['진행률'],
+            		        };
+	               
+	               
+	               tippyDiv.innerHTML = "";
+	               const tippyChart = new ApexCharts(tippyDiv, options);
+	               tippyChart.render();
+               }, 250);
+         },
+         /////////////////////////
+         eventResize: function(obj) {
+               //console.log("리사이즈되냐?");//된다
+         },
+         eventClick: function(obj) {
+               console.log("클릭했어");
+               //console.dir(obj);
+               console.log(obj.event.extendedProps);
+               console.log("pk : " + obj.event.extendedProps.topWorkNo);
+               const topWorkNo = obj.event.extendedProps.topWorkNo;
+               detailTopWork_K(topWorkNo);
+         },
+         /////////////////////////
+         
+         eventAdd: function (obj) {
+           // 이벤트가 추가되면 발생하는 이벤트
+           /* console.log("이벤트추가!");
+           console.dir(obj.event._context.viewTitle);
+           console.dir(obj.event._context.dateProfile); */
+         },
+         eventChange: function (obj) {
+           // 이벤트가 수정되면 발생하는 이벤트
+           //console.log("이동했다", obj);
+           //console.log(obj.event._def);
+           //console.log("topWorkNo : " + obj.event._def.extendedProps.topWorkNo);
+           //console.log(obj.event.startStr.substr(0, 16)); // 시작일 (분단위 까지만 데이터 가져오기)
+           //console.log(obj.event.endStr.substr(0, 16));  //변경된 종료일(분단위 까지만 데이터 가져오기) 
+           
+           const map = {};
+           map.topWorkNo = obj.event._def.extendedProps.topWorkNo;
+           map.topWorkStart = obj.event.startStr.substr(0, 16);
+           map.topWorkEnd = obj.event.endStr.substr(0, 16);
+           console.log("이동하는 타겟 : ", obj.event);
+           console.log("이동하는 맵 : ", map);
+           //타겟에서 이동할때 시간빼오고, 이동완료시 
+           const obj2 = {};
+           obj2.method = "post";
+           obj2.url = "/calendar/updateMove";
+           obj2.header = "json";
+           obj2.sendData = JSON.stringify(map);
+           
+           myAsync(obj2, (result) => {
+        	   console.log("이동완료 : ", result);
+           });
+         },
+         eventRemove: function (obj) {
+           // 이벤트가 삭제되면 발생하는 이벤트
+           //console.log(obj);
+         },
+         select: function (arg) {
+           // 캘린더에서 클릭 혹은 드래그로 이벤트를 생성할 수 있다.
+           // 2. 여기서 시작일, 종료일, 제목, 타이틀 받아 일감 추가하기
+           calendar.unselect(); //셀렉트된 셀은 하늘색, 언셀렉하면 사라짐
+           //console.log("arg : ", arg);
+           calendarSelect(arg);
+           //insertModalOpen_New();
+           //insertModalOpen("캘린더", arg);
+         },
+         // 이벤트 //1. 여기서 이벤트를 json으로 만들어서 뿌리면 될 듯.
+         //리스트 데이터 넣기
+         events: function(info, successCallback, failureCallback) {
+        	 let url = "/calendar/list?proNo=";
+        	 //만약 캘린더에서 다른 프로젝트 누른거라면 selectProNo
+        	 if (selectProNo) {
+        		 url += selectProNo;
+        	 } else {
+        		 url += proNo;
+        	 }
+        	 //console.log("url : ", url);
+        	 
+        	//개인일때.
+        	 if (mode == "personal") { 
+        		 url = `/calendar/list?proNo=\${selectProNo}&memberId=\${memberId}`;
+        	 } 
+        	
+        	 console.log("url : ", url);
+        	 
+             axios
+             .post(url) //쿼리에 레프트 조인으로 컬러값 가져오게 변경, VO 수정
+             .then((res) => {
+                 let json = res.data;
+                 //console.log("json", json);
+                 const eventList = [];
+                 
+                 for (item of json) { //개인달력 혹은 팀달력으로 필터 걸 때 여기서 색상 조정해야함(color값)
+                 //console.log("item : ", item);
+                     const temp = {
+                       topWorkNo: item.topWorkNo,
+                       proNo: item.proNo,
+                       twCategoryNo: item.twCategoryNo,
+                       topWorkContent: item.topWorkContent,
+                       topWorkLike: item.topWorkLike,
+                       topWorkState: item.topWorkState,
+                       topWorkFile: item.topWorkFile,
+                       topWorkProgress: item.topWorkProgress,
+                       topWorkStart: item.topWorkStart,
+                       topWorkEnd: item.topWorkEnd,
+                       title: item.topWorkTitle,
+                       start: item.topWorkStart,
+                       end: item.topWorkEnd,
+                       color: item.twCategoryColor
+                     };
+                     eventList.push(temp);
+                 /* 에러가 난다...
+                     axios
+                       .post("/calendar/selectCategoryColor", temp)
+                       .then((res) => {
+                    	 console.log(res);
+	                     eventList.push(temp);
+                       });
+                  */
+                 }
+                 //console.log("이벤트들", eventList);
+                 successCallback(eventList);
+             });
+         },//2. function() 으로 바꿔서 여기서 데이터 로딩해보기
+         
+         eventMouseLeave: function(event) {
+           
+         },
+         
+       });
+       // 캘린더 랜더링
+       calendar.render();
+       
+	}
+
+	function myAsync(obj, pCb) {
+	    let header =
+	      obj.header == "json"
+	        ? "application/json"
+	        : "application/x-www-form-urlencoded";
+	    
+	    const xhr = new XMLHttpRequest();
+	    xhr.open(obj.method, obj.url, true);
+	    xhr.setRequestHeader("Content-type", header);
+	  
+	    xhr.onreadystatechange = function () {
+	      if (xhr.readyState === 4 && xhr.status === 200) {
+	        pCb(xhr.responseText);
+	      }
+	    };
+	  
+	    xhr.send(obj.sendData);
+	}
+	
+</script>

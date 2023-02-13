@@ -1,0 +1,48 @@
+package kr.or.ddit.controller.admin;
+
+import java.util.AbstractSequentialList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.controller.admin.service.IAdminService;
+import kr.or.ddit.vo.MemberVO;
+
+@Controller
+@RequestMapping("/admin")
+public class AdminQuantiController {
+
+	//텝화면용 
+	@RequestMapping("/notice")
+	public String adminNoticeHome() {
+		return "admin/notice";
+	}
+	@RequestMapping("/qna")
+	public String adminQnAHome() {
+		return "admin/Q&A";
+	}
+	@RequestMapping("/faq")
+	public String adminFAQHome() {
+		return "admin/FAQ";
+	}
+	@RequestMapping("/quantity")
+	public String adminQuantiHome() {
+		return "admin/quantity";
+	}
+	@RequestMapping("/member")
+	public String adminMemberHome() {
+		return "admin/member";
+	}
+	@RequestMapping("/project")
+	public String adminProjectHome() {
+		return "admin/project";
+	}
+	
+	
+}

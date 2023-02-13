@@ -1,0 +1,28 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ChatContentVO;
+import kr.or.ddit.vo.ChatRoomVO;
+import kr.or.ddit.vo.ChatUserVO;
+
+
+public interface ChatMapper {
+
+	List<ChatRoomVO> selectRoomsById(String memberId) throws Exception;
+
+	int insertChatContent(ChatContentVO chatContentVO) throws Exception;
+
+	List<ChatContentVO> getChatContents(String roomId) throws Exception;
+
+
+	String getMemPic(String myId)throws Exception;
+
+	String getRoomTitleByRoomId(String roomId)throws Exception;
+
+	int insertRoom(ChatRoomVO roomVO) throws Exception;
+
+	int insertInvitedUser(ChatUserVO chatUserVO) throws Exception;
+
+
+}

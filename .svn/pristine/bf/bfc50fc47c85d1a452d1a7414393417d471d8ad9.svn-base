@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+  <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+                   <div class="inbox-rightbar" style= "margin-left :190px;">
+									<div class="page-title-box">
+										<h4 class="page-title">쪽지 보내기</h4>
+									</div>
+											<!-- 작성하기 부분  -->
+                                            <div class="mt-2">
+                                                <form>
+                                                    <div class="mb-3">
+                                                        <input name="memberId" id="memberId" type="email" class="form-control" placeholder="받는사람">
+                                                    </div>
+            
+                                                    <div class="mb-3 card border-0">
+                                                        <div id="editor" style="height: 230px;" >
+                                                        </div> <!-- end Snow-editor-->
+                                                    </div>
+            
+                                                    <div>
+                                                        <div class="text-end">
+                                                            <button type="button" class="btn btn-success waves-effect waves-light"><i class="mdi mdi-content-save-outline"></i></button>
+                                                            <button id="sendLetterBtn" class="btn btn-primary waves-effect waves-light"> <span>보내기</span> <i class="mdi mdi-send ms-2"></i> </button>
+                                                        </div>
+                                                    </div>
+            
+                                                </form>
+                                            </div> <!-- end card-->
+                
+                                        </div> 
+                                        <!-- end inbox-rightbar-->
+
+
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+       	    <!-- ============================================================== -->
+       	    
+       	    
+
+<script>
+    
+	// toast editor
+var Editor = toastui.Editor;
+var editor = new Editor({
+	el: document.querySelector('#editor'),
+	height: '550px',
+	initialEditType: 'WYSIWYG',
+	previewStyle: 'vertical',
+	});
+
+
+$('#sendLetterBtn').on('click',function(){
+	var memberId = $('#memberId').val()
+	var content = editor.getHTML();	
+	var data ={
+		letterSender: localStorage.getItem('id'),
+		memberId : memberId,
+		letterContent : content
+	}
+	$.ajax({
+		type: 'post',
+		url:'/letter/insert',
+		data: JSON.stringify(data) ,
+		dataType:'text',
+		contentType: 'application/json ; charset=utf-8',
+		success : function(res){
+			alert(res)
+		}		
+		
+	})
+	
+	
+})
+
+</script>
+       	    
+

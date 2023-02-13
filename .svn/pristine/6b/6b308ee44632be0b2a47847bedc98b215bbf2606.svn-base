@@ -1,0 +1,74 @@
+package kr.or.ddit.controller.chat.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import kr.common.CommonDao;
+import kr.or.ddit.mapper.ChatMapper;
+import kr.or.ddit.vo.ChatContentVO;
+import kr.or.ddit.vo.ChatRoomVO;
+import kr.or.ddit.vo.ChatUserVO;
+import kr.or.ddit.vo.MemberVO;
+
+@Service
+public class ChatServiceImpl  implements IChatService{
+
+	@Autowired
+	CommonDao dao;
+
+	@Autowired
+	ChatMapper chatMapper;
+
+	@Override
+	public List<ChatRoomVO> getRoomsById(String memberId) throws Exception{
+		// TODO Auto-generated method stub
+		return chatMapper.selectRoomsById(memberId);
+	}
+
+	@Override
+	public List<ChatContentVO> getChatContents(String roomId) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.getChatContents(roomId);
+	}
+
+	@Override
+	public String getRoomTitleByRoomId(String roomId) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.getRoomTitleByRoomId(roomId);
+	}
+
+	@Override
+	public int insertRoom(ChatRoomVO roomVO) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.insertRoom(roomVO);
+	}
+
+	@Override
+	public int insertInvitedUser(ChatUserVO chatUserVO) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.insertInvitedUser(chatUserVO);
+	}
+
+	@Override
+	public String getNotReadCnt(Map<String, String> getNCntData) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.getNotReadCnt(getNCntData);
+	}
+
+	@Override
+	public ChatContentVO getLastChat(String roomId) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.getLastChat(roomId);
+	}
+
+	@Override
+	public List<MemberVO> getuserImgs(String roomId) throws Exception {
+		// TODO Auto-generated method stub
+		return chatMapper.getuserImgs(roomId);
+	}
+
+
+}

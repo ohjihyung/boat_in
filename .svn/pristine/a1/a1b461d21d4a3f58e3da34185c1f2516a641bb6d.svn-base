@@ -1,0 +1,1041 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
+
+<div id ="projectHomeDiv"class="row">
+	<div class="col-12">
+		<div class="page-title-box">
+			<h4 class="page-title">project home</h4>
+			<div>
+				<ul class="breadcrumb ">
+					<li class="breadcrumb-item"><button id="createPdf" type="button" class="btn btn-purple waves-effect waves-light" onclick="createPdf()">인쇄</button></li>
+					<li class="breadcrumb-item"><button id="testBtn" type="button" class="btn btn-warning waves-effect waves-light">값확인버튼</button></li>
+
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end page title -->
+
+
+<div class="row">
+	<div class="col-12">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card mb-3">
+					<div class="row g-0">
+						<div class="col-md-12">
+							<div class="card-body">
+								<h4 class="header-title mb-3">
+									Team Members <i class="mdi mdi-account-multiple ms-1"></i>
+								</h4>
+
+								<div class="row " id="profileList" style="display: flex;">
+									<div class="col-sm-4 col-xl-2 mb-2" style="display: flex;">
+										<!-- 프로젝트 팀원 초대하기 -->
+										<div style="position: relative;">
+											<a href="javascript:voic(0)" id="inviteProMem" onclick="inviteProMem()" style="border: none; background-color: white;">
+												<img src="/assets/images/plus2.png" class="rounded-circle avatar-md img-thumbnail bg-transparent" alt="">
+											</a>
+
+										</div>
+										<div class="ms-1 align-middle">
+											<a href="javascript:voic(0)" onclick="inviteProMem()">
+												<h5 class="align-middle mt-3" id="inviteText">팀원 초대하기</h5>
+											</a>
+										</div>
+									</div>
+								</div>
+								<!-- row -->
+								<div class="row">
+									<button id="noJoinMember" onclick="doDisplayNoneJoinMember_B()" class="btn btn-white" style="border: none;">
+										<h4 id="noJoinMemberText" class="header-title mt-2">참가 미승인 팀원 🔽</h4>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- row  -->
+					<div class="row g-0 list-group list-group-horizontal justify-content-center" id="NoneJoinMember_jy" style="display: none">
+						<div class="col-md-12">
+							<div class="card-body">
+								<div class="row " id="noJoinMemberList" style="display: flex;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-6 col-xl-3">
+		<div class="widget-rounded-circle card bg-purple shadow">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-6">
+						<div class="avatar-lg rounded-circle bg-soft-light">
+							<i class="fe-check-circle font-28 avatar-title text-white"></i>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="text-end">
+							<p class="text-white mb-0 text-truncate">완료된작업</p>
+							<h2 class="text-white mt-2">
+								<span id="completeQuantiCnt" data-plugin="counterup"> </span>
+							</h2>
+						</div>
+					</div>
+				</div>
+				<!-- end row-->
+			</div>
+		</div>
+		<!-- end widget-rounded-circle-->
+	</div>
+	<!-- end col-->
+
+	<div class="col-md-6 col-xl-3">
+		<div class="widget-rounded-circle card bg-info shadow-none">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-6">
+						<div class="avatar-lg rounded-circle bg-soft-light">
+							<i class="fe-chevrons-right font-28 avatar-title text-white"></i>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="text-end">
+							<p class="text-white mb-0 text-truncate">진행중 작업</p>
+							<h2 class="text-white mt-2">
+								<span id="goingQuantiCnt" data-plugin="counterup"> </span>
+							</h2>
+						</div>
+					</div>
+				</div>
+				<!-- end row-->
+			</div>
+		</div>
+		<!-- end widget-rounded-circle-->
+	</div>
+	<!-- end col 대기중인 작업. 필요없는거같아서 -->
+	<!-- 				<div class="col-md-6 col-xl-3"> -->
+	<!-- 					<div class="widget-rounded-circle card bg-info shadow-none"> -->
+	<!-- 						<div class="card-body"> -->
+	<!-- 							<div class="row"> -->
+	<!-- 								<div class="col-6"> -->
+	<!-- 									<div class="avatar-lg rounded-circle bg-soft-light"> -->
+	<!-- 										<i class="fe-users font-28 avatar-title text-white"></i> -->
+	<!-- 									</div> -->
+	<!-- 								</div> -->
+	<!-- 								<div class="col-6"> -->
+	<!-- 									<div class="text-end"> -->
+	<!-- 										<p class="text-white mb-0 text-truncate">대기중인 작업</p> -->
+	<!-- 										<h2 class="text-white mt-2"> -->
+	<!-- 											<span id="readyQuantiCnt" data-plugin="counterup"> </span> -->
+	<!-- 										</h2> -->
+	<!-- 									</div> -->
+	<!-- 								</div> -->
+	<!-- 							</div> -->
+	<!-- 							end row -->
+	<!-- 						</div> -->
+	<!-- 					</div> -->
+	<!-- 					end widget-rounded-circle -->
+	<!-- 				</div> -->
+	<!-- 				end col -->
+
+	<div class="col-md-6 col-xl-3">
+		<div class="widget-rounded-circle card bg-pink shadow-none">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-6">
+						<div class="avatar-lg rounded-circle bg-soft-light">
+							<i class="fe-alert-triangle font-28 avatar-title text-white"></i>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="text-end">
+							<p class="text-white mb-0 text-truncate">마감일이 지난작업</p>
+							<h2 class="text-white mt-2">
+								<span id="deadWorkCnt" data-plugin="counterup"></span>
+							</h2>
+						</div>
+					</div>
+				</div>
+				<!-- end row-->
+			</div>
+		</div>
+		<!-- end widget-rounded-circle-->
+	</div>
+	<!-- end col-->
+
+	<div class="col-md-6 col-xl-3">
+		<div class="widget-rounded-circle card bg-success shadow-none">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-6">
+						<div class="avatar-lg rounded-circle bg-soft-light">
+							<i class="fe-aperture font-28 avatar-title text-white"></i>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="text-end">
+							<p class="text-white mb-0 text-truncate">총작업</p>
+							<h2 class="text-white mt-2">
+								<span id="proQuantiTotalCnt" data-plugin="counterup"></span>
+							</h2>
+						</div>
+					</div>
+				</div>
+				<!-- end row-->
+			</div>
+		</div>
+		<!-- end widget-rounded-circle-->
+	</div>
+	<!-- end col-->
+</div>
+<!-- end row-->
+<div class="row">
+	<div class="col-xl-6">
+		<!-- Portlet card -->
+		<div class="card">
+			<div class="card-body">
+				<div class="card-widgets">
+					<a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> <a data-bs-toggle="collapse" href="#cardCollpase3" role="button" aria-expanded="false" aria-controls="cardCollpase3"><i class="mdi mdi-minus"></i></a> <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+				</div>
+				<h4 class="header-title mb-0">작업별 진행도</h4>
+
+				<div id="cardCollpase3" class="collapse pt-3 show" dir="ltr">
+					<div id="totalWorkRate" class="apex-charts" data-colors="#f06292"></div>
+				</div>
+				<!-- collapsed end -->
+			</div>
+			<!-- end card-body -->
+		</div>
+		<!-- end card-->
+	</div>
+	<!-- end col-->
+	<div class="col-xl-6">
+		<div class="card" style="min-height: 450px;">
+			<div class="card-body">
+				<ul class="nav nav-pills navtab-bg nav-justified">
+					<li class="nav-item"><a href="#deadlineWork" data-bs-toggle="tab" aria-expanded="false" class="nav-link active"> 마감일 임박한 작업 </a></li>
+					<li class="nav-item"><a href="#newRegiWork" data-bs-toggle="tab" aria-expanded="true" class="nav-link "> 최근 배정된 작업 </a></li>
+				</ul>
+				<div class="tab-content">
+
+					<div class="tab-pane show active" id="deadlineWork">
+						<div class="table-responsive">
+							<table class="table table-hover table-centered mb-0">
+								<thead>
+									<tr>
+										<th>Product Name</th>
+										<th>Price</th>
+										<th>Quantity</th>
+										<th>Status</th>
+										<th>Amount</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>ASOS Ridley High Waist</td>
+										<td>$79.49</td>
+										<td>82</td>
+										<td><span class="badge text-success border border-success">Active</span></td>
+										<td>$6,518.18</td>
+									</tr>
+									<tr>
+										<td>Marco Lightweight Shirt</td>
+										<td>$128.50</td>
+										<td>37</td>
+										<td><span class="badge text-warning border border-warning">Pending</span></td>
+										<td>$4,754.50</td>
+									</tr>
+									<tr>
+										<td>Half Sleeve Shirt</td>
+										<td>$39.99</td>
+										<td>64</td>
+										<td><span class="badge text-primary border border-primary">Done</span></td>
+										<td>$2,559.36</td>
+									</tr>
+									<tr>
+										<td>Lightweight Jacket</td>
+										<td>$20.00</td>
+										<td>184</td>
+										<td><span class="badge text-info border border-info">Progress</span></td>
+										<td>$3,680.00</td>
+									</tr>
+									<tr>
+										<td>Marco Shoes</td>
+										<td>$28.49</td>
+										<td>69</td>
+										<td><span class="badge text-warning border border-warning">Pending</span></td>
+										<td>$1,965.81</td>
+									</tr>
+									<tr>
+										<td>ASOS Ridley High Waist</td>
+										<td>$79.49</td>
+										<td>82</td>
+										<td><span class="badge text-primary border border-primary">Done</span></td>
+										<td>$6,518.18</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="tab-pane" id="newRegiWork">
+						<p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+						<p class="mb-0">Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+					</div>
+					<div class="tab-pane" id="messages1">
+						<p>Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+						<p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end card-->
+	</div>
+	<!-- end col -->
+
+</div>
+<!-- end row -->
+
+
+<div class="row">
+	<!-- 			     <div class="col-xl-5"> -->
+	<!--                      Portlet card -->
+	<!--                      <div class="card"> -->
+	<!--                          <div class="card-body"> -->
+	<!--                              <div class="card-widgets"> -->
+	<!--                                  <a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> -->
+	<!--                                  <a data-bs-toggle="collapse" href="#cardCollpase19" role="button" aria-expanded="false" aria-controls="cardCollpase19"><i class="mdi mdi-minus"></i></a> -->
+	<!--                                  <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a> -->
+	<!--                              </div> -->
+	<!--                              <h4 class="header-title mb-0">팀원별 할당된 작업량 도넛차트</h4> -->
+
+	<!--                              <div id="cardCollpase19" class="collapse pt-3 show" dir="ltr"> -->
+	<!--                                  <div id="myWorkCntChart" class="apex-charts" data-colors="#675aa9,#45bbe0,#348cd4,#78c350,#f7531f"></div> -->
+	<!--                              </div> collapsed end -->
+	<!--                          </div> end card-body -->
+	<!--                      </div> end card -->
+	<!--                  </div> end col -->
+
+	<div class="col-xl-5">
+		<div class="card">
+			<div class="card-body">
+				<div class="card-widgets">
+					<a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a> <a data-bs-toggle="collapse" href="#cardCollpase5" role="button" aria-expanded="false" aria-controls="cardCollpase5"><i class="mdi mdi-minus"></i></a> <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+				</div>
+				<h4 class="header-title mb-0">팀원별 할당된 작업량</h4>
+				<div id="cardCollpase5" class="collapse pt-3 show" dir="ltr">
+					<div id="myWorkCntChart" class="apex-charts" data-colors="#348cd4,#f06292,#ced4da"></div>
+				</div>
+				<!-- collapsed end -->
+			</div>
+			<!-- end card-body -->
+		</div>
+		<!-- end card-->
+	</div>
+
+	<!-- end col-->
+	 <div class="col-xl-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-widgets">
+                                            <a href="javascript: void(0);" data-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                                            <a data-bs-toggle="collapse" href="#cardCollpase5" role="button" aria-expanded="false" aria-controls="cardCollpase5"><i class="mdi mdi-minus"></i></a>
+                                            <a href="javascript: void(0);" data-toggle="remove"><i class="mdi mdi-close"></i></a>
+                                        </div>
+                                        <h4 class="header-title mb-0">팀원별 전체 진행도</h4>
+
+                                        <div id="myWorkRateChart" class="collapse pt-3 show" dir="ltr">
+                                            <div id="apex-column-1" class="apex-charts" data-colors="#348cd4,#f06292,#ced4da"></div>
+                                        </div> <!-- collapsed end -->
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+	<div class="col-xl-3 col-md-6">
+		<div class="card">
+			<div class="card-body">
+				<div class="dropdown float-end">
+					<a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false"> <i class="mdi mdi-dots-vertical"></i>
+					</a>
+					<div class="dropdown-menu dropdown-menu-end">
+						<!-- item-->
+						<a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+						<!-- item-->
+						<a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+						<!-- item-->
+						<a href="javascript:void(0);" class="dropdown-item">Profit</a>
+						<!-- item-->
+						<a href="javascript:void(0);" class="dropdown-item">Action</a>
+					</div>
+				</div>
+
+				<h4 class="header-title mb-3">최근 업데이트 작업 (로그)</h4>
+				<div class="align-items-center border-bottom border-light pb-2 mb-1">
+					<h3 class="float-end my-2 py-1">45K</h3>
+					<div class="d-flex align-items-center">
+						<div class="avatar-md rounded-circle bg-soft-info">
+							<i class="mdi mdi-sale font-26 avatar-title text-info"></i>
+						</div>
+
+						<div class="ms-2">
+							<h5 class="mb-1 mt-0 fw-bold">Total Sales</h5>
+							<p class="text-muted mb-0">New Sale 20.5k</p>
+						</div>
+					</div>
+				</div>
+				<div class="align-items-center border-bottom border-light py-2 my-1">
+					<h3 class="float-end my-2 py-1">13K</h3>
+					<div class="d-flex align-items-center">
+						<div class="avatar-md rounded-circle bg-soft-warning">
+							<i class="mdi mdi-autorenew font-26 avatar-title text-warning"></i>
+						</div>
+
+						<div class="ms-2">
+							<h5 class="mb-1 mt-0 fw-bold">Product Cost</h5>
+							<p class="text-muted mb-0">Total Cost 12.3k</p>
+						</div>
+					</div>
+				</div>
+				<div class="align-items-center border-bottom border-light py-2 my-1">
+					<h3 class="float-end my-2 py-1">16M</h3>
+					<div class="d-flex align-items-center">
+						<div class="avatar-md rounded-circle bg-soft-pink">
+							<i class="mdi mdi-emoticon-happy-outline font-26 avatar-title text-pink"></i>
+						</div>
+
+						<div class="ms-2">
+							<h5 class="mb-1 mt-0 fw-bold">Satisfaction Users</h5>
+							<p class="text-muted mb-0">Total Users 26M</p>
+						</div>
+					</div>
+				</div>
+				<div class="align-items-center pt-2 mt-1">
+					<h3 class="float-end my-2 py-1">75K</h3>
+					<div class="d-flex align-items-center">
+						<div class="avatar-md rounded-circle bg-soft-dark">
+							<i class="mdi mdi-cash-multiple font-26 avatar-title text-dark"></i>
+						</div>
+
+						<div class="ms-2">
+							<h5 class="mb-1 mt-0 fw-bold">Product Income</h5>
+							<p class="text-muted mb-0">Income 65.4k</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+<!-- end row -->
+
+
+
+
+
+
+<!-- teamMembers 출력 카드끝! -->
+
+<!-- 프로젝트 참가 미승인 회원 없을 때 나오는 모달창 -->
+<div id="NoneJoinMemberNullAlert_jy" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-body p-4">
+				<div class="text-center">
+					<i class="dripicons-information h1 text-info"></i><br> <br>
+					<h4>참가 미승인 팀원은</h4>
+					<h4>0명입니다</h4>
+					<br>
+					<button type="button" class="btn btn-info" data-bs-dismiss="modal">CLOSE</button>
+				</div>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- 모달창 끝!! -->
+
+
+<!-- 팀멤버 리스트-->
+<script type="text/javascript">
+//값 확인용 textbtn 
+
+$(function(){
+	
+	var proJSVO  = {
+			proNo : proNo
+	} 
+	proJoinMemberList_H(proJSVO)
+	
+})
+$('#testBtn').on('click',function(){
+	var proJSVO  = {
+			proNo : proNo
+	} 
+	proJoinMemberList_H(proJSVO)
+})
+
+// 참여멤버 리스트 추가 
+function proJoinMemberList_H(proJSVO){
+	
+	$.ajax({
+		url : "/project/homeMemberList",
+		type : "post",
+		data : JSON.stringify(proJSVO),
+		contentType : 'application/json; charset=utf-8',
+		dataType : 'json',
+		success : function(res) {
+			console.log(res)
+			memberId = localStorage.getItem('id')
+			var str ="";
+			var myAuth = "" ;
+			for (var i = 0; i < res.length; i++) {
+				if (	memberId == res[i].memberId ) {
+					var myId= memberId;
+					myAuth = res[i].proAuth
+					console.log("myId :: ",myId)
+					console.log("myAuth :: ",myAuth)
+				}
+				str = 
+					`<div class="col-sm-4 col-xl-2" style="display: flex;">
+						<div style="position: relative;">
+							<img id ="memberImg\${i}" src="\${res[i].memberPic}" class="rounded-circle avatar-md img-thumbnail bg-transparent" alt=""> 
+							<i id = "memberState\${i}" class="mdi mdi-circle h3 text-secondary" style="position: absolute; top: 30px; left: 40px"\></i>
+						</div>
+						<div class="ms-2">
+							<h5 class="mb-1" id="memberName\${i}" >
+							\${res[i].memberName} 
+							<i id ="memberAuth\${i}"></i>
+							</h5>
+							<p id  ="memberAuthName\${i}"></p>
+						</div>
+						<div class="mt-2 dropend">
+							<a   href="#" onclick="" class="dropdown-toggle"id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" > <i class="mdi mdi-chevron-right h2"></i>
+							</a>
+							<div class="dropdown-menu mb-4 dropMenu" aria-labelledby="dropdownMenuButton">
+	                        <a class="dropdown-item" href="#">쪽지보내기</a>
+	                        <a class="dropdown-item" href="#">채팅하기</a>
+	                   		</div>
+						</div>
+					</div>`
+					/*  프로필 내용 끝 */
+                   	
+				//참가현황에 따라서 	
+				if (res[i].proJoinState == '1') {
+					$('#profileList').append(str)
+				}else if (res[i].proJoinState == '0') {
+					$('#noJoinMemberList').append(str)
+				}
+				
+				//접속 비접속 상태 체크	
+				var memberStateId = '#memberState'+i
+				var memberState = res[i].memberState
+				 if (memberState == '0' || memberState== '1'|| memberState== '2') {
+				     $(memberStateId).attr('class','mdi mdi-circle h3 text-success');
+				   } else if (res[i].memberState == "3" ) {
+				     $(memberStateId).attr('class',"mdi mdi-circle h3 text-warning")
+				   }else if (res[i].memberState == "4" ) {
+				     $(memberStateId).attr('class',"mdi mdi-circle h3 text-secondary")
+				   } 
+					
+				//PM PL 상태체크  1PM 2PL 3member
+				var memberAuth = '#memberAuth'+i
+				var memberAuthName = '#memberAuthName'+i
+				 if(res[i].proAuth == '1'){
+					 $(memberAuth).attr('class','mdi mdi-check-decagram text-danger ms-1');
+					 $(memberAuthName).text('PM')
+                  }else if(res[i].proAuth == '2'){
+					 $(memberAuth).attr('class','mdi mdi-check-decagram text-primary ms-1');
+					 $(memberAuthName).text('PL')
+                  }else if(res[i].proAuth == '3'){
+					 $(memberAuthName).text('MEMBER')
+                  }	
+					
+// 				//기본이미지 사진
+				var memberImg = '#memberImg'+i
+				 if(res[i].memberPic == '0'){
+					 $(memberImg).attr('src','/resources/dist/assets/images/users/blank_progile.png');
+                  }
+				
+			}//for문
+			
+			 //나의권한이 PM 이라면 권한부여와 추방하기 추가
+			var dropMenuListPM = `<div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">권한부여</a>
+               	<a class="dropdown-item" href="#">추방하기</a>`;
+        	if (myAuth =="1") {
+                $('.dropMenu').append(dropMenuListPM)
+			}
+		},
+
+	});//ajax
+}
+
+//참가승인 미완료 회원 리스트 출력되는 div 관련 함수
+var divNoneJoinMember_jy = $("#NoneJoinMember_jy");
+
+function doDisplayNoneJoinMember_B(){    
+   if(divNoneJoinMember_jy.css("display") == "none"){
+      divNoneJoinMember_jy.show();
+      $('#noJoinMemberText').text('참가 미승인 팀원 🔼   ')
+   }else{
+      divNoneJoinMember_jy.hide();
+      $('#noJoinMemberText').text('참가 미승인 팀원 🔽')
+   }
+}
+   
+
+//참가승인 미완료 회원 리스트 출력되는 div 클릭 시 div 사라지게 하는 함수
+function divCloseNoneJoinMember_B(){
+   $("#NoneJoinMember_jy").on("click", function(){
+      divNoneJoinMember_jy.hide();
+   });
+}
+
+//참가승인 미완료 회원이 0명일 때 모달창 띄워주는 함수
+function noneJoinMemberListNull(result){
+   var NoneJoinMemberNullModalBtn = document.querySelector("#NoneJoinMemberNullModalBtn");
+   
+   if(result.length == 0 || result.length < 0){
+      NoneJoinMemberNullModalBtn.href = "#NoneJoinMemberNullAlert_jy";
+      NoneJoinMemberNullModalBtn.setAttribute("data-bs-toggle", "modal");
+   }
+}
+   
+
+</script>
+
+
+
+<!-- 나훔 프로젝트 팀원 초대하기 -->
+<script type="text/javascript">
+
+        
+async function inviteProMem(){
+   
+   var { value: email } = await Swal.fire({
+        title: '팀원 초대하기',
+        input: 'email',
+        inputLabel: '팀원의 이메일을 입력해주세요.',
+        inputPlaceholder: 'ex)ddit404@naver.com',
+        //text용 값넣어두기
+      })
+         console.log(email)
+      if (email) {
+        Swal.fire(`초대이메일을 전송했습니다. <br>이메일주소: \${email}`)
+      }
+   
+   var data_H= {
+         memberId : email,
+         proNo : proNo,
+   }
+   
+    $.ajax({
+      type : "post",
+      url: "${webPath}/projoin/inviteProMem",
+      data: JSON.stringify(data_H),
+      contentType :"application/json; charset=utf-8",
+      dataType: 'text',
+      success:function(res){
+         console.log(res)
+         if (res=='OK') {
+            const Toast = Swal.mixin({
+                 toast: true,
+                 position: 'top-end',
+                 showConfirmButton: false,
+                 timer: 3000,
+                 timerProgressBar: true,
+                 didOpen: (toast) => {
+                   toast.addEventListener('mouseenter', Swal.stopTimer)
+                   toast.addEventListener('mouseleave', Swal.resumeTimer)
+                 }
+               })
+
+               Toast.fire({
+                 icon: 'success',
+                 title: "메일전송을 성공하였습니다. \n 메일확인을 요청하세요."
+               })
+         }
+         if (res =='already') {
+            Swal.fire('이미 참가된 회원입니다. 입력값을 확인해주세요 ')
+         }
+         if (res =='no') {
+            Swal.fire('알수 없는 이유로 실패하였습니다.')
+         }
+         
+      }
+         
+   }) 
+   
+   
+
+}
+
+
+</script>
+
+<!------ 프로젝트 통계   ------>
+
+<script type="text/javascript">
+	//pdf만들기
+	$('#createPdf').on('click', function() {
+		$('#chatImg').css('display', 'none')
+// 		window.onbeforeprint = $('#projectHomeDiv');
+//    		window.onafterprint = $('#projectHomeDiv');
+		startPrint('.row.justify-content-center.spa')
+		$('#chatImg').css('display', 'block')
+	})
+
+	var prtContent; // 프린트 하고 싶은 영역
+	var initBody;  // body 내용 원본
+	
+	// 프린트하고 싶은 영역의 id 값을 통해 출력 시작
+	function startPrint (div_id) {
+		prtContent = document.querySelector(div_id)
+		window.onbeforeprint = beforePrint;
+		window.onafterprint = afterPrint;
+		window.print();
+	}
+	
+	// 웹페이지 body 내용을 프린트하고 싶은 내용으로 교체
+	function beforePrint(){
+		initBody = document.body.innerHTML;
+		document.body.innerHTML = prtContent.innerHTML;
+	}
+	
+	// 프린트 후, 웹페이지 body 복구
+	function afterPrint(){
+		document.body.innerHTML = initBody;
+	}
+
+	//테스트용 전역변수 홈에 합쳐지면 변경할것
+	var proNo = '103';
+	var topworkVO = {
+		proNo : proNo
+	}
+
+	$(function() {
+		//값 확인용 버튼 클릭 
+		$('#testBtn').on('click', function() {
+			
+		})
+		totalWorkRate(topworkVO)
+		totalCnt(topworkVO);
+		printStateCnt();
+		deadWorkCnt(topworkVO)
+		myWorkCnt(topworkVO)
+		myWorkRate(topworkVO);
+	})
+
+	function printStateCnt() {
+		/*  0: 작업대기(미배정된작업)
+		1:진행중 (배정됨)
+		2:승인대기
+		3:수정요청
+		4:승인완료 (작업완료)
+		 * */
+		var ready = stateCnt(0)
+		var going = stateCnt(1)
+		var complete = stateCnt(4)
+		$('#readyQuantiCnt').text(ready)
+		$('#goingQuantiCnt').text(going)
+		$('#completeQuantiCnt').text(complete)
+		console.log("작업대기: ", ready)
+		console.log("진행중: ", going)
+		console.log("작업완료: ", complete)
+	}
+
+	//상위작업의 총 갯수 
+	function totalCnt(topworkVO) {
+		$.ajax({
+			url : "/proquanti/totalcnt",
+			type : "post",
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'text',
+			success : function(res) {
+				console.log(res)
+				$('#proQuantiTotalCnt').text(res)
+			},
+		});//ajax
+	}
+
+	//이미지나간작업 총갯수 
+	function deadWorkCnt(topworkVO) {
+		$.ajax({
+			url : "/proquanti/deadworkcnt",
+			type : "post",
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				console.log("마감일지난", res)
+				$('#deadWorkCnt').text(res)
+			},
+		});//ajax
+	}
+
+	//상태별 상위작업의 갯수  컨트롤러에서 조건별 나눠서 리턴함
+	function stateCnt(stateCode) {
+		var proNo = '103';
+		var topworkVO = {
+			proNo : proNo,
+			topWorkState : stateCode
+		}
+		var cnt;
+		$.ajax({
+			url : "/proquanti/statecnt",
+			type : "post",
+			async : false,
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				cnt = res;
+			},
+		});//ajax
+		return cnt;
+	}
+
+	// 팀원별 할당된 작업량 
+	function myWorkCnt(topworkVO) {
+		$.ajax({
+			url : "/proquanti/myworkcnt",
+			type : "post",
+			async : false,
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				var categories = [];
+				var data = [];
+				var memberName = [];
+				console.log("아작스 반환값 : ", res)
+				for (var i = 0; i < res.length; i++) {
+					memberName.push(getMemberDetail(res[i].memberId))
+					categories.push(res[i].memberId)
+					data.push(res[i].topWorkCnt*1)
+				}
+/*
+				var options = {
+					chart : {
+						type : 'bar'
+					},
+					plotOptions : {
+						bar : {
+							distributed : true
+						}
+					},
+					series : [ {
+						name : '작업 갯수',
+						data : data
+					} ],
+					xaxis : {
+						//회원아이디 또는 이름
+						categories : memberName
+					}
+				}*/
+				
+
+			      
+		        var options = {
+		          series:data,
+		          chart: {
+		          width: 380,
+		          type: 'donut',
+		        },
+		        plotOptions: {
+		          pie: {
+		            startAngle:0,
+		            endAngle: 360
+		          }
+		        },
+		        dataLabels: {
+		          enabled: true,
+		        },
+		        fill: {
+		          type: 'gradient',
+		        },
+		        legend: {
+		          formatter: function(val, opts) {
+		            return val + " - " + (opts.w.globals.series[opts.seriesIndex]/1)
+		          }
+		        },
+		        title: {
+		          text: '할당된 작업량'
+		        },
+		        responsive: [{
+		          breakpoint: 480,
+		          options: {
+		            chart: {
+		              width: 200
+		            },
+		            legend: {
+		              position: 'bottom'
+		            }
+		          }
+		        }]
+		        
+		        };
+
+				var chart = new ApexCharts(document
+						.querySelector("#myWorkCntChart"), options);
+				chart.render();
+
+			},
+		});//ajax
+	}
+	// 작업별 진행도
+	function totalWorkRate(topworkVO) {
+		$.ajax({
+			url : "/proquanti/totalworkrate",
+			type : "post",
+			async : false,
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				//작업번호,타이틀, 진행도
+				var categories = [];
+				var data = [];
+				
+				console.log("아작스 반환값 : ", res)
+				for (var i = 0; i < res.length; i++) {
+					categories.push(res[i].topWorkTitle)
+					data.push(res[i].topWorkProgress)
+				}
+				console.log(categories)
+				 var options = {
+				          series: [{
+				          name: '진행률',
+				          data: data
+				        }],
+				          chart: { 
+				          height: 350,
+				          type: 'line',
+				        },
+				        stroke: {
+				          width: 5,
+				          curve: 'smooth'
+				        },
+				        xaxis: {
+// 				            type: 'datetime',
+				            categories:categories ,
+				        },
+				        title: {
+				          text: '진행도',
+				          align: 'left',
+				          style: {
+				            fontSize: "16px",
+				            color: '#666'
+				          }
+				        },
+				        fill: {
+				          type: 'gradient',
+				          gradient: {
+				            shade: 'dark',
+				            gradientToColors: [ '#FDD835'],
+				            shadeIntensity: 1,
+				            type: 'horizontal',
+				            opacityFrom: 1,
+				            opacityTo: 1,
+				            stops: [0, 100, 100, 100]
+				          },
+				        },
+				        yaxis: {
+				          min: 0,
+				          max: 100
+				        }
+				    };
+
+				        var chart = new ApexCharts(document.querySelector("#totalWorkRate"), options);
+				        chart.render();
+
+			},
+		});//ajax
+	}
+	
+	//팀원별 진행도 
+	function myWorkRate(topworkVO) {
+
+		$.ajax({
+			url : "/proquanti/myworkrate",
+			type : "post",
+			async : false,
+			data : JSON.stringify(topworkVO),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				var categories = [];
+				var data = [];
+				var memberName = [];
+				console.log("아작스 반환값 : ", res)
+				for (var i = 0; i < res.length; i++) {
+					memberName.push(getMemberDetail(res[i].memberId))
+					categories.push(res[i].memberId)
+					data.push(parseInt(res[i].topWorkRate))
+				}
+				var options = {
+					chart : {
+						type : "bar",
+					},
+					series : [{
+						data : data,
+					}],
+					plotOptions: {
+				          bar: {
+				            distributed: true,
+				            dataLabels: {
+				              position: 'bottom',
+				            }
+				          }
+				        },
+			        xaxis: {
+			            categories: memberName,
+			        },
+				    labels: memberName
+				};
+
+				var chart = new ApexCharts(document
+						.querySelector("#myWorkRateChart"), options);
+
+				chart.render();
+			},
+		});//ajax
+	}
+
+	//회원 이름 가져오기용 
+	function getMemberDetail(memberId) {
+		var memberId = {
+			memberId : memberId
+		}
+		var memberName;
+		$.ajax({
+			url : "/member/selectMember",
+			type : "post",
+			async : false,
+			data : JSON.stringify(memberId),
+			contentType : 'application/json; charset=utf-8',
+			dataType : 'json',
+			success : function(res) {
+				console.log(res)
+				memberName = res.memberName
+			},
+		});//ajax
+		return memberName;
+	}
+</script>
+
+
+
